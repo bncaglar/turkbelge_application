@@ -134,7 +134,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
             checkUserIsPreApplied = false;
             showLoading = false;
           });
-          
+
         } else if (validateCustomerNumberWithTCKN == userTcknNumber) {
           setState(() {
             checkUserIsPreApplied = true;
