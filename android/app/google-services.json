@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1024489605375",
+    "project_id": "turk-belge-database",
+    "storage_bucket": "turk-belge-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024489605375:android:31143b30dd34595a8ce4ca",
+        "android_client_info": {
+          "package_name": "com.turkbelge_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024489605375-uc6ovfn6vnhbvb8uqh4pfv9bqti66pfe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdrnFMICG29rKMgaPQFF-mMkq7pHg4KpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024489605375-uc6ovfn6vnhbvb8uqh4pfv9bqti66pfe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
