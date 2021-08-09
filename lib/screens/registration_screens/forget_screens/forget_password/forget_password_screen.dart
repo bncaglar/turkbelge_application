@@ -90,7 +90,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
             },
             codeAutoRetrievalTimeout: (verificationId) async {},
           );
-        }else{
+        } else {
           setState(() {
             showLoading = false;
             ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
@@ -328,7 +328,8 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       if (authCredential.user != null) {
         //todo if user is exist
         //todo navigate to the next step
-        Navigator.pushReplacementNamed(context, EnterNewPasswordScreen.routeName);
+        Navigator.pushReplacementNamed(
+            context, EnterNewPasswordScreen.routeName);
       }
     } on FirebaseAuthException {
       setState(() {

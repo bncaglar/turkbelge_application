@@ -13,6 +13,7 @@ import 'package:turkbelge_application/widgets/navigation_button.dart';
 
 class EnterNewPasswordScreen extends StatefulWidget {
   static const routeName = '/EnterNewPasswordScreen';
+
   @override
   _EnterNewPasswordScreenState createState() => _EnterNewPasswordScreenState();
 }
