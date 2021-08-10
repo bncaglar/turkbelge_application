@@ -55,7 +55,7 @@ class FireStoreService {
           .collection(_userCollection)
           .doc(_customerNumber)
           .get())
-          .data()!['email']
+          .data()!['phoneNumber']
           .toString();
       return data1;
     } catch(e){

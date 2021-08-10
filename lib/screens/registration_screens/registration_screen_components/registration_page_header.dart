@@ -80,7 +80,10 @@ class _RegistrationPageHeaderState extends State<RegistrationPageHeader> {
   Row _buildBottomNavigationMenu() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [callUs(), emailUs()],
+      children: [
+        callUs(),
+        emailUs(),
+      ],
     );
   }
 
@@ -224,10 +227,12 @@ class _RegistrationPageHeaderState extends State<RegistrationPageHeader> {
       ),
     );
   }
-  _callNumber() async{
+
+  _callNumber() async {
     const number = '+905448010899'; //set the number here
     bool? res = await FlutterPhoneDirectCaller.callNumber(number);
   }
+
   _sendEmail() async {
     final snackBar = SnackBar(
       content: Text('Bir hata oluştu!'),

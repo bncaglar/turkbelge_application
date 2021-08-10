@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:turkbelge_application/screens/gyu.dart';
+import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
+import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/first_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/initial_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/second_step_of_registration.dart';
@@ -25,9 +26,9 @@ class Routes {
           break;
         }
 
-      case ExamplePage.routeName:
+      case HomePage.routeName:
         {
-          child = ExamplePage();
+          child = HomePage();
           break;
         }
       case InitialStepOfRegistration.routeName:
@@ -60,6 +61,11 @@ class Routes {
       case EnterNewPasswordScreen.routeName:
         {
           child = EnterNewPasswordScreen();
+          break;
+        }
+      case FirstNavigation.routeName:
+        {
+          child = FirstNavigation();
           break;
         }
       default:

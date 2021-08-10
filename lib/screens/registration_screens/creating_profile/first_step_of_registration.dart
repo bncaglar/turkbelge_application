@@ -102,11 +102,11 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController customerNumberController = TextEditingController();
   final _customerNumberKey = GlobalKey<FormState>();
-  final _tcknOrCknKey = GlobalKey<FormState>();
+  final _tcknOrVknKey = GlobalKey<FormState>();
 
   onClickContinueFirstStep() async {
     log.i("onClickContinue started");
-    if (_tcknOrCknKey.currentState!.validate() &&
+    if (_tcknOrVknKey.currentState!.validate() &&
         formKey.currentState!.validate() &&
         _customerNumberKey.currentState!.validate()) {
       setState(() {
@@ -378,7 +378,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
                 Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
             borderRadius: BorderRadius.all(Radius.circular(5))),
         child: Form(
-          key: _tcknOrCknKey,
+          key: _tcknOrVknKey,
           child: TcknOrVknForm(
             inputChangedValue: userTcknNumber,
             controller: tcknOrVknController,

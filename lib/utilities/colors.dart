@@ -20,4 +20,8 @@ class AppColors {
   static final dismissRedColor = HexColor("#CA2A20");
   static final dropDownMenuColor = HexColor("#323236");
   static final newColor4Background = HexColor("#1FE0D7");
+  static final bottomNavigationBarColor = HexColor("#ACAEB0");
+  static final homepageTextColor = HexColor("#f0f2f5");
+  static final accountInfoColor = HexColor("#232423");
+  static final homepageBankListBackgroundColor = HexColor("#f5f3f2");
 }

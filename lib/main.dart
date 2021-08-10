@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sizer/sizer.dart';
+import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/l10n/ln10.dart';
 import 'package:turkbelge_application/routes.dart';
-import 'package:turkbelge_application/screens/gyu.dart';
+import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'logic/firebase_auth/firebase_state_management_cubit.dart';
@@ -67,7 +68,7 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
         return SignInPage();
       }
       if (state is FirebaseAuthorized) {
-        return ExamplePage();
+        return FirstNavigation();
       }
       return Container();
     });

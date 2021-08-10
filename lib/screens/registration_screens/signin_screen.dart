@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/logic/firebase_auth/firebase_state_management_cubit.dart';
+import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/already_have_account_text.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
@@ -46,7 +48,7 @@ class _SignInPageState extends State<SignInPage> {
   final _emailKey = GlobalKey<FormState>();
   final _customerNumberKey = GlobalKey<FormState>();
   final _passwordKey = GlobalKey<FormState>();
-
+  bool showLoading = false;
   final log = getLogger();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -69,9 +71,13 @@ class _SignInPageState extends State<SignInPage> {
     if (_customerNumberKey.currentState!.validate() &&
         _emailKey.currentState!.validate() &&
         _passwordKey.currentState!.validate()) {
+      setState(() {
+        showLoading = true;
+      });
       try {
         String validateCustomerNumber = await FireStoreService()
-            .verifyEmailAddressWithCustomerNumber(customerNumberController.text);
+            .verifyEmailAddressWithCustomerNumber(
+                customerNumberController.text);
         //todo check if user's customer number is match with its email
         if (validateCustomerNumber == emailController.text) {
           await AuthenticationService(_firebaseAuth).signIn(
@@ -79,20 +85,32 @@ class _SignInPageState extends State<SignInPage> {
               password: passwordController.text.trim());
           User? user = _firebaseAuth.currentUser;
           if (user != null) {
-
-              context
-                  .read<FirebaseStateManagementCubit>()
-                  .changeAuthenticationState(FirebaseAuthorized());
+            Navigator.pushReplacementNamed(context, FirstNavigation.routeName);
+            setState(() {
+              showLoading = false;
+            });
+            // context
+            //     .read<FirebaseStateManagementCubit>()
+            //     .changeAuthenticationState(FirebaseAuthorized());
 
             log.i("giriş başarılı :-)))");
           } else {
             ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            setState(() {
+              showLoading = false;
+            });
           }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+          setState(() {
+            showLoading = false;
+          });
         }
       } on FirebaseAuthException {
         ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+        setState(() {
+          showLoading = false;
+        });
       }
     }
   }
@@ -102,7 +120,11 @@ class _SignInPageState extends State<SignInPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.primaryWightColor,
-        body: buildBodyColumn(),
+        body: showLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : buildBodyColumn(),
       ),
     );
   }
