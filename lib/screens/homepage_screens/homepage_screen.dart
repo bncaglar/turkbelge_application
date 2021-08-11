@@ -11,6 +11,8 @@ import 'package:turkbelge_application/utilities/colors.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/HomePage';
+  final String? totalBalance;
+  HomePage({required this.totalBalance});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -49,7 +51,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        TotalBalanceContainerOnHomePage(),
+        TotalBalanceContainerOnHomePage(totalBalance: widget.totalBalance!,),
         BankListWithBalance(),
       ],
     );

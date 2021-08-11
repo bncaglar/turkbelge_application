@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/constants/strings.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
+import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 
@@ -10,6 +11,7 @@ class BankListWithBalance extends StatefulWidget {
 }
 
 class _BankListWithBalanceState extends State<BankListWithBalance> {
+  final log = getLogger();
   @override
   Widget build(BuildContext context) {
     return buildBankListWithBalance();
@@ -33,7 +35,7 @@ class _BankListWithBalanceState extends State<BankListWithBalance> {
             buildBankNameAndBalance(
                 "5.255,50 TRY", Strings.akbank_icon, BoxFit.contain, "1"),
             buildBankNameAndBalance(
-                "8.675,35 TRY", Strings.denizbank_icon, BoxFit.cover, "3"),
+                "8.675,35 TRY", Strings.denizbank_icon, BoxFit.contain, "3"),
             buildBankNameAndBalance(
                 "1.174,00 TRY", Strings.isbankasi_icon, BoxFit.contain, "1"),
             buildBankNameAndBalance(
@@ -44,21 +46,26 @@ class _BankListWithBalanceState extends State<BankListWithBalance> {
     );
   }
 
-  Padding buildBankNameAndBalance(
+  InkWell buildBankNameAndBalance(
       String amount, String imagePath, BoxFit? fitt, String numberOfAccount) {
-    return Padding(
-      padding: EdgeInsets.only(top: 1.h, bottom: 1.h),
-      child: Container(
-        height: 9.h,
-        width: 90.w,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
+    return InkWell(
+      onTap: (){
+        log.i(imagePath);
+      },
+      child: Padding(
+        padding: EdgeInsets.only(top: 1.h, bottom: 1.h),
+        child: Container(
+          height: 9.h,
+          width: 90.w,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+            color: AppColors.homepageBankListBackgroundColor,
           ),
-          color: AppColors.homepageBankListBackgroundColor,
+          child: buildBankNameAndBalanceRow(
+              amount, imagePath, fitt, numberOfAccount),
         ),
-        child: buildBankNameAndBalanceRow(
-            amount, imagePath, fitt, numberOfAccount),
       ),
     );
   }

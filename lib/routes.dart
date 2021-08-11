@@ -28,7 +28,7 @@ class Routes {
 
       case HomePage.routeName:
         {
-          child = HomePage();
+          child = HomePage(totalBalance: '',);
           break;
         }
       case InitialStepOfRegistration.routeName:

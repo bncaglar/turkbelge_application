@@ -6,6 +6,8 @@ import 'package:sizer/sizer.dart';
 import 'number_of_bank_and_account.dart';
 
 class TotalBalanceContainerOnHomePage extends StatefulWidget {
+  final String? totalBalance;
+  TotalBalanceContainerOnHomePage({required this.totalBalance});
   @override
   _TotalBalanceContainerOnHomePageState createState() =>
       _TotalBalanceContainerOnHomePageState();
@@ -48,7 +50,7 @@ class _TotalBalanceContainerOnHomePageState
       width: 50.w,
       child: Center(
         child: Text(
-          "15.945,00 TRY",
+          widget.totalBalance!,
 
           ///todo we will get the balance info from api
           style: TextStyle(
