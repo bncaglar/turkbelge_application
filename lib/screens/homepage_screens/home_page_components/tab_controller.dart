@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
+import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/screens/homepage_screens/home_page_components/homepage_background_color.dart';
 import 'package:turkbelge_application/screens/homepage_screens/home_page_components/line_chart.dart';
 import 'package:turkbelge_application/screens/homepage_screens/home_page_components/pie_chart.dart';
@@ -16,7 +17,24 @@ class TabControllerPage extends StatefulWidget {
 }
 
 class _TabControllerPageState extends State<TabControllerPage> {
+  final log = getLogger();
   bool showOnChart = false;
+
+  onSettingsClicked() {
+    log.i("onSettingsClicked started");
+  }
+
+  showOnChartStateFunc() {
+    if (showOnChart == true) {
+      setState(() {
+        showOnChart = false;
+      });
+    } else {
+      setState(() {
+        showOnChart = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,40 +56,26 @@ class _TabControllerPageState extends State<TabControllerPage> {
                     children: [
                       Align(
                         alignment: Alignment.bottomCenter,
-                        child: InkWell(
-                          onTap: () {
-                            if (showOnChart == true) {
-                              setState(() {
-                                showOnChart = false;
-                              });
-                            } else {
-                              setState(() {
-                                showOnChart = true;
-                              });
-                            }
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(left: 3.w),
-                            width: 40.w,
+                        child: Container(
+                            padding: EdgeInsets.only(left: 3.w, top: 2.h),
+                            width: 13.w,
                             child: showOnChart
-                                ? Text(
-                                    "Çizelgede gösterme",
-                                    style: TextStyle(
-                                      fontSize: LocalHelper.getFontSize(13),
-                                      color: AppColors.homepageTextColor,
-                                      fontWeight: FontWeight.w500,
+                                ? IconButton(
+                                    onPressed: showOnChartStateFunc,
+                                    icon: Icon(
+                                      Icons.multiline_chart,
+                                      color: AppColors.primaryWightColor,
+                                      size: 30,
                                     ),
                                   )
-                                : Text(
-                                    "Çizelgede göster",
-                                    style: TextStyle(
-                                      fontSize: LocalHelper.getFontSize(13),
-                                      color: AppColors.homepageTextColor,
-                                      fontWeight: FontWeight.w500,
+                                : IconButton(
+                                    onPressed: showOnChartStateFunc,
+                                    icon: Icon(
+                                      Icons.show_chart,
+                                      color: AppColors.primaryWightColor,
+                                      size: 30,
                                     ),
-                                  ),
-                          ),
-                        ),
+                                  )),
                       ),
                       Align(
                         alignment: Alignment.bottomCenter,
@@ -84,8 +88,22 @@ class _TabControllerPageState extends State<TabControllerPage> {
                           ),
                         ),
                       ),
-                      Container(
-                        width: 40.w,
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 3.w, top: 2.h),
+                          child: Container(
+                            width: 10.w,
+                            child: IconButton(
+                              onPressed: onSettingsClicked,
+                              icon: Icon(
+                                Icons.settings_outlined,
+                                color: AppColors.primaryWightColor,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),
@@ -115,9 +133,15 @@ class _TabControllerPageState extends State<TabControllerPage> {
                         height: 80.h,
                         child: TabBarView(
                           children: [
-                            HomePage(totalBalance: "15.945,00 TRY",),
-                            HomePage(totalBalance: "3.458,00 \$",),
-                            HomePage(totalBalance: "15.945,00 €",),
+                            HomePage(
+                              totalBalance: "15.945,00 TRY",
+                            ),
+                            HomePage(
+                              totalBalance: "3.458,00 \$",
+                            ),
+                            HomePage(
+                              totalBalance: "15.945,00 €",
+                            ),
                           ],
                         ),
                       )
@@ -134,11 +158,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
       children: [
         BackgroundColorOfHomePage(),
         Padding(
-          padding: EdgeInsets.only(
-            right: 7.w,
-            top: 5.h,
-            left: 7.w
-          ),
+          padding: EdgeInsets.only(right: 7.w, top: 5.h, left: 7.w),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -147,15 +167,12 @@ class _TabControllerPageState extends State<TabControllerPage> {
                   child: PieChartSection(),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                    bottom: 5.h
-                  ),
+                  padding: EdgeInsets.only(bottom: 5.h),
                   child: Align(
                     alignment: Alignment.center,
                     child: LineChartSample2(),
                   ),
                 ),
-
               ],
             ),
           ),

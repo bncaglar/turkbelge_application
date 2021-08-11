@@ -44,6 +44,9 @@ dependencies:
   #countdown indicator
   countdown_progress_indicator: ^0.1.0
 
+  #shared preferences
+  shared_preferences: ^2.0.6
+
   #emailsender
   flutter_email_sender: ^5.0.2
 

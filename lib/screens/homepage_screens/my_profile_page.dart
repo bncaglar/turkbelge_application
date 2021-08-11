@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:turkbelge_application/utilities/colors.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -8,15 +9,9 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: Colors.green,
-      child: Center(
-        child: Text("Profile Page", style: TextStyle(
-          fontSize: 35,
-          color: Colors.white
-        ),),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.primaryWightColor,
       ),
     );
   }
