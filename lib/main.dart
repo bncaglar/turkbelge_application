@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/l10n/ln10.dart';
 import 'package:turkbelge_application/routes.dart';
+import 'package:turkbelge_application/screens/homepage_screens/home_page_components/Settings_page.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';

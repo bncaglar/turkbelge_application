@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
-class AccountBalancePage extends StatefulWidget {
+class SettingsPage extends StatefulWidget {
   @override
-  _AccountBalancePageState createState() => _AccountBalancePageState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _AccountBalancePageState extends State<AccountBalancePage> {
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

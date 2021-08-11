@@ -25,6 +25,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
   }
 
   showOnChartStateFunc() {
+    log.i("showOnChartStateFunc started");
     if (showOnChart == true) {
       setState(() {
         showOnChart = false;
@@ -99,7 +100,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
                               icon: Icon(
                                 Icons.settings_outlined,
                                 color: AppColors.primaryWightColor,
-                                size: 30,
+                                size: 28,
                               ),
                             ),
                           ),
@@ -153,6 +154,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
     );
   }
 
+  ///todo this will then seperate from this file.
   Stack pieChartPageStack() {
     return Stack(
       children: [

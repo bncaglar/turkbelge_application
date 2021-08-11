@@ -21,7 +21,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final log = getLogger();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
+  List<Color> gradientColors = [
+    const Color(0xff23b6e6),
+    const Color(0xff02d39a),
+  ];
   onClickLogOut() async {
     await AuthenticationService(_firebaseAuth).logOut();
     if (_firebaseAuth.currentUser == null) {
