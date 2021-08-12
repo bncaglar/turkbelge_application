@@ -10,6 +10,7 @@ import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/second_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/already_have_account_text.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
+import 'package:turkbelge_application/services/checkIfTCKNvalid.dart';
 import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:turkbelge_application/widgets/form/customer_number_form.dart';
@@ -46,6 +47,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
   final countDownController = CountDownController();
   String? verificationId;
   bool checkUserIsPreApplied = false;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool showLoading = false;
   final failedToSignIn = SnackBar(
@@ -67,9 +69,13 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
     });
 
     try {
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: widget.userEmail!, password: widget.userPassword!);
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
-
+      User? user = _firebaseAuth.currentUser;
+      await user!.linkWithCredential(credential);
+      await user.sendEmailVerification();
       setState(() {
         showLoading = false;
       });
@@ -77,6 +83,17 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
       if (authCredential.user != null) {
         //todo if user is exist
         //todo navigate to the next step
+        await FireStoreService().firstStepCreateUserInDB(user.uid,
+            widget.userEmail!, userTcknNumber!, userVknNumber!, phone!);
+        await FireStoreService().secondStepCreateUserInDB(
+            user.uid,
+            widget.userName!,
+            widget.userEmail!,
+            customerNumberController.text,
+            userTcknNumber!,
+            userVknNumber!,
+            phone!);
+
         Navigator.pushReplacementNamed(
           context,
           SecondStepOfRegistration.routeName,
@@ -94,6 +111,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
       setState(() {
         showLoading = false;
       });
+      print("xxxxxx");
       ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
     }
   }
@@ -134,11 +152,18 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
             checkUserIsPreApplied = false;
             showLoading = false;
           });
-
         } else if (validateCustomerNumberWithTCKN == userTcknNumber) {
-          setState(() {
-            checkUserIsPreApplied = true;
-          });
+          bool? isTCKNVerified =
+              await CheckIfTCKNValid().checkTCKN(userTcknNumber);
+          if (isTCKNVerified == true) {
+            setState(() {
+              checkUserIsPreApplied = true;
+            });
+          } else {
+            setState(() {
+              checkUserIsPreApplied = false;
+            });
+          }
         } else {
           setState(() {
             checkUserIsPreApplied = false;
@@ -150,6 +175,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
             .verifyCustomerNumberInPreAppliedUserCollectionWithVKN(
                 customerNumberController.text);
         print(validateCustomerNumberWithVKN);
+
         if (validateCustomerNumberWithVKN == "Error") {
           setState(() {
             checkUserIsPreApplied = false;
@@ -448,7 +474,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
         duration: 120,
         text: 'Saniye',
         onComplete: () {
-            Navigator.pushReplacementNamed(context, SignInPage.routeName);
+          Navigator.pushReplacementNamed(context, SignInPage.routeName);
         },
       ),
     );

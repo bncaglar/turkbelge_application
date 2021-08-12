@@ -4,7 +4,7 @@ import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.d
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/first_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/initial_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/second_step_of_registration.dart';
-import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number.dart';
+import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number/forget_customer_number.dart';
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_password/enter_new_password_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_password/forget_password_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';

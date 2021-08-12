@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/logic/firebase_auth/firebase_state_management_cubit.dart';
-import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/already_have_account_text.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
@@ -16,9 +14,8 @@ import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/widgets/form/password_form.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:turkbelge_application/widgets/navigation_button.dart';
-import 'package:provider/provider.dart';
 import 'creating_profile/initial_step_of_registration.dart';
-import 'forget_screens/forget_customer_number.dart';
+import 'forget_screens/forget_customer_number/forget_customer_number.dart';
 import 'forget_screens/forget_password/forget_password_screen.dart';
 
 class SignInPage extends StatefulWidget {
@@ -75,37 +72,34 @@ class _SignInPageState extends State<SignInPage> {
         showLoading = true;
       });
       try {
-        String validateCustomerNumber = await FireStoreService()
-            .verifyEmailAddressWithCustomerNumber(
-                customerNumberController.text);
-        //todo check if user's customer number is match with its email
-        if (validateCustomerNumber == emailController.text) {
           await AuthenticationService(_firebaseAuth).signIn(
               email: emailController.text.trim(),
               password: passwordController.text.trim());
           User? user = _firebaseAuth.currentUser;
-          if (user != null) {
-            Navigator.pushReplacementNamed(context, FirstNavigation.routeName);
-            setState(() {
-              showLoading = false;
-            });
-            // context
-            //     .read<FirebaseStateManagementCubit>()
-            //     .changeAuthenticationState(FirebaseAuthorized());
+            if (user != null) {
+              String validateCustomerNumber = await FireStoreService()
+                  .verifyEmailAddressWithCustomerNumber(
+                  customerNumberController.text, user.uid);
+              if(validateCustomerNumber == emailController.text){
+              Navigator.pushReplacementNamed(context, FirstNavigation.routeName);
+              setState(() {
+                showLoading = false;
+              });
+              log.i("giriş başarılı :-)))");
+            }
+            else {
+              ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+              setState(() {
+                showLoading = false;
+              });
+            }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+              setState(() {
+                showLoading = false;
+              });
+            }
 
-            log.i("giriş başarılı :-)))");
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-            setState(() {
-              showLoading = false;
-            });
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-          setState(() {
-            showLoading = false;
-          });
-        }
       } on FirebaseAuthException {
         ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
         setState(() {

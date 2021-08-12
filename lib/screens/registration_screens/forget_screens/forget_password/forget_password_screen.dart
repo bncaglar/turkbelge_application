@@ -59,43 +59,34 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         setState(() {
           showLoading = true;
         });
-        String validateCustomerNumber = await FireStoreService()
-            .verifyPhoneNumberWithCustomerNumber(customerNumberController.text);
-        if (validateCustomerNumber == "Error") {
-          setState(() {
-            showLoading = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-        } else if (validateCustomerNumber == phone) {
-          await _auth.verifyPhoneNumber(
-            timeout: Duration(seconds: 120),
-            phoneNumber: phone!,
-            verificationCompleted: (phoneAuthCredential) async {
-              setState(() {
-                showLoading = false;
-              });
-            },
-            verificationFailed: (verificationFailed) async {
-              setState(() {
-                showLoading = false;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-            },
-            codeSent: (verificationId, resendingToken) async {
-              setState(() {
-                showLoading = false;
-                currentState = MobileVerificationState.SHOW_OTP_FORM_STATE;
-                this.verificationId = verificationId;
-              });
-            },
-            codeAutoRetrievalTimeout: (verificationId) async {},
-          );
-        } else {
-          setState(() {
-            showLoading = false;
+        setState(() {
+          showLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+
+        await _auth.verifyPhoneNumber(
+          timeout: Duration(seconds: 120),
+          phoneNumber: phone!,
+          verificationCompleted: (phoneAuthCredential) async {
+            setState(() {
+              showLoading = false;
+            });
+          },
+          verificationFailed: (verificationFailed) async {
+            setState(() {
+              showLoading = false;
+            });
             ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-          });
-        }
+          },
+          codeSent: (verificationId, resendingToken) async {
+            setState(() {
+              showLoading = false;
+              currentState = MobileVerificationState.SHOW_OTP_FORM_STATE;
+              this.verificationId = verificationId;
+            });
+          },
+          codeAutoRetrievalTimeout: (verificationId) async {},
+        );
       } on FirebaseException {
         var error = "Error";
         setState(() {
@@ -306,6 +297,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
             verificationId: verificationId!, smsCode: codeSentController.text);
         signInWithPhoneAuthCredential(phoneAuthCredential);
+        User? user = _auth.currentUser;
       },
       margin: EdgeInsets.only(top: 3.754.h, left: 5.w, right: 5.w),
     );
@@ -324,12 +316,16 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       setState(() {
         showLoading = false;
       });
-
       if (authCredential.user != null) {
-        //todo if user is exist
-        //todo navigate to the next step
-        Navigator.pushReplacementNamed(
-            context, EnterNewPasswordScreen.routeName);
+        String validateCustomerNumber = await FireStoreService()
+            .verifyPhoneNumberWithCustomerNumber(
+                customerNumberController.text, authCredential.user!.uid);
+        if (validateCustomerNumber == phone) {
+          //todo if user is exist
+          //todo navigate to the next step
+          Navigator.pushReplacementNamed(
+              context, EnterNewPasswordScreen.routeName);
+        }
       }
     } on FirebaseAuthException {
       setState(() {

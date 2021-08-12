@@ -40,20 +40,6 @@ class _SecondStepOfRegistrationState extends State<SecondStepOfRegistration> {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   void initState() {
-    AuthCredential credential = EmailAuthProvider.credential(email: widget.userEmail!, password: widget.userPassword!);
-    User? user = _firebaseAuth.currentUser;
-    print(user!.uid);
-    user.linkWithCredential(credential);
-    user.sendEmailVerification();
-
-    FireStoreService().createUserInDB(
-        user.uid,
-        widget.userName!,
-        widget.userEmail!,
-        widget.userCustomerNumber!,
-        widget.userTCKN!,
-        widget.userVKN!,
-        widget.userPhoneNumber!);
     _firebaseAuth.signOut();
     super.initState();
   }

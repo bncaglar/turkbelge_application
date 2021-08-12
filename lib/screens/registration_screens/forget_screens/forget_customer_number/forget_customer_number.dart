@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
+import 'package:turkbelge_application/services/authentication_service.dart';
+import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/widgets/form/email_form.dart';
+import 'package:turkbelge_application/widgets/form/password_form.dart';
 import 'package:turkbelge_application/widgets/form/tckn_or_vkn_form.dart';
 import 'package:turkbelge_application/widgets/navigation_button.dart';
 
@@ -20,12 +24,46 @@ class ForgetCustomerNumberPage extends StatefulWidget {
 class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
   final log = getLogger();
   TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController tcknOrVknController = TextEditingController();
   final _emailKey = GlobalKey<FormState>();
   final _tcknOrCknKey = GlobalKey<FormState>();
+  final _passwordKey = GlobalKey<FormState>();
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
-  onClickContinue() {
+  onClickContinue() async {
     log.i("onClickContinue started");
+    if (_tcknOrCknKey.currentState!.validate() &&
+        _emailKey.currentState!.validate() && ///CHECK IF ALL THE VALIDATORS ARE NOT THROWING ERROR
+        _passwordKey.currentState!.validate()) {
+      try {
+        await AuthenticationService(_auth).signIn(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
+        User? user = _auth.currentUser;
+        if (tcknOrVknController.toString().length == 11) {
+          ///check if the input is tckn or vkn
+          String verifyTckn = await FireStoreService().verifyTCKN(user!.uid);
+          if (verifyTckn == tcknOrVknController.text) {
+            ///check if the tckn is valid
+            ///todo navigate user to the next step
+          } else {
+            ///TCKN IS NOT VALID!!
+          }
+        } else {
+          ///input is VKN
+          ///check for the vkn number
+          String verifyVKN = await FireStoreService().verifyVKN(user!.uid);
+          if (verifyVKN == tcknOrVknController.text) {
+            ///todo navigate user to the next steP
+          } else {
+            ///VKN IS NOT VALID!!
+          }
+        }
+      } on FirebaseException {
+        ///todo throw error
+      }
+    }
   }
 
   @override
@@ -50,6 +88,7 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
           ),
           buildTcknOrVkn(),
           buildEmailField(),
+          buildPasswordField(),
           buildResendButton(),
           enterYourCredentialsText()
         ],
@@ -89,6 +128,27 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
           child: EmailForm(
             labelText: AppLocalizations.of(context).emailLabelText,
             controller: emailController,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding buildPasswordField() {
+    return Padding(
+      padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
+          borderRadius: BorderRadius.all(
+            Radius.circular(5),
+          ),
+        ),
+        child: Form(
+          key: _passwordKey,
+          child: PasswordForm(
+            labelText: AppLocalizations.of(context).passwordLabelText,
+            controller: passwordController,
           ),
         ),
       ),
