@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
@@ -49,7 +50,6 @@ class _SignInPageState extends State<SignInPage> {
   bool showLoading = false;
   final log = getLogger();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
   onClickForgetCustomerNumber() {
     log.i("onClickForgetCustomerNumber started");
     Navigator.pushNamed(context, ForgetCustomerNumberPage.routeName);
@@ -273,7 +273,6 @@ class _SignInPageState extends State<SignInPage> {
       margin: EdgeInsets.only(
         left: 4.69.w,
         right: 4.69.w,
-        top: 2.754.h,
       ),
     );
   }
@@ -281,15 +280,29 @@ class _SignInPageState extends State<SignInPage> {
   Container rememberMeBox() {
     ///todo remember me box will be used to keep user logged in, in accordance with the preference of the user
     return Container(
-      height: 5.h,
+      height: 8.h,
       width: double.infinity,
       child: CheckboxListTile(
-        title: Text("Beni hatırla"),
+        activeColor: AppColors.newColor4Background,
+        title: Text(
+          "Hesabımı açık tut",
+          style: TextStyle(
+            fontSize: LocalHelper.getFontSize(13),
+            color: AppColors.backgroundPrimaryColor,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
         value: sozlesmeDurumu,
         controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (bool? data) {
+        onChanged: (bool? data) async{
+          final prefs = await SharedPreferences.getInstance();
+          bool myBool = prefs.getBool('state') ?? false;
+
           setState(() {
             sozlesmeDurumu = data!;
+            myBool = sozlesmeDurumu;
+            prefs.setBool('state', myBool);
+            print(myBool);
           });
         },
       ),

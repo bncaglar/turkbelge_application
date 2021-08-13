@@ -6,7 +6,6 @@ import 'package:turkbelge_application/screens/homepage_screens/home_page_compone
 import 'package:turkbelge_application/screens/homepage_screens/home_page_components/line_chart.dart';
 import 'package:turkbelge_application/screens/homepage_screens/home_page_components/pie_chart.dart';
 import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
-import 'package:turkbelge_application/services/checkIfTCKNvalid.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 

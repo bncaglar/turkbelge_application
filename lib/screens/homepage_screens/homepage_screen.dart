@@ -25,15 +25,7 @@ class _HomePageState extends State<HomePage> {
     const Color(0xff23b6e6),
     const Color(0xff02d39a),
   ];
-  onClickLogOut() async {
-    await AuthenticationService(_firebaseAuth).logOut();
-    if (_firebaseAuth.currentUser == null) {
-      Navigator.pushReplacementNamed(context, SignInPage.routeName);
-      log.i("Çıkış başarılı! :-)))");
-    } else {
-      log.i("Çıkış başarısız");
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
