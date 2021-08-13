@@ -73,34 +73,32 @@ class _SignInPageState extends State<SignInPage> {
         showLoading = true;
       });
       try {
-          await AuthenticationService(_firebaseAuth).signIn(
-              email: emailController.text.trim(),
-              password: passwordController.text.trim());
-          User? user = _firebaseAuth.currentUser;
-            if (user != null) {
-              String validateCustomerNumber = await FireStoreService()
-                  .verifyEmailAddressWithCustomerNumber(
+        await AuthenticationService(_firebaseAuth).signIn(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
+        User? user = _firebaseAuth.currentUser;
+        if (user != null) {
+          String validateCustomerNumber = await FireStoreService()
+              .verifyEmailAddressWithCustomerNumber(
                   customerNumberController.text, user.uid);
-              if(validateCustomerNumber == emailController.text){
-              Navigator.pushReplacementNamed(context, FirstNavigation.routeName);
-              setState(() {
-                showLoading = false;
-              });
-              log.i("giriş başarılı :-)))");
-            }
-            else {
-              ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-              setState(() {
-                showLoading = false;
-              });
-            }
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-              setState(() {
-                showLoading = false;
-              });
-            }
-
+          if (validateCustomerNumber == emailController.text) {
+            Navigator.pushReplacementNamed(context, FirstNavigation.routeName);
+            setState(() {
+              showLoading = false;
+            });
+            log.i("giriş başarılı :-)))");
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            setState(() {
+              showLoading = false;
+            });
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+          setState(() {
+            showLoading = false;
+          });
+        }
       } on FirebaseAuthException {
         ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
         setState(() {
@@ -279,7 +277,9 @@ class _SignInPageState extends State<SignInPage> {
       ),
     );
   }
-  Container rememberMeBox(){
+
+  Container rememberMeBox() {
+    ///todo remember me box will be used to keep user logged in, in accordance with the preference of the user
     return Container(
       height: 5.h,
       width: double.infinity,

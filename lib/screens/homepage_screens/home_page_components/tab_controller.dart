@@ -122,7 +122,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
               ),
               showOnChart
                   ? Container(
-                      height: 80.h,
+                      height: 75.h,
                       child: TabBarView(
                         children: [
                           pieChartPageStack(),

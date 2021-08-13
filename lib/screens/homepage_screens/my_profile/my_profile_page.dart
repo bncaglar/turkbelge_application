@@ -12,7 +12,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.primaryWightColor,
+        body: buildProfilePageBody(),
       ),
     );
+  }
+
+  Container buildProfilePageBody() {
+    return Container();
   }
 }
