@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
+import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number/forget_customer_number_phone_auth.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
 import 'package:turkbelge_application/services/firebase_firestore_service.dart';
@@ -30,25 +31,57 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
   final _tcknOrCknKey = GlobalKey<FormState>();
   final _passwordKey = GlobalKey<FormState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
+  bool showLoading = false;
+  final failedToSignIn = SnackBar(
+    content: Text('Bilgilerinizi kontrol edip tekrar deneyiniz!'),
+    action: SnackBarAction(
+      label: 'Tekrar dene',
+      textColor: Colors.white,
+      onPressed: () {
+        // Some code to undo the change.
+      },
+    ),
+    backgroundColor: Colors.red,
+  );
 
   onClickContinue() async {
     log.i("onClickContinue started");
     if (_tcknOrCknKey.currentState!.validate() &&
-        _emailKey.currentState!.validate() && ///CHECK IF ALL THE VALIDATORS ARE NOT THROWING ERROR
+        _emailKey.currentState!.validate() &&
+
+        ///CHECK IF ALL THE VALIDATORS ARE NOT THROWING ERROR
         _passwordKey.currentState!.validate()) {
       try {
+        setState(() {
+          showLoading = true;
+        });
         await AuthenticationService(_auth).signIn(
             email: emailController.text.trim(),
             password: passwordController.text.trim());
         User? user = _auth.currentUser;
-        if (tcknOrVknController.toString().length == 11) {
+        print(tcknOrVknController.text);
+        if (tcknOrVknController.text.length == 11) {
           ///check if the input is tckn or vkn
           String verifyTckn = await FireStoreService().verifyTCKN(user!.uid);
           if (verifyTckn == tcknOrVknController.text) {
             ///check if the tckn is valid
             ///todo navigate user to the next step
+            Navigator.pushNamed(
+                context, ForgetCustomerNumberPhoneAuth.routeName,
+                arguments: ForgetCustomerNumberPhoneAuthArguments(
+                  tcknOrVknNumber: tcknOrVknController.text,
+                  userEmail: emailController.text,
+                  userPassword: passwordController.text,
+                ));
+            setState(() {
+              showLoading = false;
+            });
           } else {
             ///TCKN IS NOT VALID!!
+            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            setState(() {
+              showLoading = false;
+            });
           }
         } else {
           ///input is VKN
@@ -58,10 +91,18 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
             ///todo navigate user to the next steP
           } else {
             ///VKN IS NOT VALID!!
+            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            setState(() {
+              showLoading = false;
+            });
           }
         }
       } on FirebaseException {
         ///todo throw error
+        ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+        setState(() {
+          showLoading = false;
+        });
       }
     }
   }
@@ -71,7 +112,11 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.primaryWightColor,
-        body: buildForgetCustomerPageBody(),
+        body: showLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : buildForgetCustomerPageBody(),
       ),
     );
   }

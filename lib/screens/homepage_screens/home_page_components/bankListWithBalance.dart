@@ -28,19 +28,21 @@ class _BankListWithBalanceState extends State<BankListWithBalance> {
               Radius.circular(15),
             ),
             color: AppColors.primaryWightColor),
-        child: Column(
-          children: [
-            buildBankNameAndBalance(
-                "3.945,00 TRY", Strings.garanti_icon, BoxFit.cover, "2"),
-            buildBankNameAndBalance(
-                "5.255,50 TRY", Strings.akbank_icon, BoxFit.contain, "1"),
-            buildBankNameAndBalance(
-                "8.675,35 TRY", Strings.denizbank_icon, BoxFit.contain, "3"),
-            buildBankNameAndBalance(
-                "1.174,00 TRY", Strings.isbankasi_icon, BoxFit.contain, "1"),
-            buildBankNameAndBalance(
-                "9.312,78 TRY", Strings.akbank_icon, BoxFit.contain, "1"),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              buildBankNameAndBalance(
+                  "3.945,00 TRY", Strings.garanti_icon, BoxFit.cover, "2"),
+              buildBankNameAndBalance(
+                  "5.255,50 TRY", Strings.akbank_icon, BoxFit.contain, "1"),
+              buildBankNameAndBalance(
+                  "8.675,35 TRY", Strings.denizbank_icon, BoxFit.contain, "3"),
+              buildBankNameAndBalance(
+                  "1.174,00 TRY", Strings.isbankasi_icon, BoxFit.contain, "1"),
+              buildBankNameAndBalance(
+                  "9.312,78 TRY", Strings.akbank_icon, BoxFit.contain, "1"),
+            ],
+          ),
         ),
       ),
     );

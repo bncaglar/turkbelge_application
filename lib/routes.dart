@@ -5,6 +5,8 @@ import 'package:turkbelge_application/screens/registration_screens/creating_prof
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/initial_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/second_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number/forget_customer_number.dart';
+import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number/forget_customer_number_phone_auth.dart';
+import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number/forget_customer_number_verified_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_password/enter_new_password_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_password/forget_password_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
@@ -28,7 +30,9 @@ class Routes {
 
       case HomePage.routeName:
         {
-          child = HomePage(totalBalance: '',);
+          child = HomePage(
+            totalBalance: '',
+          );
           break;
         }
       case InitialStepOfRegistration.routeName:
@@ -66,6 +70,18 @@ class Routes {
       case FirstNavigation.routeName:
         {
           child = FirstNavigation();
+          break;
+        }
+      case ForgetCustomerNumberPhoneAuth.routeName:
+        {
+          child = _buildForgetCustomerNumberPhoneAuthRoutes(
+              settings.arguments as ForgetCustomerNumberPhoneAuthArguments);
+          break;
+        }
+      case ForgetCustomerNumberVerifiedPage.routeName:
+        {
+          child = _buildForgetCustomerNumberVerifiedPageRoutes(
+              settings.arguments as ForgetCustomerNumberVerifiedPageArguments);
           break;
         }
       default:
@@ -117,5 +133,24 @@ class Routes {
         userPhoneNumber: userPhoneNumber,
         userTCKN: userTCKN,
         userVKN: userVKN);
+  }
+
+  static Widget _buildForgetCustomerNumberPhoneAuthRoutes(
+      ForgetCustomerNumberPhoneAuthArguments arguments) {
+    String? tcknOrVknNumber = arguments.tcknOrVknNumber;
+    String? userEmail = arguments.userEmail;
+    String? userPassword = arguments.userPassword;
+    return ForgetCustomerNumberPhoneAuth(
+        tcknOrVknNumber: tcknOrVknNumber,
+        userEmail: userEmail,
+        userPassword: userPassword);
+  }
+
+  static Widget _buildForgetCustomerNumberVerifiedPageRoutes(
+      ForgetCustomerNumberVerifiedPageArguments arguments) {
+    String? userEmail = arguments.userEmail;
+    return ForgetCustomerNumberVerifiedPage(
+      userEmail: userEmail,
+    );
   }
 }

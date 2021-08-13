@@ -83,8 +83,13 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
       if (authCredential.user != null) {
         //todo if user is exist
         //todo navigate to the next step
-        await FireStoreService().firstStepCreateUserInDB(user.uid,
-            widget.userEmail!, userTcknNumber!, userVknNumber!, phone!);
+        await FireStoreService().firstStepCreateUserInDB(
+            user.uid,
+            widget.userEmail!,
+            userTcknNumber!,
+            userVknNumber!,
+            phone!,
+            customerNumberController.text);
         await FireStoreService().secondStepCreateUserInDB(
             user.uid,
             widget.userName!,

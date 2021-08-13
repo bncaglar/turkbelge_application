@@ -61,107 +61,107 @@ class _RegistrationPageHeaderState extends State<RegistrationPageHeader> {
 
   Padding contactUsIcon() {
     return Padding(
-      padding: EdgeInsets.only(left: 1.w, top: 1.h),
+      padding: EdgeInsets.only(left: 1.w, top: 1.h, right: 1.w),
       child: IconButton(
         onPressed: () {
           LocalHelper.showTheBottomSheet(
             context: context,
-            child: _buildBottomNavigationMenu(),
+            child: _callNumber(),
           );
         },
         icon: Icon(
-          Icons.contact_support_outlined,
-          size: 25.sp,
+          Icons.phone_outlined,
+          size: 20.sp,
         ),
       ),
     );
   }
 
-  Row _buildBottomNavigationMenu() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        callUs(),
-        emailUs(),
-      ],
-    );
-  }
-
-  Padding callUs() {
-    return Padding(
-      padding: EdgeInsets.only(top: 6.h, left: 5.w),
-      child: Container(
-        height: 15.h,
-        width: 40.w,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Bizi arayın",
-                style: TextStyle(
-                  fontSize: LocalHelper.getFontSize(15),
-                  color: AppColors.primaryWightColor,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-              IconButton(
-                onPressed: () {
-                  _callNumber();
-                },
-                icon: Icon(
-                  Icons.phone_outlined,
-                  size: 25.sp,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Padding emailUs() {
-    return Padding(
-      padding: EdgeInsets.only(top: 6.h, right: 5.w),
-      child: Container(
-        height: 15.h,
-        width: 40.w,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Bize ulaşın",
-                style: TextStyle(
-                  fontSize: LocalHelper.getFontSize(15),
-                  color: AppColors.primaryWightColor,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-              IconButton(
-                onPressed: () {
-                  _sendEmail();
-                },
-                icon: Icon(
-                  Icons.mail_outline,
-                  size: 25.sp,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Row _buildBottomNavigationMenu() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       callUs(),
+  //       emailUs(),
+  //     ],
+  //   );
+  // }
+  //
+  // Padding callUs() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(top: 6.h, left: 5.w),
+  //     child: Container(
+  //       height: 15.h,
+  //       width: 40.w,
+  //       child: Center(
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Text(
+  //               "Bizi arayın",
+  //               style: TextStyle(
+  //                 fontSize: LocalHelper.getFontSize(15),
+  //                 color: AppColors.primaryWightColor,
+  //                 fontWeight: FontWeight.w400,
+  //               ),
+  //             ),
+  //             SizedBox(
+  //               height: 2.h,
+  //             ),
+  //             IconButton(
+  //               onPressed: () {
+  //                 _callNumber();
+  //               },
+  //               icon: Icon(
+  //                 Icons.phone_outlined,
+  //                 size: 25.sp,
+  //                 color: Colors.white,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  // Padding emailUs() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(top: 6.h, right: 5.w),
+  //     child: Container(
+  //       height: 15.h,
+  //       width: 40.w,
+  //       child: Center(
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Text(
+  //               "Bize ulaşın",
+  //               style: TextStyle(
+  //                 fontSize: LocalHelper.getFontSize(15),
+  //                 color: AppColors.primaryWightColor,
+  //                 fontWeight: FontWeight.w400,
+  //               ),
+  //             ),
+  //             SizedBox(
+  //               height: 2.h,
+  //             ),
+  //             IconButton(
+  //               onPressed: () {
+  //                 _sendEmail();
+  //               },
+  //               icon: Icon(
+  //                 Icons.mail_outline,
+  //                 size: 25.sp,
+  //                 color: Colors.white,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Align buildBackBtn() {
     return Align(

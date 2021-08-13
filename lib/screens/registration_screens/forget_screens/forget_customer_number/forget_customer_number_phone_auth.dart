@@ -5,40 +5,53 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_password/enter_new_password_screen.dart';
+import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number/forget_customer_number_verified_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
 import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:turkbelge_application/widgets/form/customer_number_form.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/widgets/form/enter_code_form.dart';
 import 'package:turkbelge_application/widgets/navigation_button.dart';
 
 import '../../signin_screen.dart';
 
-enum MobileVerificationState {
-  SHOW_MOBILE_FORM_STATE,
-  SHOW_OTP_FORM_STATE,
+enum ForgetCustomerNumberState {
+  SHOW_PHONE_INPUT_FIELD,
+  SHOW_VERIFICATION_CODE_FIELD
 }
 
-class ForgetPasswordPage extends StatefulWidget {
-  static const routeName = '/ForgetPasswordPage';
+class ForgetCustomerNumberPhoneAuth extends StatefulWidget {
+  static const routeName = '/ForgetCustomerNumberPhoneAuth';
+  final String? tcknOrVknNumber;
+  final String? userEmail;
+  final String? userPassword;
+
+  ForgetCustomerNumberPhoneAuth(
+      {required this.tcknOrVknNumber,
+      required this.userEmail,
+      required this.userPassword});
 
   @override
-  _ForgetPasswordPageState createState() => _ForgetPasswordPageState();
+  _ForgetCustomerNumberPhoneAuthState createState() =>
+      _ForgetCustomerNumberPhoneAuthState();
 }
 
-class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
+class _ForgetCustomerNumberPhoneAuthState
+    extends State<ForgetCustomerNumberPhoneAuth> {
   final log = getLogger();
-  bool showLoading = false;
+  ForgetCustomerNumberState currentState =
+      ForgetCustomerNumberState.SHOW_PHONE_INPUT_FIELD;
+  String? phone;
+  String? verificationId;
   TextEditingController codeSentController = TextEditingController();
   final _codeKey = GlobalKey<FormState>();
   final countDownController = CountDownController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController controller = TextEditingController();
+  PhoneNumber number = PhoneNumber(isoCode: 'TR');
+  bool showLoading = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
-  MobileVerificationState currentState =
-      MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-  String? verificationId;
   final failedToSignIn = SnackBar(
     content: Text('Bir hata oluştu!'),
     action: SnackBarAction(
@@ -52,9 +65,8 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   );
 
   onClickContinue() async {
-    log.i("onClickContinue");
-    if (_customerNumberKey.currentState!.validate() &&
-        formKey.currentState!.validate()) {
+    log.i("onClickContinue started");
+    if (formKey.currentState!.validate()) {
       try {
         setState(() {
           showLoading = true;
@@ -76,30 +88,18 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
           codeSent: (verificationId, resendingToken) async {
             setState(() {
               showLoading = false;
-              currentState = MobileVerificationState.SHOW_OTP_FORM_STATE;
+              currentState =
+                  ForgetCustomerNumberState.SHOW_VERIFICATION_CODE_FIELD;
               this.verificationId = verificationId;
             });
           },
           codeAutoRetrievalTimeout: (verificationId) async {},
         );
       } on FirebaseException {
-        var error = "Error";
-        setState(() {
-          showLoading = false;
-        });
-        return error;
+        ///THROW ERROR
       }
     }
   }
-
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController customerNumberController = TextEditingController();
-
-  final _customerNumberKey = GlobalKey<FormState>();
-  String? phone;
-  PhoneNumber number = PhoneNumber(isoCode: 'TR');
-  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -110,12 +110,12 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : buildForgetPasswordBody(),
+            : buildForgetCustomerNumberPhoneAuthBody(),
       ),
     );
   }
 
-  SingleChildScrollView buildForgetPasswordBody() {
+  SingleChildScrollView buildForgetCustomerNumberPhoneAuthBody() {
     return SingleChildScrollView(
       child: Form(
         key: formKey,
@@ -124,51 +124,31 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
           children: [
             RegistrationPageHeader(
               addBackButton: true,
-              subText: AppLocalizations.of(context).resetPassword,
-              headerText: AppLocalizations.of(context).forgotMyPassword,
+              subText: AppLocalizations.of(context).resetYourCustomerNumber,
+              headerText: AppLocalizations.of(context).forgotMyCustomerNumber,
             ),
-            currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                ? showFormState()
-                : showOtpState(),
+            currentState == ForgetCustomerNumberState.SHOW_PHONE_INPUT_FIELD
+                ? showPhoneInputField()
+                : showVerificationCodeField()
           ],
         ),
       ),
     );
   }
 
-  Column showFormState() {
+  Column showPhoneInputField() {
     return Column(
       children: [
-        buildCustomerNumberField(),
         buildPhoneNumberField(),
         buildResetButton(),
-        enterYourCredentialsText()
+        enterYourCredentialsText(),
       ],
-    );
-  }
-
-  Padding buildCustomerNumberField() {
-    return Padding(
-      padding: EdgeInsets.only(top: 5.h, left: 5.w, right: 5.w),
-      child: Container(
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
-            borderRadius: BorderRadius.all(Radius.circular(5))),
-        child: Form(
-          key: _customerNumberKey,
-          child: CustomerNumberForm(
-            controller: customerNumberController,
-            labelText: AppLocalizations.of(context).customerNumber,
-          ),
-        ),
-      ),
     );
   }
 
   Padding buildPhoneNumberField() {
     return Padding(
-      padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w),
+      padding: EdgeInsets.only(top: 5.h, left: 5.w, right: 5.w),
       child: InternationalPhoneNumberInput(
         locale: "tr",
         hintText: "Telefon numarası",
@@ -218,7 +198,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         height: 6.h,
         child: Center(
           child: Text(
-            "Müşteri ve telefon numaranı girdikten sonra gelen kodu girerek şifreni sıfırlayabilirsin.",
+            "Telefon numaranı girdikten sonra gelen kodu girerek müşteri numaranı öğrenebilirsin.",
             style: TextStyle(
               fontSize: LocalHelper.getFontSize(12),
               color: AppColors.backgroundPrimaryColor,
@@ -231,7 +211,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
     );
   }
 
-  Column showOtpState() {
+  Column showVerificationCodeField() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -292,7 +272,6 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
             verificationId: verificationId!, smsCode: codeSentController.text);
         signInWithPhoneAuthCredential(phoneAuthCredential);
-        User? user = _auth.currentUser;
       },
       margin: EdgeInsets.only(top: 3.754.h, left: 5.w, right: 5.w),
     );
@@ -312,15 +291,58 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         showLoading = false;
       });
       if (authCredential.user != null) {
-        String validateCustomerNumber = await FireStoreService()
-            .verifyPhoneNumberWithCustomerNumber(
-                customerNumberController.text, authCredential.user!.uid);
-        if (validateCustomerNumber == phone) {
-          //todo if user is exist
-          //todo navigate to the next step
-          Navigator.pushReplacementNamed(
-              context, EnterNewPasswordScreen.routeName);
+        ///check if user is logged in via phone auth
+        if (widget.tcknOrVknNumber!.length == 11) {
+          ///tcknOrVknNumber is TCKN
+          String validateTckn =
+              await FireStoreService().verifyTCKN(authCredential.user!.uid);
+
+          ///check if TCKN is on the desired system
+          if (validateTckn == widget.tcknOrVknNumber) {
+            ///TODO NAVIGATE TO THE NEXT STEP
+            ///todo send customer number as an email
+            String? getCustomerNumber = await FireStoreService()
+                .getCustomerNumber(authCredential.user!.uid);
+            print(getCustomerNumber);
+            await FireStoreService().sendRemindCustomerNumberEmail(
+                getCustomerNumber, widget.userEmail!);
+            Navigator.pushReplacementNamed(
+              context,
+              ForgetCustomerNumberVerifiedPage.routeName,
+              arguments: ForgetCustomerNumberVerifiedPageArguments(
+                  userEmail: widget.userEmail),
+            );
+          } else {
+            ///tckn is not correct
+            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+          }
+        } else {
+          ///tcknOrVknNumber is VKN
+          String validateVkn =
+              await FireStoreService().verifyVKN(authCredential.user!.uid);
+          if (validateVkn == widget.tcknOrVknNumber) {
+            ///check if VKN is correct
+            ///TODO NAVIGATE TO THE NEXT STEP
+            ///todo send customer number as an email
+            String? getCustomerNumber = await FireStoreService()
+                .getCustomerNumber(authCredential.user!.uid);
+            print(getCustomerNumber);
+            await FireStoreService().sendRemindCustomerNumberEmail(
+                getCustomerNumber, widget.userEmail!);
+            Navigator.pushReplacementNamed(
+              context,
+              ForgetCustomerNumberVerifiedPage.routeName,
+              arguments: ForgetCustomerNumberVerifiedPageArguments(
+                  userEmail: widget.userEmail),
+            );
+          } else {
+            ///VKN IS NOT CORRECT
+            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+          }
         }
+      } else {
+        ///user is not logged in(in such cases entered sms code is not correct or connection is interrupted)
+        ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
       }
     } on FirebaseAuthException {
       setState(() {
@@ -338,7 +360,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         height: 5.h,
         child: Center(
           child: Text(
-            "Telefon numarana gelen kodu girerek şifreni sıfırlayabilirsin",
+            "Telefon numarana gelen kodu girerek müşteri numaranı öğrenebilirsin",
             style: TextStyle(
               fontSize: LocalHelper.getFontSize(12),
               color: AppColors.backgroundPrimaryColor,
@@ -350,4 +372,15 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       ),
     );
   }
+}
+
+class ForgetCustomerNumberPhoneAuthArguments {
+  String? tcknOrVknNumber;
+  String? userEmail;
+  String? userPassword;
+
+  ForgetCustomerNumberPhoneAuthArguments(
+      {required this.tcknOrVknNumber,
+      required this.userEmail,
+      required this.userPassword});
 }

@@ -13,18 +13,19 @@ class FireStoreService {
   String _preAppliedUserCollection = "PreAppliedUsers";
 
   Future<void> firstStepCreateUserInDB(
-    String _uid,
-    String _email,
-    String _tckimlikNo,
-    String _vergiKimlikNo,
-    String _phoneNumber,
-  ) async {
+      String _uid,
+      String _email,
+      String _tckimlikNo,
+      String _vergiKimlikNo,
+      String _phoneNumber,
+      String _customerNumber) async {
     try {
       return await _db!.collection(_userCollection).doc(_uid).set({
         "email": _email,
         "TCKN": _tckimlikNo,
         "VKN": _vergiKimlikNo,
-        "phoneNumber": _phoneNumber
+        "phoneNumber": _phoneNumber,
+        "customerNumber": _customerNumber
       });
     } catch (e) {
       print(e);
@@ -76,13 +77,42 @@ class FireStoreService {
       return error;
     }
   }
-  Future<String> verifyVKN(
-      String _uid) async {
+
+  Future<String> getCustomerNumber(String _uid) async {
     try {
-      var data1 = (await _db!
-          .collection(_userCollection)
-          .doc(_uid)
-          .get())
+      var data1 = (await _db!.collection(_userCollection).doc(_uid).get())
+          .data()!['customerNumber']
+          .toString();
+      return data1;
+    } catch (e) {
+      var error = "Error";
+      return error;
+    }
+  }
+
+  Future<bool?> sendRemindCustomerNumberEmail(String customerNumber, String email) async {
+    try {
+      await _db!.collection("mail").add({
+        'to': email,
+        'message': {
+          'subject': "Türkbelge Müşteri Numaranız",
+          'text': "Text",
+          'html': "Merhaba" +
+              ", " +
+              email +
+              " için müşteri numaran: " +
+              customerNumber,
+        },
+      }).then((value) => print("email sent"));
+      return true;
+    } on FirebaseException {
+      return false;
+    }
+  }
+
+  Future<String> verifyVKN(String _uid) async {
+    try {
+      var data1 = (await _db!.collection(_userCollection).doc(_uid).get())
           .data()!['VKN']
           .toString();
       return data1;
@@ -91,13 +121,10 @@ class FireStoreService {
       return error;
     }
   }
-  Future<String> verifyTCKN(
-      String _uid) async {
+
+  Future<String> verifyTCKN(String _uid) async {
     try {
-      var data1 = (await _db!
-          .collection(_userCollection)
-          .doc(_uid)
-          .get())
+      var data1 = (await _db!.collection(_userCollection).doc(_uid).get())
           .data()!['TCKN']
           .toString();
       return data1;
@@ -106,6 +133,7 @@ class FireStoreService {
       return error;
     }
   }
+
   Future<String> verifyPhoneNumberWithCustomerNumber(
       String _customerNumber, String _uid) async {
     try {

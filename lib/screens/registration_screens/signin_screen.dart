@@ -39,6 +39,7 @@ class _SignInPageState extends State<SignInPage> {
     ),
     backgroundColor: Colors.red,
   );
+  bool sozlesmeDurumu = false;
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController customerNumberController = TextEditingController();
@@ -201,6 +202,7 @@ class _SignInPageState extends State<SignInPage> {
           buildCustomerNumberField(),
           buildEmailField(),
           buildPasswordField(),
+          rememberMeBox(),
           buildLogInButton(),
           buildForgetInfoRow(),
         ],
@@ -273,7 +275,23 @@ class _SignInPageState extends State<SignInPage> {
       margin: EdgeInsets.only(
         left: 4.69.w,
         right: 4.69.w,
-        top: 5.754.h,
+        top: 2.754.h,
+      ),
+    );
+  }
+  Container rememberMeBox(){
+    return Container(
+      height: 5.h,
+      width: double.infinity,
+      child: CheckboxListTile(
+        title: Text("Beni hatırla"),
+        value: sozlesmeDurumu,
+        controlAffinity: ListTileControlAffinity.leading,
+        onChanged: (bool? data) {
+          setState(() {
+            sozlesmeDurumu = data!;
+          });
+        },
       ),
     );
   }

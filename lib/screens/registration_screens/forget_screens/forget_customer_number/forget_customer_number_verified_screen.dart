@@ -1,49 +1,25 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 
-import '../signin_screen.dart';
+import '../../signin_screen.dart';
 
-class SecondStepOfRegistration extends StatefulWidget {
-  static const routeName = '/SecondStepOfRegistration';
-  final String? userName;
+class ForgetCustomerNumberVerifiedPage extends StatefulWidget {
+  static const routeName = '/ForgetCustomerNumberVerifiedPage';
   final String? userEmail;
-  final String? userPassword;
-  final String? userCustomerNumber;
-  final String? userTCKN;
-  final String? userVKN;
-  final String? userPhoneNumber;
 
-  SecondStepOfRegistration({
-    required this.userPassword,
-    required this.userEmail,
-    required this.userName,
-    required this.userCustomerNumber,
-    required this.userPhoneNumber,
-    required this.userTCKN,
-    required this.userVKN,
-  });
+  ForgetCustomerNumberVerifiedPage({required this.userEmail});
 
   @override
-  _SecondStepOfRegistrationState createState() =>
-      _SecondStepOfRegistrationState();
+  _ForgetCustomerNumberVerifiedPageState createState() =>
+      _ForgetCustomerNumberVerifiedPageState();
 }
 
-class _SecondStepOfRegistrationState extends State<SecondStepOfRegistration> {
+class _ForgetCustomerNumberVerifiedPageState
+    extends State<ForgetCustomerNumberVerifiedPage> {
   final log = getLogger();
-  TextEditingController codeSentController = TextEditingController();
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  @override
-  void initState() {
-    _firebaseAuth.signOut();
-    super.initState();
-  }
-
   onClickLogIn() async {
     log.i("onClickLogIn started");
     Navigator.pushReplacementNamed(context, SignInPage.routeName);
@@ -102,7 +78,7 @@ class _SecondStepOfRegistrationState extends State<SecondStepOfRegistration> {
         width: 80.w,
         child: Center(
           child: Text(
-            "Merhaba " + widget.userName!,
+            "Merhaba",
             style: TextStyle(
               fontSize: LocalHelper.getFontSize(18),
               color: AppColors.backgroundPrimaryColor,
@@ -121,9 +97,9 @@ class _SecondStepOfRegistrationState extends State<SecondStepOfRegistration> {
       width: 80.w,
       child: Center(
         child: Text(
-          "Türkbelge ailesine hoşgeldin. Hesabını " +
+          "Müşteri numaranı başarılı bir şekilde " +
               widget.userEmail! +
-              " adresi üzerinden oluşturduk",
+              " adresine gönderdik",
           style: TextStyle(
             fontSize: LocalHelper.getFontSize(12),
             color: AppColors.backgroundPrimaryColor,
@@ -171,22 +147,8 @@ class _SecondStepOfRegistrationState extends State<SecondStepOfRegistration> {
   }
 }
 
-class SecondStepOfRegistrationArguments {
-  final String? userName;
-  final String? userEmail;
-  final String? userPassword;
-  final String? userCustomerNumber;
-  final String? userTCKN;
-  final String? userVKN;
-  final String? userPhoneNumber;
+class ForgetCustomerNumberVerifiedPageArguments {
+  String? userEmail;
 
-  SecondStepOfRegistrationArguments({
-    required this.userVKN,
-    required this.userTCKN,
-    required this.userPhoneNumber,
-    required this.userCustomerNumber,
-    required this.userName,
-    required this.userEmail,
-    required this.userPassword,
-  });
+  ForgetCustomerNumberVerifiedPageArguments({required this.userEmail});
 }

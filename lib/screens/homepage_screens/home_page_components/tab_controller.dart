@@ -23,8 +23,6 @@ class _TabControllerPageState extends State<TabControllerPage> {
 
   onSettingsClicked() async {
     log.i("onSettingsClicked started");
-    bool ? isVerified = await CheckIfTCKNValid().checkTCKN("54283015176");
-    print(isVerified);
   }
 
   showOnChartStateFunc() {
@@ -48,109 +46,107 @@ class _TabControllerPageState extends State<TabControllerPage> {
         body: DefaultTabController(
           length: 3,
           initialIndex: 0,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 6.h,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                            padding: EdgeInsets.only(left: 3.w, top: 2.h),
-                            width: 13.w,
-                            child: showOnChart
-                                ? IconButton(
-                                    onPressed: showOnChartStateFunc,
-                                    icon: Icon(
-                                      Icons.multiline_chart,
-                                      color: AppColors.primaryWightColor,
-                                      size: 30,
-                                    ),
-                                  )
-                                : IconButton(
-                                    onPressed: showOnChartStateFunc,
-                                    icon: Icon(
-                                      Icons.show_chart,
-                                      color: AppColors.primaryWightColor,
-                                      size: 30,
-                                    ),
-                                  )),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Text(
-                          "Günaydın",
-                          style: TextStyle(
-                            fontSize: LocalHelper.getFontSize(16),
-                            color: AppColors.homepageTextColor,
-                            fontWeight: FontWeight.w400,
-                          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: double.infinity,
+                height: 4.h,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                          padding: EdgeInsets.only(left: 3.w, top: 2.h),
+                          width: 13.w,
+                          child: showOnChart
+                              ? IconButton(
+                                  onPressed: showOnChartStateFunc,
+                                  icon: Icon(
+                                    Icons.multiline_chart,
+                                    color: AppColors.primaryWightColor,
+                                    size: 30,
+                                  ),
+                                )
+                              : IconButton(
+                                  onPressed: showOnChartStateFunc,
+                                  icon: Icon(
+                                    Icons.show_chart,
+                                    color: AppColors.primaryWightColor,
+                                    size: 30,
+                                  ),
+                                )),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        "Günaydın",
+                        style: TextStyle(
+                          fontSize: LocalHelper.getFontSize(16),
+                          color: AppColors.homepageTextColor,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 3.w, top: 2.h),
-                          child: Container(
-                            width: 10.w,
-                            child: IconButton(
-                              onPressed: onSettingsClicked,
-                              icon: Icon(
-                                Icons.settings_outlined,
-                                color: AppColors.primaryWightColor,
-                                size: 28,
-                              ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 3.w, top: 2.h),
+                        child: Container(
+                          width: 10.w,
+                          child: IconButton(
+                            onPressed: onSettingsClicked,
+                            icon: Icon(
+                              Icons.more_vert,
+                              color: AppColors.primaryWightColor,
+                              size: 28,
                             ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                TabBar(
-                  labelColor: AppColors.primaryWightColor,
-                  isScrollable: true,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorColor: AppColors.primaryWightColor,
-                  tabs: [
-                    Tab(text: "TRY"),
-                    Tab(text: "USD"),
-                    Tab(text: "EUR"),
+                      ),
+                    )
                   ],
                 ),
-                showOnChart
-                    ? Container(
-                        height: 80.h,
-                        child: TabBarView(
-                          children: [
-                            pieChartPageStack(),
-                            pieChartPageStack(),
-                            pieChartPageStack(),
-                          ],
-                        ))
-                    : Container(
-                        height: 80.h,
-                        child: TabBarView(
-                          children: [
-                            HomePage(
-                              totalBalance: "15.945,00 TRY",
-                            ),
-                            HomePage(
-                              totalBalance: "3.458,00 \$",
-                            ),
-                            HomePage(
-                              totalBalance: "15.945,00 €",
-                            ),
-                          ],
-                        ),
-                      )
-              ],
-            ),
+              ),
+              TabBar(
+                labelColor: AppColors.primaryWightColor,
+                isScrollable: true,
+                indicatorSize: TabBarIndicatorSize.label,
+                indicatorColor: AppColors.primaryWightColor,
+                tabs: [
+                  Tab(text: "TRY"),
+                  Tab(text: "USD"),
+                  Tab(text: "EUR"),
+                ],
+              ),
+              showOnChart
+                  ? Container(
+                      height: 80.h,
+                      child: TabBarView(
+                        children: [
+                          pieChartPageStack(),
+                          pieChartPageStack(),
+                          pieChartPageStack(),
+                        ],
+                      ))
+                  : Container(
+                      height: 75.h,
+                      child: TabBarView(
+                        children: [
+                          HomePage(
+                            totalBalance: "15.945,00 TRY",
+                          ),
+                          HomePage(
+                            totalBalance: "3.458,00 \$",
+                          ),
+                          HomePage(
+                            totalBalance: "15.945,00 €",
+                          ),
+                        ],
+                      ),
+                    )
+            ],
           ),
         ),
       ),
