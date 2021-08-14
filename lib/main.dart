@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:provider/provider.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
@@ -48,7 +47,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: Authenticate(),
+            home: SignInPage(),
             supportedLocales: L10n.all,
             localizationsDelegates: [
               AppLocalizations.delegate,
@@ -66,32 +65,23 @@ class MyApp extends StatelessWidget {
 class Authenticate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final firebaseUser = context.watch<User>();
     return Scaffold(
-      body: FutureBuilder<bool?>(
-        future: getBoolValuesSF(),
-        builder: (BuildContext context, AsyncSnapshot<bool?> snapshot) {
-          print(snapshot.data);
-          if (snapshot.data == false) {
-            return SignInPage();
-          } else {
-            return _handleAuth();
-          }
-        },
-      ),
+      body: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasData || firebaseUser != null) {
+              return FirstNavigation();
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text("Bir şeyler yanlış gitti!"),
+              );
+            } else {
+              return SignInPage();
+            }
+          }),
     );
-  }
-
-  Widget _handleAuth() {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (BuildContext context, snapshot) {
-        return (!snapshot.hasData) ? SignInPage() : FirstNavigation();
-      },
-    );
-  }
-
-  Future<bool?> getBoolValuesSF() async {
-    SharedPreferences loginCheck = await SharedPreferences.getInstance();
-    return loginCheck.getBool("state");
   }
 }

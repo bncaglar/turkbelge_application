@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
+import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_page.dart';
+import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_tab_controller.dart';
 import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/first_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/initial_step_of_registration.dart';
@@ -84,6 +86,18 @@ class Routes {
               settings.arguments as ForgetCustomerNumberVerifiedPageArguments);
           break;
         }
+      case BankDetailsPage.routeName:
+        {
+          child = _buildBankDetailsPageRoutes(
+              settings.arguments as BankDetailsPageArguments);
+          break;
+        }
+      case BankDetailsOfTabController.routeName:
+        {
+          child = _buildBankDetailsOfTabControllerRoutes(
+              settings.arguments as BankDetailsTabControllerArguments);
+          break;
+        }
       default:
         child = Scaffold(
           body: Center(
@@ -151,6 +165,34 @@ class Routes {
     String? userEmail = arguments.userEmail;
     return ForgetCustomerNumberVerifiedPage(
       userEmail: userEmail,
+    );
+  }
+
+  static Widget _buildBankDetailsPageRoutes(
+      BankDetailsPageArguments arguments) {
+    String? bankName = arguments.bankName;
+    String? bankAccountKey = arguments.bankAccountKey;
+    String? bankIcon = arguments.bankIcon;
+    BoxFit? fitt = arguments.fitt;
+    return BankDetailsPage(
+      bankAccountKey: bankAccountKey,
+      bankIcon: bankIcon,
+      bankName: bankName,
+      fitt: fitt,
+    );
+  }
+
+  static Widget _buildBankDetailsOfTabControllerRoutes(
+      BankDetailsTabControllerArguments arguments) {
+    String? bankName = arguments.bankName;
+    String? bankAccountKey = arguments.bankAccountKey;
+    String? bankIcon = arguments.bankIcon;
+    BoxFit? fitt = arguments.fitt;
+    return BankDetailsOfTabController(
+      bankAccountKey: bankAccountKey,
+      bankIcon: bankIcon,
+      bankName: bankName,
+      fitt: fitt,
     );
   }
 }

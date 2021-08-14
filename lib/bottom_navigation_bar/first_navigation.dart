@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/screens/homepage_screens/account_balance_screen.dart';
-import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
 import 'package:turkbelge_application/screens/homepage_screens/all_transactions_page.dart';
 import 'package:turkbelge_application/screens/homepage_screens/home_page_components/tab_controller.dart';
 import 'package:turkbelge_application/screens/homepage_screens/my_profile/my_profile_page.dart';

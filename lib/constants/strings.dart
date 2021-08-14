@@ -6,4 +6,5 @@ class Strings{
   static const denizbank_icon = "assets/denizbank_icon.png";
   static const isbankasi_icon = "assets/isbankasi_icon.png";
   static const ziraatbankasi_icon = "assets/ziraat_bankasi_icon.png";
+  static const akbank_square_logo = "assets/akbank_square_logo.png";
 }

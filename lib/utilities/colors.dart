@@ -24,4 +24,5 @@ class AppColors {
   static final homepageTextColor = HexColor("#f0f2f5");
   static final accountInfoColor = HexColor("#232423");
   static final homepageBankListBackgroundColor = HexColor("#f5f3f2");
+  static final appBarBackgroundColor = HexColor("#24fff5");
 }

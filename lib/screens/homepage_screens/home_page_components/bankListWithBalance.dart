@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:turkbelge_application/constants/strings.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
+import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_page.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 
@@ -31,16 +32,24 @@ class _BankListWithBalanceState extends State<BankListWithBalance> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              buildBankNameAndBalance(
-                  "3.945,00 TRY", Strings.garanti_icon, BoxFit.cover, "2"),
-              buildBankNameAndBalance(
-                  "5.255,50 TRY", Strings.akbank_icon, BoxFit.contain, "1"),
-              buildBankNameAndBalance(
-                  "8.675,35 TRY", Strings.denizbank_icon, BoxFit.contain, "3"),
-              buildBankNameAndBalance(
-                  "1.174,00 TRY", Strings.isbankasi_icon, BoxFit.contain, "1"),
-              buildBankNameAndBalance(
-                  "9.312,78 TRY", Strings.akbank_icon, BoxFit.contain, "1"),
+              buildBankNameAndBalance("3.945,00 TRY", Strings.garanti_icon,
+                  BoxFit.cover, "2", "Garanti", "garanti_key_123"),
+              buildBankNameAndBalance("5.255,50 TRY", Strings.akbank_icon,
+                  BoxFit.contain, "1", "Akbank", "akbank_key_123"),
+              buildBankNameAndBalance("8.675,35 TRY", Strings.denizbank_icon,
+                  BoxFit.contain, "3", "Denizbank", "denizbank_key_123"),
+              buildBankNameAndBalance("1.174,00 TRY", Strings.isbankasi_icon,
+                  BoxFit.contain, "1", "İş Bankası", "isbankasi_key_123"),
+              buildBankNameAndBalance("9.312,78 TRY", Strings.akbank_icon,
+                  BoxFit.contain, "1", "Akbank", "akbank_key_123"),
+              buildBankNameAndBalance("9.312,78 TRY", Strings.akbank_icon,
+                  BoxFit.contain, "1", "Akbank", "akbank_key_123"),
+              buildBankNameAndBalance("9.312,78 TRY", Strings.akbank_icon,
+                  BoxFit.contain, "1", "Akbank", "akbank_key_123"),
+              buildBankNameAndBalance("9.312,78 TRY", Strings.akbank_icon,
+                  BoxFit.contain, "1", "Akbank", "akbank_key_123"),
+              buildBankNameAndBalance("9.312,78 TRY", Strings.akbank_icon,
+                  BoxFit.contain, "1", "Akbank", "akbank_key_123"),
             ],
           ),
         ),
@@ -48,11 +57,16 @@ class _BankListWithBalanceState extends State<BankListWithBalance> {
     );
   }
 
-  InkWell buildBankNameAndBalance(
-      String amount, String imagePath, BoxFit? fitt, String numberOfAccount) {
+  InkWell buildBankNameAndBalance(String amount, String imagePath, BoxFit? fitt,
+      String numberOfAccount, String bankName, String bankAccountKey) {
     return InkWell(
-      onTap: (){
-        log.i(imagePath);
+      onTap: () {
+        Navigator.pushNamed(context, BankDetailsPage.routeName,
+            arguments: BankDetailsPageArguments(
+                bankIcon: imagePath,
+                bankName: bankName,
+                bankAccountKey: bankAccountKey,
+                fitt: fitt));
       },
       child: Padding(
         padding: EdgeInsets.only(top: 1.h, bottom: 1.h),

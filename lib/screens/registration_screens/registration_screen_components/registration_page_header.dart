@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
@@ -230,32 +229,6 @@ class _RegistrationPageHeaderState extends State<RegistrationPageHeader> {
 
   _callNumber() async {
     const number = '+905448010899'; //set the number here
-    bool? res = await FlutterPhoneDirectCaller.callNumber(number);
-  }
-
-  _sendEmail() async {
-    final snackBar = SnackBar(
-      content: Text('Bir hata oluştu!'),
-      action: SnackBarAction(
-        label: 'Tekrar dene',
-        textColor: Colors.white,
-        onPressed: () {
-          // Some code to undo the change.
-        },
-      ),
-      backgroundColor: Colors.red,
-    );
-    try {
-      final Email email = Email(
-        body: 'Türkbelge Destek Ekibi',
-        subject: 'Yardım ve Destek',
-        recipients: ['hv.plt.caglar@gmail.com'],
-        isHTML: false,
-      );
-
-      await FlutterEmailSender.send(email);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
+    await FlutterPhoneDirectCaller.callNumber(number);
   }
 }

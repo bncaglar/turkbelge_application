@@ -297,7 +297,6 @@ class _SignInPageState extends State<SignInPage> {
         onChanged: (bool? data) async{
           final prefs = await SharedPreferences.getInstance();
           bool myBool = prefs.getBool('state') ?? false;
-
           setState(() {
             sozlesmeDurumu = data!;
             myBool = sozlesmeDurumu;

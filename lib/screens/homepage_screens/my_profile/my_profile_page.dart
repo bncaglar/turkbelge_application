@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
@@ -29,23 +31,38 @@ class _ProfilePageState extends State<ProfilePage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.primaryWightColor,
+        appBar: buildAppBar(),
         body: buildProfilePageBody(),
       ),
     );
   }
 
-  InkWell buildProfilePageBody() {
-    return InkWell(
-      onTap: () {
-        onClickLogOut();
-      },
-      child: Center(
-        child: Container(
-          height: 250,
-          width: 250,
-          color: Colors.greenAccent,
+  AppBar buildAppBar() {
+    return AppBar(
+      flexibleSpace: Container(
+        child: Center(
+            child: Text(
+          "Hesabım",
+          style: TextStyle(
+              color: AppColors.backgroundPrimaryColor,
+              fontSize: LocalHelper.getFontSize(15),
+              fontWeight: FontWeight.w300),
+        )),
+        decoration: new BoxDecoration(
+          color: AppColors.homepageTextColor,
         ),
       ),
     );
+  }
+
+  Column buildProfilePageBody() {
+    return Column(
+      children: [],
+    );
+  }
+
+  Future<bool?> getSfData() async {
+    SharedPreferences loginCheck = await SharedPreferences.getInstance();
+    return loginCheck.getBool("state");
   }
 }

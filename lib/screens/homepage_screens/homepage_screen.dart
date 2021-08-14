@@ -20,12 +20,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final log = getLogger();
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   List<Color> gradientColors = [
     const Color(0xff23b6e6),
     const Color(0xff02d39a),
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +44,9 @@ class _HomePageState extends State<HomePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        TotalBalanceContainerOnHomePage(totalBalance: widget.totalBalance!,),
+        TotalBalanceContainerOnHomePage(
+          totalBalance: widget.totalBalance!,
+        ),
         BankListWithBalance(),
       ],
     );

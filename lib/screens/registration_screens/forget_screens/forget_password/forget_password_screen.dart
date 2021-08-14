@@ -292,7 +292,6 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
             verificationId: verificationId!, smsCode: codeSentController.text);
         signInWithPhoneAuthCredential(phoneAuthCredential);
-        User? user = _auth.currentUser;
       },
       margin: EdgeInsets.only(top: 3.754.h, left: 5.w, right: 5.w),
     );

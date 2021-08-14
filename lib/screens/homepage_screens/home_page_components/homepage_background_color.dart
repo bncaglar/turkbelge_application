@@ -19,7 +19,7 @@ class _BackgroundColorOfHomePageState extends State<BackgroundColorOfHomePage> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          height: 70.h,
+          height: 68.h,
           width: double.infinity,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
