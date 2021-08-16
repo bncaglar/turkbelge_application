@@ -10,15 +10,13 @@ class SearchChallengesField extends StatefulWidget {
   final String? addSearchFieldTitle;
   final VoidCallback? onChanged;
   final VoidCallback? onEditingComplete;
-  final VoidCallback? onClickSuffixIcon;
 
   SearchChallengesField(
       {required this.controller,
       this.serverSearchErrorText,
       this.addSearchFieldTitle,
       this.onChanged,
-      this.onEditingComplete,
-      this.onClickSuffixIcon});
+      this.onEditingComplete,});
 
   @override
   _SearchChallengesFieldState createState() => _SearchChallengesFieldState();
@@ -42,8 +40,7 @@ class _SearchChallengesFieldState extends State<SearchChallengesField> {
       controller: widget.controller,
       onEditingComplete: widget.onEditingComplete,
       fromRegistration: false,
-      suffixIcon:
-          InkWell(onTap: widget!.onClickSuffixIcon, child: Icon(Icons.close)),
+      suffixIcon: Icon(Icons.close),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: TextInputType.text,
       onChanged: widget.onChanged,

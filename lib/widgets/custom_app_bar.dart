@@ -13,9 +13,9 @@ class CustomAppBar extends StatefulWidget {
   final VoidCallback? onChanged;
   final double? searchFieldHeight;
   final double? searchFieldWidth;
-  final bool? addBankImage;
-  final bool? addBackBtn;
-  final bool? buildAppBarRowLeftSide;
+ 
+  
+
   CustomAppBar(
       {this.imagePath,
       this.fitt,
@@ -25,9 +25,7 @@ class CustomAppBar extends StatefulWidget {
       this.onEditingComplete,
       this.searchFieldHeight,
       this.searchFieldWidth,
-      this.addBankImage,
-      this.addBackBtn,
-      required this.buildAppBarRowLeftSide});
+      });
 
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
@@ -73,7 +71,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        widget.buildAppBarRowLeftSide! ? buildAppBarRowLeftSide() : Container(),
+        buildAppBarRowLeftSide(),
         searchFunc ? searchNotificationsField() : buildSearchBtn(),
       ],
     );
@@ -85,7 +83,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
       width: widget.searchFieldWidth ?? 72.w,
       height: widget.searchFieldHeight ?? 5.62.h,
       child: SearchChallengesField(
-        onClickSuffixIcon: onClickSuffixIcon,
         onChanged: widget.onChanged,
         onEditingComplete: widget.onEditingComplete,
         addSearchFieldTitle: widget.addSearchFieldTitle,
@@ -98,21 +95,24 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Row buildAppBarRowLeftSide() {
     return Row(
       children: [
-        widget.addBackBtn! ? buildBackBtn() : Container(),
-        widget.addBankImage! ? buildBankImage() : Container(),
+        buildBackBtn(),
+        buildBankImage(),
       ],
     );
   }
 
-  IconButton buildSearchBtn() {
-    return IconButton(
-      onPressed: () {
-        onClickSearchButton();
-      },
-      icon: Icon(
-        Icons.search,
-        color: AppColors.allNotificationsTextColor,
-        size: 20.sp,
+  Padding buildSearchBtn() {
+    return Padding(
+      padding: EdgeInsets.only(right: 2.w),
+      child: IconButton(
+        onPressed: () {
+          onClickSearchButton();
+        },
+        icon: Icon(
+          Icons.search,
+          color: AppColors.allNotificationsTextColor,
+          size: 20.sp,
+        ),
       ),
     );
   }
