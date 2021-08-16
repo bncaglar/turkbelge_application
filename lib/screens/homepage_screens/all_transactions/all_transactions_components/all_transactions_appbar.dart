@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
@@ -60,7 +61,7 @@ class _AllTransactionsAppBarState extends State<AllTransactionsAppBar> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         buildMoreVert(),
-        addHeader(),
+        searchFunc ? Container() : addHeader(),
         searchFunc ? searchNotificationsField() : buildSearchBtn(),
       ],
     );
@@ -97,8 +98,15 @@ class _AllTransactionsAppBarState extends State<AllTransactionsAppBar> {
     );
   }
 
-  Container addHeader() {
-    return Container();
+  Text addHeader() {
+    return Text(
+      "Tüm Hareketler",
+      style: TextStyle(
+        fontSize: LocalHelper.getFontSize(16),
+        color: AppColors.allNotificationsTextColor,
+        fontWeight: FontWeight.w400,
+      ),
+    );
   }
 
   Container searchNotificationsField() {
@@ -107,6 +115,7 @@ class _AllTransactionsAppBarState extends State<AllTransactionsAppBar> {
       width: widget.searchFieldWidth ?? 72.w,
       height: widget.searchFieldHeight ?? 5.62.h,
       child: SearchChallengesField(
+        onTapSuffixIcon: onClickSuffixIcon,
         onChanged: widget.onChanged,
         onEditingComplete: widget.onEditingComplete,
         addSearchFieldTitle: widget.addSearchFieldTitle,

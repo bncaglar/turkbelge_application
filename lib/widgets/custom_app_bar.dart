@@ -13,19 +13,17 @@ class CustomAppBar extends StatefulWidget {
   final VoidCallback? onChanged;
   final double? searchFieldHeight;
   final double? searchFieldWidth;
- 
-  
 
-  CustomAppBar(
-      {this.imagePath,
-      this.fitt,
-      this.searchFieldTitle,
-      this.addSearchFieldTitle,
-      this.onChanged,
-      this.onEditingComplete,
-      this.searchFieldHeight,
-      this.searchFieldWidth,
-      });
+  CustomAppBar({
+    this.imagePath,
+    this.fitt,
+    this.searchFieldTitle,
+    this.addSearchFieldTitle,
+    this.onChanged,
+    this.onEditingComplete,
+    this.searchFieldHeight,
+    this.searchFieldWidth,
+  });
 
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
@@ -83,6 +81,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       width: widget.searchFieldWidth ?? 72.w,
       height: widget.searchFieldHeight ?? 5.62.h,
       child: SearchChallengesField(
+        onTapSuffixIcon: onClickSuffixIcon,
         onChanged: widget.onChanged,
         onEditingComplete: widget.onEditingComplete,
         addSearchFieldTitle: widget.addSearchFieldTitle,

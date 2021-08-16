@@ -55,7 +55,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
             children: [
               Container(
                 width: double.infinity,
-                height: 4.h,
+                height: 5.h,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -126,7 +126,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
               ),
               showOnChart
                   ? Container(
-                      height: 75.h,
+                      height: 74.h,
                       child: TabBarView(
                         children: [
                           pieChartPageStack(),
@@ -135,7 +135,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
                         ],
                       ))
                   : Container(
-                      height: 75.h,
+                      height: 74.h,
                       child: TabBarView(
                         children: [
                           HomePage(
