@@ -40,7 +40,7 @@ class CustomTextFormField extends StatefulWidget {
       this.inputFormatters,
       this.onInputChangedValue,
       this.tcknOrVknController,
-        this.userVknNumber});
+      this.userVknNumber});
 
   @override
   _CustomTextFormFieldState createState() => _CustomTextFormFieldState();
@@ -58,23 +58,23 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       obscureText: widget.obscureText ?? false,
       validator: widget.validator,
       onChanged: (text) {
-          // if (widget.tcknOrVknController!.text.length == 10) {
-          //   setState(() {
-          //     widget.userVknNumber = text;
-          //     print("vkn");
-          //     print(widget.userVknNumber);
-          //   });
-          // } else if (widget.tcknOrVknController!.text.length == 11) {
-          //   setState(() {
-          //     widget.userTcknNumber = text;
-          //     print("tckn");
-          //     print(widget.userTcknNumber);
-          //   });
-          // }
-          // setState(() {
-          //   widget.onInputChangedValue = text;
-          //   print(widget.onInputChangedValue);
-          // });
+        // if (widget.tcknOrVknController!.text.length == 10) {
+        //   setState(() {
+        //     widget.userVknNumber = text;
+        //     print("vkn");
+        //     print(widget.userVknNumber);
+        //   });
+        // } else if (widget.tcknOrVknController!.text.length == 11) {
+        //   setState(() {
+        //     widget.userTcknNumber = text;
+        //     print("tckn");
+        //     print(widget.userTcknNumber);
+        //   });
+        // }
+        // setState(() {
+        //   widget.onInputChangedValue = text;
+        //   print(widget.onInputChangedValue);
+        // });
       },
       autovalidateMode: widget.autoValidateMode,
       textAlignVertical: TextAlignVertical.center,
@@ -149,7 +149,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return InputDecoration(
       floatingLabelBehavior: FloatingLabelBehavior.never,
       filled: true,
-      fillColor: AppColors.modalBottomSheetColor,
+      fillColor: AppColors.homepageTextColor,
       labelText: widget.labelText,
       focusColor: AppColors.primaryColor,
       prefixIcon: widget.prefixIcon ?? null,

@@ -13,8 +13,13 @@ class _BankAccountsSummaryState extends State<BankAccountsSummary> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.primaryWightColor,
+        backgroundColor: AppColors.dismissRedColor,
+        body: buildBankAccountsSummaryBody(),
       ),
     );
+  }
+
+  SingleChildScrollView buildBankAccountsSummaryBody() {
+    return SingleChildScrollView();
   }
 }

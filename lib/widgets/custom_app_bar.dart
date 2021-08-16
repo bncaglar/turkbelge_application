@@ -2,19 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
+import 'package:turkbelge_application/widgets/search_field.dart';
 
 class CustomAppBar extends StatefulWidget {
   final String? imagePath;
-  final bool? isBankImageShown;
   final BoxFit? fitt;
+  final String? searchFieldTitle;
+  final String? addSearchFieldTitle;
+  final VoidCallback? onEditingComplete;
+  final VoidCallback? onChanged;
+  final double? searchFieldHeight;
+  final double? searchFieldWidth;
+  final bool? addBankImage;
+  final bool? addBackBtn;
+  final bool? buildAppBarRowLeftSide;
   CustomAppBar(
-      {required this.imagePath, required this.isBankImageShown, this.fitt});
+      {this.imagePath,
+      this.fitt,
+      this.searchFieldTitle,
+      this.addSearchFieldTitle,
+      this.onChanged,
+      this.onEditingComplete,
+      this.searchFieldHeight,
+      this.searchFieldWidth,
+      this.addBankImage,
+      this.addBackBtn,
+      required this.buildAppBarRowLeftSide});
 
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
+  TextEditingController searchController = TextEditingController();
+  bool searchFunc = false;
   final log = getLogger();
   onClickBackBtn() {
     log.i("onClickBackBtn started");
@@ -23,6 +44,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   onClickSearchButton() {
     log.i("onClickSearchButton started");
+    setState(() {
+      searchFunc = true;
+    });
+  }
+
+  onClickSuffixIcon() {
+    setState(() {
+      searchFunc = false;
+    });
   }
 
   @override
@@ -43,17 +73,33 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        buildAppBarRowRightSide(),
-        buildSearchBtn(),
+        widget.buildAppBarRowLeftSide! ? buildAppBarRowLeftSide() : Container(),
+        searchFunc ? searchNotificationsField() : buildSearchBtn(),
       ],
     );
   }
 
-  Row buildAppBarRowRightSide() {
+  Container searchNotificationsField() {
+    return Container(
+      padding: EdgeInsets.only(right: 3.w),
+      width: widget.searchFieldWidth ?? 72.w,
+      height: widget.searchFieldHeight ?? 5.62.h,
+      child: SearchChallengesField(
+        onClickSuffixIcon: onClickSuffixIcon,
+        onChanged: widget.onChanged,
+        onEditingComplete: widget.onEditingComplete,
+        addSearchFieldTitle: widget.addSearchFieldTitle,
+        controller: searchController,
+        serverSearchErrorText: null, //todo send server error here
+      ),
+    );
+  }
+
+  Row buildAppBarRowLeftSide() {
     return Row(
       children: [
-        buildBackBtn(),
-        widget.isBankImageShown! ? buildBankImage() : Container()
+        widget.addBackBtn! ? buildBackBtn() : Container(),
+        widget.addBankImage! ? buildBankImage() : Container(),
       ],
     );
   }
@@ -78,7 +124,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       },
       icon: Icon(
         Icons.arrow_back_ios,
-        color: AppColors.backgroundPrimaryColor,
+        color: AppColors.allNotificationsTextColor,
         size: 17.sp,
       ),
     );

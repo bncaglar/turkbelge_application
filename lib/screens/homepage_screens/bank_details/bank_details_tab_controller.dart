@@ -4,6 +4,7 @@ import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 
 import 'bank_details_accounts.dart';
+import 'bank_details_history.dart';
 
 class BankDetailsOfTabController extends StatefulWidget {
   static const routeName = '/BankDetailsOfTabController';
@@ -31,28 +32,33 @@ class _BankDetailsOfTabControllerState
       body: DefaultTabController(
         length: 2,
         initialIndex: 0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              height: 6.h,
-              child: TabBar(
-                labelColor: AppColors.backgroundPrimaryColor,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorColor: AppColors.allNotificationsTextColor,
-                tabs: [
-                  Tab(text: "HESAPLAR"),
-                  Tab(text: "HESAP HAREKETLERİ"),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                height: 6.h,
+                child: TabBar(
+                  labelColor: AppColors.backgroundPrimaryColor,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicatorColor: AppColors.allNotificationsTextColor,
+                  tabs: [
+                    Tab(text: "HESAPLAR"),
+                    Tab(text: "HESAP HAREKETLERİ"),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              height: 81.h,
-              child: TabBarView(
-                children: [BankAccountsSummary(), BankAccountsSummary()],
-              ),
-            )
-          ],
+              Container(
+                height: 83.h,
+                child: TabBarView(
+                  children: [
+                    BankAccountsSummary(),
+                    BankAccountsHistoryPage(),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -70,3 +76,4 @@ class BankDetailsTabControllerArguments {
       required this.bankAccountKey,
       required this.fitt});
 }
+                

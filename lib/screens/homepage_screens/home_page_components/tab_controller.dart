@@ -8,6 +8,7 @@ import 'package:turkbelge_application/screens/homepage_screens/home_page_compone
 import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
+import 'package:turkbelge_application/widgets/endDrawer.dart';
 
 class TabControllerPage extends StatefulWidget {
   static const routeName = '/TabController';
@@ -19,9 +20,11 @@ class TabControllerPage extends StatefulWidget {
 class _TabControllerPageState extends State<TabControllerPage> {
   final log = getLogger();
   bool showOnChart = false;
+  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
   onSettingsClicked() async {
     log.i("onSettingsClicked started");
+    _scaffoldkey.currentState!.openEndDrawer();
   }
 
   showOnChartStateFunc() {
@@ -41,6 +44,8 @@ class _TabControllerPageState extends State<TabControllerPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldkey,
+        endDrawer: EndDrawerMainScreen(),
         backgroundColor: AppColors.newColor4Background,
         body: DefaultTabController(
           length: 3,
@@ -121,7 +126,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
               ),
               showOnChart
                   ? Container(
-                      height: 80.h,
+                      height: 75.h,
                       child: TabBarView(
                         children: [
                           pieChartPageStack(),

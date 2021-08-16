@@ -29,8 +29,11 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(8.h),
           child: CustomAppBar(
+            buildAppBarRowLeftSide: true,
+            addBackBtn: true,
+            addBankImage: true,
+            searchFieldWidth: 57.w,
             imagePath: widget.bankIcon!,
-            isBankImageShown: true,
             fitt: widget.fitt!,
           ),
         ),

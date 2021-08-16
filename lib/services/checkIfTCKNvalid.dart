@@ -1,10 +1,10 @@
 class CheckIfTCKNValid {
-  var tek,
-      cift,
-      sonuc,
+  var odd,
+      even,
+      result,
       tCToplam = 0,
       i,
-      hatali = [
+      inAccurate = [
         11111111110,
         22222222220,
         33333333330,
@@ -21,24 +21,24 @@ class CheckIfTCKNValid {
     if (tckNo.isEmpty) return false;
     if (int.parse(tckNo[0]) == 0) return false;
 
-    tek = int.parse(tckNo[0]) +
+    odd = int.parse(tckNo[0]) +
         int.parse(tckNo[2]) +
         int.parse(tckNo[4]) +
         int.parse(tckNo[6]) +
         int.parse(tckNo[8]);
-    cift = int.parse(tckNo[1]) +
+    even = int.parse(tckNo[1]) +
         int.parse(tckNo[3]) +
         int.parse(tckNo[5]) +
         int.parse(tckNo[7]);
-    tek = (tek * 7);
-    sonuc = (tek - cift).abs();
+    odd = (odd * 7);
+    result = (odd - even).abs();
 
-    if (sonuc % 10 != int.parse(tckNo[9])) return false;
+    if (result % 10 != int.parse(tckNo[9])) return false;
     for (int i = 0; i < 10; i++) {
       tCToplam = tCToplam + int.parse(tckNo[i]);
     }
     if (tCToplam % 10 != int.parse(tckNo[10])) return false;
-    if (hatali.toString().indexOf(tckNo) != -1) return false;
+    if (inAccurate.toString().indexOf(tckNo) != -1) return false;
     return true;
   }
 }
