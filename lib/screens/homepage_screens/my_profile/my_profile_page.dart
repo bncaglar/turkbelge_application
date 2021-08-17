@@ -55,9 +55,16 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Column buildProfilePageBody() {
-    return Column(
-      children: [],
+  Center buildProfilePageBody() {
+    return Center(
+      child: InkWell(
+        onTap: onClickLogOut,
+        child: Container(
+          width: 150,
+          height: 200,
+          color: Colors.red,
+        ),
+      ),
     );
   }
 

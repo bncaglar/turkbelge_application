@@ -53,6 +53,9 @@ dependencies:
   #chart
   fl_chart: ^0.36.3
 
+  #get wifi info
+  wifi_info_flutter: ^2.0.2
+
   #preview the application on various devices
   device_preview: ^0.7.4
 

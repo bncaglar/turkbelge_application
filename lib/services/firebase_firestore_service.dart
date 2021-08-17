@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 class FireStoreService {
   static FireStoreService instance = FireStoreService();
@@ -11,6 +14,8 @@ class FireStoreService {
 
   String _userCollection = "Users";
   String _preAppliedUserCollection = "PreAppliedUsers";
+  String _faultyInput = "faultyInput";
+  String _logInActivity = "LogInActivity";
 
   Future<void> firstStepCreateUserInDB(
       String _uid,
@@ -78,6 +83,81 @@ class FireStoreService {
     }
   }
 
+  Future<bool?> checkCnForLogInActivity(String _customerNumber) async {
+    try {
+      bool? checkCn;
+      await _db!
+          .collection(_preAppliedUserCollection)
+          .doc(_customerNumber)
+          .get()
+          .then((value) => value.exists ? checkCn = true : checkCn = false);
+      if (checkCn == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } on FirebaseException {
+      return false;
+    }
+  }
+
+  Future<void>? saveUserLogInActivity(String _customerNumber) async{
+    try{
+      var wifiIP = await WifiInfo().getWifiIP();
+      bool? isCnValid =
+      await FireStoreService().checkCnForLogInActivity(_customerNumber);
+      bool? checkIfExist;
+      if (isCnValid == true) {
+        await _db?.collection(_logInActivity).doc(_customerNumber).get().then(
+                (value) =>
+            value.exists ? checkIfExist = true : checkIfExist = false);
+        var _ref = _db?.collection(_logInActivity).doc(_customerNumber);
+        if (checkIfExist == true) {
+          return _ref?.update({
+            "girisAktivitesi": FieldValue.arrayUnion([
+              {"IP": wifiIP, "time": Timestamp.now()}
+            ]),
+          });
+        } else {
+          return _ref?.set({
+            "girisAktivitesi": FieldValue.arrayUnion([
+              {"IP": wifiIP, "time": Timestamp.now()}
+            ]),
+          });
+        }
+      }
+    }on FirebaseException{
+
+    }
+  }
+  Future<void>? saveUserFaultyInput(String _customerNumber) async {
+    try {
+      var wifiIP = await WifiInfo().getWifiIP();
+      bool? isCnValid =
+          await FireStoreService().checkCnForLogInActivity(_customerNumber);
+      bool? checkIfExist;
+      if (isCnValid == true) {
+        await _db?.collection(_faultyInput).doc(_customerNumber).get().then(
+            (value) =>
+                value.exists ? checkIfExist = true : checkIfExist = false);
+        var _ref = _db?.collection(_faultyInput).doc(_customerNumber);
+        if (checkIfExist == true) {
+          return _ref?.update({
+            "hataliGiris": FieldValue.arrayUnion([
+              {"IP": wifiIP, "time": Timestamp.now()}
+            ]),
+          });
+        } else {
+          return _ref?.set({
+            "hataliGiris": FieldValue.arrayUnion([
+              {"IP": wifiIP, "time": Timestamp.now()}
+            ]),
+          });
+        }
+      }
+    } on FirebaseException {}
+  }
+
   Future<String> getCustomerNumber(String _uid) async {
     try {
       var data1 = (await _db!.collection(_userCollection).doc(_uid).get())
@@ -90,7 +170,8 @@ class FireStoreService {
     }
   }
 
-  Future<bool?> sendRemindCustomerNumberEmail(String customerNumber, String email) async {
+  Future<bool?> sendRemindCustomerNumberEmail(
+      String customerNumber, String email) async {
     try {
       await _db!.collection("mail").add({
         'to': email,
