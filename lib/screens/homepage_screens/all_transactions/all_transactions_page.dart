@@ -26,6 +26,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(8.h),
           child: AllTransactionsAppBar(
+            onClickMoreVert: onClickMoreVert,
             searchFieldWidth: 57.w,
           ),
         ),
