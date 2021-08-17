@@ -53,75 +53,23 @@ class _TabControllerPageState extends State<TabControllerPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: double.infinity,
-                height: 5.h,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                          padding: EdgeInsets.only(left: 3.w, top: 2.h),
-                          width: 13.w,
-                          child: showOnChart
-                              ? IconButton(
-                                  onPressed: showOnChartStateFunc,
-                                  icon: Icon(
-                                    Icons.multiline_chart,
-                                    color: AppColors.primaryWightColor,
-                                    size: 30,
-                                  ),
-                                )
-                              : IconButton(
-                                  onPressed: showOnChartStateFunc,
-                                  icon: Icon(
-                                    Icons.show_chart,
-                                    color: AppColors.primaryWightColor,
-                                    size: 30,
-                                  ),
-                                )),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        "Günaydın",
-                        style: TextStyle(
-                          fontSize: LocalHelper.getFontSize(16),
-                          color: AppColors.homepageTextColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 3.w, top: 2.h),
-                        child: Container(
-                          width: 10.w,
-                          child: IconButton(
-                            onPressed: onSettingsClicked,
-                            icon: Icon(
-                              Icons.more_vert,
-                              color: AppColors.primaryWightColor,
-                              size: 28,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              TabBar(
-                labelColor: AppColors.primaryWightColor,
-                isScrollable: true,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorColor: AppColors.primaryWightColor,
-                tabs: [
-                  Tab(text: "TRY"),
-                  Tab(text: "USD"),
-                  Tab(text: "EUR"),
+              buildGoodMorningMessages(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  buildChangeTheChartIcon(),
+                  TabBar(
+                    labelColor: AppColors.primaryWightColor,
+                    isScrollable: true,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorColor: AppColors.primaryWightColor,
+                    tabs: [
+                      Tab(text: "TRY"),
+                      Tab(text: "USD"),
+                      Tab(text: "EUR"),
+                    ],
+                  ),
+                  buildSettingsVert()
                 ],
               ),
               showOnChart
@@ -133,7 +81,8 @@ class _TabControllerPageState extends State<TabControllerPage> {
                           pieChartPageStack(),
                           pieChartPageStack(),
                         ],
-                      ))
+                      ),
+                    )
                   : Container(
                       height: 74.h,
                       child: TabBarView(
@@ -149,7 +98,7 @@ class _TabControllerPageState extends State<TabControllerPage> {
                           ),
                         ],
                       ),
-                    )
+                    ),
             ],
           ),
         ),
@@ -183,6 +132,70 @@ class _TabControllerPageState extends State<TabControllerPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Container buildGoodMorningMessages() {
+    return Container(
+      width: double.infinity,
+      height: 5.h,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              "Günaydın",
+              style: TextStyle(
+                fontSize: LocalHelper.getFontSize(16),
+                color: AppColors.homepageTextColor,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container buildChangeTheChartIcon() {
+    return Container(
+      padding: EdgeInsets.only(left: 3.w),
+      width: 13.w,
+      child: showOnChart
+          ? IconButton(
+              onPressed: showOnChartStateFunc,
+              icon: Icon(
+                Icons.multiline_chart,
+                color: AppColors.primaryWightColor,
+                size: 30,
+              ),
+            )
+          : IconButton(
+              onPressed: showOnChartStateFunc,
+              icon: Icon(
+                Icons.show_chart,
+                color: AppColors.primaryWightColor,
+                size: 30,
+              ),
+            ),
+    );
+  }
+
+  Padding buildSettingsVert() {
+    return Padding(
+      padding: EdgeInsets.only(right: 3.w),
+      child: Container(
+        width: 10.w,
+        child: IconButton(
+          onPressed: onSettingsClicked,
+          icon: Icon(
+            Icons.more_vert,
+            color: AppColors.primaryWightColor,
+            size: 28,
+          ),
+        ),
+      ),
     );
   }
 }
