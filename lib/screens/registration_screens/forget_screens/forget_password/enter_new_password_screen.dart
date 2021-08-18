@@ -139,6 +139,7 @@ class _EnterNewPasswordScreenState extends State<EnterNewPasswordScreen> {
 
   NavigationButton buildContinueNtb() {
     return NavigationButton(
+      addBoxShape: false,
       backgroundColor: AppColors.newColor4Background,
       navigationButtonText: AppLocalizations.of(context).continueText,
       textColor: AppColors.backgroundPrimaryColor,

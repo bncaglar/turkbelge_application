@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationService {
@@ -16,6 +18,7 @@ class AuthenticationService {
       return e.message;
     }
   }
+
 
   Future<String?> signUp({String? email, String? password}) async {
     try {

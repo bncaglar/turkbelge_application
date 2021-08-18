@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:countdown_progress_indicator/countdown_progress_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +20,7 @@ import 'package:turkbelge_application/widgets/form/enter_code_form.dart';
 import 'package:turkbelge_application/widgets/form/tckn_or_vkn_form.dart';
 import 'package:turkbelge_application/widgets/navigation_button.dart';
 
+import '../../noInternetConnectionPage.dart';
 import '../signin_screen.dart';
 
 enum MobileVerificationState {
@@ -252,16 +255,25 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: showLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : SingleChildScrollView(
-                child: wholeBody(),
-              ),
-      ),
+    return FutureBuilder<bool?>(
+      future: checkInternetConnection(),
+      builder: (BuildContext context, AsyncSnapshot<bool?> snapshot) {
+        if (snapshot.data == false) {
+          return NoInternetConnectionPage();
+        } else {
+          return SafeArea(
+            child: Scaffold(
+              body: showLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : SingleChildScrollView(
+                      child: wholeBody(),
+                    ),
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -423,6 +435,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
 
   NavigationButton buildContinueNtb() {
     return NavigationButton(
+      addBoxShape: false,
       backgroundColor: AppColors.newColor4Background,
       navigationButtonText: AppLocalizations.of(context).continueText,
       textColor: AppColors.backgroundPrimaryColor,
@@ -487,6 +500,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
 
   NavigationButton builddd() {
     return NavigationButton(
+      addBoxShape: false,
       backgroundColor: AppColors.newColor4Background,
       navigationButtonText: AppLocalizations.of(context).continueText,
       textColor: AppColors.backgroundPrimaryColor,
@@ -539,6 +553,17 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
         ),
       ),
     );
+  }
+
+  Future<bool?> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 
   @override

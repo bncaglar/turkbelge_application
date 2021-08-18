@@ -59,6 +59,9 @@ dependencies:
   #preview the application on various devices
   device_preview: ^0.7.4
 
+  #check internet connection
+  connectivity: ^3.0.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

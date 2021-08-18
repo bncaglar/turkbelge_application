@@ -88,7 +88,17 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
           ///check for the vkn number
           String verifyVKN = await FireStoreService().verifyVKN(user!.uid);
           if (verifyVKN == tcknOrVknController.text) {
-            ///todo navigate user to the next steP
+            ///todo navigate user to the next step
+            Navigator.pushNamed(
+                context, ForgetCustomerNumberPhoneAuth.routeName,
+                arguments: ForgetCustomerNumberPhoneAuthArguments(
+                  tcknOrVknNumber: tcknOrVknController.text,
+                  userEmail: emailController.text,
+                  userPassword: passwordController.text,
+                ));
+            setState(() {
+              showLoading = false;
+            });
           } else {
             ///VKN IS NOT VALID!!
             ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
@@ -202,6 +212,7 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
 
   NavigationButton buildResendButton() {
     return NavigationButton(
+      addBoxShape: false,
       navigationButtonText: AppLocalizations.of(context).send,
       textColor: AppColors.backgroundPrimaryColor,
       onClickNavigatorButton: onClickContinue,

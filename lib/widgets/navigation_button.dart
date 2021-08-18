@@ -12,16 +12,17 @@ class NavigationButton extends StatelessWidget {
   final Color? textColor;
   final double? fontSize;
   final FontWeight? fontWeight;
+  final bool? addBoxShape;
 
-  NavigationButton({
-    required this.navigationButtonText,
-    this.margin,
-    required this.onClickNavigatorButton,
-    this.backgroundColor,
-    this.textColor,
-    this.fontSize,
-    this.fontWeight,
-  });
+  NavigationButton(
+      {required this.navigationButtonText,
+      this.margin,
+      required this.onClickNavigatorButton,
+      this.backgroundColor,
+      this.textColor,
+      this.fontSize,
+      this.fontWeight,
+      required this.addBoxShape});
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +59,16 @@ class NavigationButton extends StatelessWidget {
   }
 
   BoxDecoration buildBtnDecoration() {
-    return BoxDecoration(
-      color: AppColors.newColor4Background
-
-    );
+    return addBoxShape!
+        ? BoxDecoration(
+            color: AppColors.newColor4Background,
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          )
+        : BoxDecoration(
+            color: AppColors.newColor4Background,
+          );
   }
 
   Center buildBtnText() {

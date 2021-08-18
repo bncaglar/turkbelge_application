@@ -16,6 +16,7 @@ class FireStoreService {
   String _preAppliedUserCollection = "PreAppliedUsers";
   String _faultyInput = "faultyInput";
   String _logInActivity = "LogInActivity";
+  String _customerNumberHelper = "CustomerNumberHelper";
 
   Future<void> firstStepCreateUserInDB(
       String _uid,
@@ -25,7 +26,7 @@ class FireStoreService {
       String _phoneNumber,
       String _customerNumber) async {
     try {
-      return await _db!.collection(_userCollection).doc(_uid).set({
+      return await _db!.collection(_customerNumberHelper).doc(_uid).set({
         "email": _email,
         "TCKN": _tckimlikNo,
         "VKN": _vergiKimlikNo,
@@ -49,8 +50,6 @@ class FireStoreService {
     try {
       return await _db!
           .collection(_userCollection)
-          .doc(_uid)
-          .collection("CustomerNumber")
           .doc(customerNumber)
           .set({
         "customerNumber": customerNumber,
@@ -70,8 +69,6 @@ class FireStoreService {
     try {
       var data1 = (await _db!
               .collection(_userCollection)
-              .doc(_uid)
-              .collection("CustomerNumber")
               .doc(_customerNumber)
               .get())
           .data()!['email']
@@ -101,16 +98,16 @@ class FireStoreService {
     }
   }
 
-  Future<void>? saveUserLogInActivity(String _customerNumber) async{
-    try{
+  Future<void>? saveUserLogInActivity(String _customerNumber) async {
+    try {
       var wifiIP = await WifiInfo().getWifiIP();
       bool? isCnValid =
-      await FireStoreService().checkCnForLogInActivity(_customerNumber);
+          await FireStoreService().checkCnForLogInActivity(_customerNumber);
       bool? checkIfExist;
       if (isCnValid == true) {
         await _db?.collection(_logInActivity).doc(_customerNumber).get().then(
-                (value) =>
-            value.exists ? checkIfExist = true : checkIfExist = false);
+            (value) =>
+                value.exists ? checkIfExist = true : checkIfExist = false);
         var _ref = _db?.collection(_logInActivity).doc(_customerNumber);
         if (checkIfExist == true) {
           return _ref?.update({
@@ -126,10 +123,9 @@ class FireStoreService {
           });
         }
       }
-    }on FirebaseException{
-
-    }
+    } on FirebaseException {}
   }
+
   Future<void>? saveUserFaultyInput(String _customerNumber) async {
     try {
       var wifiIP = await WifiInfo().getWifiIP();
@@ -193,7 +189,7 @@ class FireStoreService {
 
   Future<String> verifyVKN(String _uid) async {
     try {
-      var data1 = (await _db!.collection(_userCollection).doc(_uid).get())
+      var data1 = (await _db!.collection(_customerNumberHelper).doc(_uid).get())
           .data()!['VKN']
           .toString();
       return data1;
@@ -205,7 +201,7 @@ class FireStoreService {
 
   Future<String> verifyTCKN(String _uid) async {
     try {
-      var data1 = (await _db!.collection(_userCollection).doc(_uid).get())
+      var data1 = (await _db!.collection(_customerNumberHelper).doc(_uid).get())
           .data()!['TCKN']
           .toString();
       return data1;
@@ -220,8 +216,6 @@ class FireStoreService {
     try {
       var data1 = (await _db!
               .collection(_userCollection)
-              .doc(_uid)
-              .collection("CustomerNumber")
               .doc(_customerNumber)
               .get())
           .data()!['phoneNumber']

@@ -3,6 +3,7 @@ import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dar
 import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_page.dart';
 import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_tab_controller.dart';
 import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
+import 'package:turkbelge_application/screens/noInternetConnectionPage.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/first_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/initial_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/second_step_of_registration.dart';
@@ -96,6 +97,11 @@ class Routes {
         {
           child = _buildBankDetailsOfTabControllerRoutes(
               settings.arguments as BankDetailsTabControllerArguments);
+          break;
+        }
+      case NoInternetConnectionPage.routeName:
+        {
+          child = NoInternetConnectionPage();
           break;
         }
       default:

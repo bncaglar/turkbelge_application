@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +17,7 @@ import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/widgets/form/password_form.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:turkbelge_application/widgets/navigation_button.dart';
+import '../noInternetConnectionPage.dart';
 import 'creating_profile/initial_step_of_registration.dart';
 import 'forget_screens/forget_customer_number/forget_customer_number.dart';
 import 'forget_screens/forget_password/forget_password_screen.dart';
@@ -116,11 +119,23 @@ class _SignInPageState extends State<SignInPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.primaryWightColor,
-        body: showLoading
-            ? Center(
+        body: FutureBuilder<bool?>(
+          future: checkInternetConnection(),
+          builder: (BuildContext context, AsyncSnapshot<bool?> snapshot){
+            print("-***--**-");
+            print(snapshot.data);
+            print("-***--**-");
+            if(snapshot.data == false){
+              return NoInternetConnectionPage();
+            }else{
+              return showLoading
+                  ? Center(
                 child: CircularProgressIndicator(),
               )
-            : buildBodyColumn(),
+                  : buildBodyColumn();
+            }
+          },
+        )
       ),
     );
   }
@@ -270,6 +285,7 @@ class _SignInPageState extends State<SignInPage> {
 
   NavigationButton buildLogInButton() {
     return NavigationButton(
+      addBoxShape: false,
       navigationButtonText: AppLocalizations.of(context).logIn,
       textColor: AppColors.backgroundPrimaryColor,
       onClickNavigatorButton: onClickContinue,
@@ -309,5 +325,15 @@ class _SignInPageState extends State<SignInPage> {
         },
       ),
     );
+  }
+  Future<bool?> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 }

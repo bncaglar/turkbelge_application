@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/screens/homepage_screens/account_balance_screen.dart';
 import 'package:turkbelge_application/screens/homepage_screens/all_transactions/all_transactions_page.dart';
 import 'package:turkbelge_application/screens/homepage_screens/home_page_components/tab_controller.dart';
 import 'package:turkbelge_application/screens/homepage_screens/my_profile/my_profile_page.dart';
+import 'package:turkbelge_application/screens/noInternetConnectionPage.dart';
+import 'package:turkbelge_application/services/authentication_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class FirstNavigation extends StatefulWidget {
@@ -20,19 +25,28 @@ class _FirstNavigationState extends State<FirstNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pagecontroller,
-        onPageChanged: (index) {
-          setState(() {
-            selectedScreen = index;
-          });
+      body: FutureBuilder<bool?>(
+        future: checkInternetConnection(),
+        builder: (BuildContext context, AsyncSnapshot<bool?> snapshot) {
+          if (snapshot.data == false) {
+            return NoInternetConnectionPage();
+          } else {
+            return PageView(
+              controller: _pagecontroller,
+              onPageChanged: (index) {
+                setState(() {
+                  selectedScreen = index;
+                });
+              },
+              children: [
+                TabControllerPage(),
+                AllTransactionsPage(),
+                AccountBalancePage(),
+                ProfilePage()
+              ],
+            );
+          }
         },
-        children: [
-          TabControllerPage(),
-          AllTransactionsPage(),
-          AccountBalancePage(),
-          ProfilePage()
-        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedScreen,
@@ -112,5 +126,16 @@ class _FirstNavigationState extends State<FirstNavigation> {
         },
       ),
     );
+  }
+
+  Future<bool?> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 }

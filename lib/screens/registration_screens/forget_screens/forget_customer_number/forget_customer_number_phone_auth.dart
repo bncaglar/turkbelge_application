@@ -179,6 +179,7 @@ class _ForgetCustomerNumberPhoneAuthState
 
   NavigationButton buildResetButton() {
     return NavigationButton(
+      addBoxShape: false,
       navigationButtonText: "Devam",
       textColor: AppColors.backgroundPrimaryColor,
       onClickNavigatorButton: onClickContinue,
@@ -265,6 +266,7 @@ class _ForgetCustomerNumberPhoneAuthState
 
   NavigationButton builddd() {
     return NavigationButton(
+      addBoxShape: false,
       backgroundColor: AppColors.newColor4Background,
       navigationButtonText: AppLocalizations.of(context).continueText,
       textColor: AppColors.backgroundPrimaryColor,
