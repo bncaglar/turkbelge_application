@@ -17,6 +17,7 @@ class FireStoreService {
   String _faultyInput = "faultyInput";
   String _logInActivity = "LogInActivity";
   String _customerNumberHelper = "CustomerNumberHelper";
+  String _subUsers = "SubUsers";
 
   Future<void> firstStepCreateUserInDB(
       String _uid,
@@ -38,6 +39,20 @@ class FireStoreService {
     }
   }
 
+  Future<void> createSubUserInDB(
+      String _email, String _subUserUid, String _customerNumber) async {
+    try {
+      return await _db!
+          .collection(_userCollection)
+          .doc(_customerNumber)
+          .collection(_subUsers)
+          .doc(_subUserUid)
+          .set({
+        "email": _email,
+      });
+    } catch (e) {}
+  }
+
   Future<void> secondStepCreateUserInDB(
     String _uid,
     String _name,
@@ -48,10 +63,7 @@ class FireStoreService {
     String _phoneNumber,
   ) async {
     try {
-      return await _db!
-          .collection(_userCollection)
-          .doc(customerNumber)
-          .set({
+      return await _db!.collection(_userCollection).doc(customerNumber).set({
         "customerNumber": customerNumber,
         "name": _name,
         "email": _email,
@@ -67,17 +79,21 @@ class FireStoreService {
   Future<String> verifyEmailAddressWithCustomerNumber(
       String _customerNumber, String _uid) async {
     try {
-      var data1 = (await _db!
-              .collection(_userCollection)
-              .doc(_customerNumber)
-              .get())
-          .data()!['email']
-          .toString();
+      var data1 =
+          (await _db!.collection(_userCollection).doc(_customerNumber).get())
+              .data()!['email']
+              .toString();
       return data1;
     } catch (e) {
       var error = "Error";
       return error;
     }
+  }
+
+  Future<List> getCollectionDocList(String _collectionName) async {
+    QuerySnapshot querySnapshot = await _db!.collection(_collectionName).get();
+    var list = querySnapshot.docs;
+    return list;
   }
 
   Future<bool?> checkCnForLogInActivity(String _customerNumber) async {
@@ -156,7 +172,7 @@ class FireStoreService {
 
   Future<String> getCustomerNumber(String _uid) async {
     try {
-      var data1 = (await _db!.collection(_userCollection).doc(_uid).get())
+      var data1 = (await _db!.collection(_customerNumberHelper).doc(_uid).get())
           .data()!['customerNumber']
           .toString();
       return data1;
@@ -195,16 +211,10 @@ class FireStoreService {
         'message': {
           'subject': "Türkbelge hesap şifreniz",
           'text': "Text",
-          'html': "Merhaba" +
-              ", " +
-              email +
-              " için şifren: " +
-              randomPassword,
+          'html': "Merhaba" + ", " + email + " için şifren: " + randomPassword,
         },
       }).then((value) => print("email sent"));
-    } on FirebaseException {
-
-    }
+    } on FirebaseException {}
   }
 
   Future<String> verifyVKN(String _uid) async {
@@ -234,12 +244,10 @@ class FireStoreService {
   Future<String> verifyPhoneNumberWithCustomerNumber(
       String _customerNumber, String _uid) async {
     try {
-      var data1 = (await _db!
-              .collection(_userCollection)
-              .doc(_customerNumber)
-              .get())
-          .data()!['phoneNumber']
-          .toString();
+      var data1 =
+          (await _db!.collection(_userCollection).doc(_customerNumber).get())
+              .data()!['phoneNumber']
+              .toString();
       return data1;
     } catch (e) {
       var error = "Error";
