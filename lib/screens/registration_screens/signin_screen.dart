@@ -53,6 +53,7 @@ class _SignInPageState extends State<SignInPage> {
   bool showLoading = false;
   final log = getLogger();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   onClickForgetCustomerNumber() {
     log.i("onClickForgetCustomerNumber started");
     Navigator.pushNamed(context, ForgetCustomerNumberPage.routeName);
@@ -85,21 +86,22 @@ class _SignInPageState extends State<SignInPage> {
               .verifyEmailAddressWithCustomerNumber(
                   customerNumberController.text, user.uid);
           if (validateCustomerNumber == emailController.text) {
-            await FireStoreService().saveUserLogInActivity(customerNumberController.text);
+            await FireStoreService()
+                .saveUserLogInActivity(customerNumberController.text);
             Navigator.pushReplacementNamed(context, FirstNavigation.routeName);
             setState(() {
               showLoading = false;
             });
             log.i("giriş başarılı :-)))");
           } else {
-
             ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
             setState(() {
               showLoading = false;
             });
           }
         } else {
-          await FireStoreService().saveUserFaultyInput(customerNumberController.text);
+          await FireStoreService()
+              .saveUserFaultyInput(customerNumberController.text);
           ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
           setState(() {
             showLoading = false;
@@ -121,21 +123,18 @@ class _SignInPageState extends State<SignInPage> {
         backgroundColor: AppColors.primaryWightColor,
         body: FutureBuilder<bool?>(
           future: checkInternetConnection(),
-          builder: (BuildContext context, AsyncSnapshot<bool?> snapshot){
-            print("-***--**-");
-            print(snapshot.data);
-            print("-***--**-");
-            if(snapshot.data == false){
+          builder: (BuildContext context, AsyncSnapshot<bool?> snapshot) {
+            if (snapshot.data == false) {
               return NoInternetConnectionPage();
-            }else{
+            } else {
               return showLoading
                   ? Center(
-                child: CircularProgressIndicator(),
-              )
+                      child: CircularProgressIndicator(),
+                    )
                   : buildBodyColumn();
             }
           },
-        )
+        ),
       ),
     );
   }
@@ -313,7 +312,7 @@ class _SignInPageState extends State<SignInPage> {
         ),
         value: sozlesmeDurumu,
         controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (bool? data) async{
+        onChanged: (bool? data) async {
           final prefs = await SharedPreferences.getInstance();
           bool myBool = prefs.getBool('state') ?? false;
           setState(() {
@@ -326,6 +325,7 @@ class _SignInPageState extends State<SignInPage> {
       ),
     );
   }
+
   Future<bool?> checkInternetConnection() async {
     try {
       final result = await InternetAddress.lookup('example.com');

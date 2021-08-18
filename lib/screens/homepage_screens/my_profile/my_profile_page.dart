@@ -5,6 +5,8 @@ import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
+import 'package:turkbelge_application/services/firebase_firestore_service.dart';
+import 'package:turkbelge_application/services/randomPasswordGenerator.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -14,15 +16,22 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final log = getLogger();
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  oClickCreateUser() async {
+    print(_firebaseAuth.currentUser!.uid);
+    final password = generatePassword();
+    await _firebaseAuth.createUserWithEmailAndPassword(email: "exddample@gmail.com", password: password);
+    print(_firebaseAuth.currentUser!.uid);
+   await FireStoreService().sendRandomGeneratedPassword(password, "hv.plt.caglar@gmail.com");
+  }
   onClickLogOut() async {
     await AuthenticationService(_firebaseAuth).logOut();
     if (_firebaseAuth.currentUser == null) {
       Navigator.pushReplacementNamed(context, SignInPage.routeName);
-      log.i("Çıkış başarılı! :-)))");
+    ///todo log out successful
     } else {
-      log.i("Çıkış başarısız");
+      ///todo log out unsuccessful
     }
   }
 
@@ -58,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Center buildProfilePageBody() {
     return Center(
       child: InkWell(
-        onTap: onClickLogOut,
+        onTap: oClickCreateUser,
         child: Container(
           width: 150,
           height: 200,
@@ -68,8 +77,4 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<bool?> getSfData() async {
-    SharedPreferences loginCheck = await SharedPreferences.getInstance();
-    return loginCheck.getBool("state");
-  }
 }

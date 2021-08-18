@@ -187,6 +187,26 @@ class FireStoreService {
     }
   }
 
+  Future<void> sendRandomGeneratedPassword(
+      String randomPassword, String email) async {
+    try {
+      await _db!.collection("mail").add({
+        'to': email,
+        'message': {
+          'subject': "Türkbelge hesap şifreniz",
+          'text': "Text",
+          'html': "Merhaba" +
+              ", " +
+              email +
+              " için şifren: " +
+              randomPassword,
+        },
+      }).then((value) => print("email sent"));
+    } on FirebaseException {
+
+    }
+  }
+
   Future<String> verifyVKN(String _uid) async {
     try {
       var data1 = (await _db!.collection(_customerNumberHelper).doc(_uid).get())
