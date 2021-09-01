@@ -19,6 +19,31 @@ class FireStoreService {
   String _customerNumberHelper = "CustomerNumberHelper";
   String _subUsers = "SubUsers";
 
+  ///todo The following function [registerUserToTheDB] will be used in different platform to register the user
+  Future<void> registerUserToTheDB(
+      String _customerNumber,
+      String _name,
+      String _TCKN,
+      String _VKN,
+      String _email,
+      String _firmaAdi,
+      Timestamp _kayitTarihi,
+      String _status) async {
+    return await _db!
+        .collection(_preAppliedUserCollection)
+        .doc(_customerNumber)
+        .set({
+      "Name": _name,
+      "TCKN": _TCKN,
+      "VKN": _VKN,
+      "customerNumber": _customerNumber,
+      "email": _email,
+      "firmaAdi": _firmaAdi,
+      "kayitTarihi": _kayitTarihi,
+      "status": _status
+    });
+  }
+
   Future<void> firstStepCreateUserInDB(
       String _uid,
       String _email,

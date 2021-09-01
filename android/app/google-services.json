@@ -9,7 +9,8 @@
       "client_info": {
         "mobilesdk_app_id": "1:1024489605375:android:31143b30dd34595a8ce4ca",
         "android_client_info": {
-          "package_name": "com.turkbelge_application"
+          "package_name": "com.turkbelge_application",
+
         }
       },
       "oauth_client": [

@@ -56,15 +56,14 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   onClickCreateCustomerNumber() async {
+    ///todo we ll use this to register user in different platform
     bool? isExist = false;
     var customerNumberGenerated;
     do{
-    var list = await FireStoreService().getCollectionDocList("PreAppliedUsers");
     customerNumberGenerated = generateCustomerNumber();
     isExist = await FireStoreService()
         .checkCnForLogInActivity(customerNumberGenerated);
     }while(isExist!);
-
 
     print(customerNumberGenerated);
     print(isExist);

@@ -249,9 +249,11 @@ class _SignInPageState extends State<SignInPage> {
       padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w),
       child: Container(
         decoration: BoxDecoration(
-            border:
-                Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
-            borderRadius: BorderRadius.all(Radius.circular(5))),
+          border: Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
+          borderRadius: BorderRadius.all(
+            Radius.circular(5),
+          ),
+        ),
         child: Form(
           key: _emailKey,
           child: EmailForm(
