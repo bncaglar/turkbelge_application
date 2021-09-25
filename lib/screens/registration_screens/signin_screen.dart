@@ -88,11 +88,12 @@ class _SignInPageState extends State<SignInPage> {
           if (validateCustomerNumber == emailController.text) {
             await FireStoreService()
                 .saveUserLogInActivity(customerNumberController.text);
-            Navigator.pushReplacementNamed(context, FirstNavigation.routeName);
+            Navigator.pushReplacementNamed(context, FirstNavigation.routeName,
+                arguments: FirstNavigationArguments(
+                    customerNumber: customerNumberController.text));
             setState(() {
               showLoading = false;
             });
-            log.i("giriş başarılı :-)))");
           } else {
             ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
             setState(() {

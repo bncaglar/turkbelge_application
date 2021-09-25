@@ -1,14 +1,17 @@
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logger/logger.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
-import 'package:turkbelge_application/logger/simple_log_printer.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/profile_page_components/profile_page_company_info.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/profile_page_components/profile_page_header.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
 import 'package:turkbelge_application/services/firebase_firestore_service.dart';
-import 'package:turkbelge_application/services/randomCustomerNumberGenerator.dart';
-import 'package:turkbelge_application/services/randomPasswordGenerator.dart';
+import 'package:turkbelge_application/services/generator/generate_sessionID.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
+import 'package:sizer/sizer.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -16,8 +19,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final log = getLogger();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final log = Logger();
 
   oClickCreateUser() async {
     ///todo get user uid
@@ -31,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
     String userCustomerNumber = await FireStoreService()
         .getCustomerNumber(_firebaseAuth.currentUser!.uid);
     print(userCustomerNumber);
-    final password = generatePassword();
+    final password = generateSessionId();
     print(_firebaseAuth.currentUser!.uid);
     await _firebaseAuth.createUserWithEmailAndPassword(
         email: "example@gmail.com", password: password);
@@ -55,91 +58,54 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  onClickCreateCustomerNumber() async {
-    ///todo we ll use this to register user in different platform
-    bool? isExist = false;
-    var customerNumberGenerated;
-    do{
-    customerNumberGenerated = generateCustomerNumber();
-    isExist = await FireStoreService()
-        .checkCnForLogInActivity(customerNumberGenerated);
-    }while(isExist!);
-
-    print(customerNumberGenerated);
-    print(isExist);
-  }
+  static int deger = 0;
+  var envelope = '''
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+   <soapenv:Body>
+      <tem:GetTransaction>
+         <!--Optional:-->
+         <tem:transactionRequest>
+            <!--Optional:-->
+            <tem:SessionID>B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E</tem:SessionID>
+            <!--Optional:-->
+            <tem:StartDate>2021-06-20 15:00:00</tem:StartDate>
+            <!--Optional:-->
+            <tem:EndDate>2021-09-15 15:00:00</tem:EndDate>
+            <!--Optional:-->
+            <tem:BankCode>${deger}</tem:BankCode>
+         </tem:transactionRequest>
+      </tem:GetTransaction>
+   </soapenv:Body>
+</soapenv:Envelope>
+''';
+  final String apiEndpoint =
+      "https://imza.turkbelge.com.tr/AccountTransaction.asmx?op=GetTransaction";
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.primaryWightColor,
-        appBar: buildAppBar(),
-        body: Column(
+        body: Stack(
           children: [
-            buildProfilePageBody(),
-            buildProfilePageasdBody(),
-            buildProfilSDePageBody(),
+            buildHeaderBackground(),
+            Column(
+              children: [ProfilePageHeader(), ProfilePageCompanyInfo(),],
+            ),
           ],
         ),
       ),
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      flexibleSpace: Container(
-        child: Center(
-            child: Text(
-          "Hesabım",
-          style: TextStyle(
-              color: AppColors.backgroundPrimaryColor,
-              fontSize: LocalHelper.getFontSize(15),
-              fontWeight: FontWeight.w300),
-        )),
-        decoration: new BoxDecoration(
-          color: AppColors.homepageTextColor,
-        ),
-      ),
+  Container buildHeaderBackground() {
+    return Container(
+      height: 30.h,
+      width: double.infinity,
+      color: AppColors.newColor4Background,
     );
   }
 
-  Center buildProfilePageBody() {
-    return Center(
-      child: InkWell(
-        onTap: oClickCreateUser,
-        child: Container(
-          width: 150,
-          height: 100,
-          color: Colors.red,
-        ),
-      ),
-    );
-  }
 
-  Center buildProfilePageasdBody() {
-    return Center(
-      child: InkWell(
-        onTap: onClickLogOut,
-        child: Container(
-          width: 150,
-          height: 100,
-          color: Colors.blue,
-        ),
-      ),
-    );
-  }
 
-  Center buildProfilSDePageBody() {
-    return Center(
-      child: InkWell(
-        onTap: onClickCreateCustomerNumber,
-        child: Container(
-          width: 150,
-          height: 100,
-          color: Colors.black,
-        ),
-      ),
-    );
-  }
 }

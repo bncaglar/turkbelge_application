@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 class FireStoreService {
@@ -18,13 +17,14 @@ class FireStoreService {
   String _logInActivity = "LogInActivity";
   String _customerNumberHelper = "CustomerNumberHelper";
   String _subUsers = "SubUsers";
+  String _banks = "Banks";
 
   ///todo The following function [registerUserToTheDB] will be used in different platform to register the user
   Future<void> registerUserToTheDB(
       String _customerNumber,
       String _name,
-      String _TCKN,
-      String _VKN,
+      String _tckn,
+      String _vkn,
       String _email,
       String _firmaAdi,
       Timestamp _kayitTarihi,
@@ -34,8 +34,8 @@ class FireStoreService {
         .doc(_customerNumber)
         .set({
       "Name": _name,
-      "TCKN": _TCKN,
-      "VKN": _VKN,
+      "TCKN": _tckn,
+      "VKN": _vkn,
       "customerNumber": _customerNumber,
       "email": _email,
       "firmaAdi": _firmaAdi,
@@ -121,6 +121,13 @@ class FireStoreService {
     return list;
   }
 
+  Future<List> getNumberOfBank(String _customerNumber) async{
+    List? bankNameList;
+    QuerySnapshot querySnapshot = await _db!.collection(_userCollection).doc(_customerNumber).collection(_banks).get();
+    print(querySnapshot);
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return allData;
+  }
   Future<bool?> checkCnForLogInActivity(String _customerNumber) async {
     try {
       bool? checkCn;

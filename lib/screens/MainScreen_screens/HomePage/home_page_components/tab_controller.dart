@@ -2,22 +2,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/screens/homepage_screens/home_page_components/homepage_background_color.dart';
-import 'package:turkbelge_application/screens/homepage_screens/home_page_components/line_chart.dart';
-import 'package:turkbelge_application/screens/homepage_screens/home_page_components/pie_chart.dart';
-import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/pie_chart.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/widgets/endDrawer.dart';
+import '../homepage_screen.dart';
+import 'homepage_background_color.dart';
+import 'line_chart.dart';
 
-class TabControllerPage extends StatefulWidget {
+class HomePageTabControllerPage extends StatefulWidget {
   static const routeName = '/TabController';
+  final String customerNumber;
+  HomePageTabControllerPage({required this.customerNumber});
 
   @override
-  _TabControllerPageState createState() => _TabControllerPageState();
+  _HomePageTabControllerPageState createState() => _HomePageTabControllerPageState();
 }
 
-class _TabControllerPageState extends State<TabControllerPage> {
+class _HomePageTabControllerPageState extends State<HomePageTabControllerPage> {
   final log = getLogger();
   bool showOnChart = false;
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
@@ -86,15 +88,19 @@ class _TabControllerPageState extends State<TabControllerPage> {
                   : Container(
                       height: 74.h,
                       child: TabBarView(
+                        physics: NeverScrollableScrollPhysics(),
                         children: [
                           HomePage(
-                            totalBalance: "15.945,00 TRY",
+                            customerNumber: widget.customerNumber,
+                            getCurrency: "TRY",
                           ),
                           HomePage(
-                            totalBalance: "3.458,00 \$",
+                            customerNumber: widget.customerNumber,
+                            getCurrency: "USD",
                           ),
                           HomePage(
-                            totalBalance: "15.945,00 €",
+                            customerNumber: widget.customerNumber,
+                            getCurrency: "EUR",
                           ),
                         ],
                       ),

@@ -1,18 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/screens/homepage_screens/home_page_components/bankListWithBalance.dart';
-import 'package:turkbelge_application/screens/homepage_screens/home_page_components/homepage_background_color.dart';
-import 'package:turkbelge_application/screens/homepage_screens/home_page_components/total_balance_container.dart';
-import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
-import 'package:turkbelge_application/services/authentication_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
+
+import 'home_page_components/bankListWithBalance.dart';
+import 'home_page_components/homepage_background_color.dart';
+import 'home_page_components/total_balance_container.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/HomePage';
-  final String? totalBalance;
-  HomePage({required this.totalBalance});
+  final String getCurrency;
+  final String customerNumber;
+
+  HomePage({required this.getCurrency, required this.customerNumber});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -45,10 +45,20 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TotalBalanceContainerOnHomePage(
-          totalBalance: widget.totalBalance!,
+          customerNumber: widget.customerNumber,
         ),
         BankListWithBalance(),
       ],
     );
   }
+}
+
+class HomePageArguments {
+  String getCurrency;
+  String customerNumber;
+
+  HomePageArguments({
+    required this.customerNumber,
+    required this.getCurrency,
+  });
 }

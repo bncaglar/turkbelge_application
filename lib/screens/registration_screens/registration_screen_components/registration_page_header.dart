@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegistrationPageHeader extends StatefulWidget {
   final bool? addBackButton;
@@ -62,12 +62,7 @@ class _RegistrationPageHeaderState extends State<RegistrationPageHeader> {
     return Padding(
       padding: EdgeInsets.only(left: 1.w, top: 1.h, right: 1.w),
       child: IconButton(
-        onPressed: () {
-          LocalHelper.showTheBottomSheet(
-            context: context,
-            child: _callNumber(),
-          );
-        },
+        onPressed: () => launch("tel://+905448010899"),
         icon: Icon(
           Icons.phone_outlined,
           size: 20.sp,
@@ -225,10 +220,5 @@ class _RegistrationPageHeaderState extends State<RegistrationPageHeader> {
         ),
       ),
     );
-  }
-
-  _callNumber() async {
-    const number = '+905448010899'; //set the number here
-    await FlutterPhoneDirectCaller.callNumber(number);
   }
 }

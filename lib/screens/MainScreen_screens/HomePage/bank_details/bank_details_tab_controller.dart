@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_page.dart';
-import 'package:turkbelge_application/utilities/colors.dart';
+ import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 
 import 'bank_details_accounts.dart';
@@ -9,14 +8,14 @@ import 'bank_details_history.dart';
 class BankDetailsOfTabController extends StatefulWidget {
   static const routeName = '/BankDetailsOfTabController';
   final String? bankName;
-  final String? bankAccountKey;
+  final String? bankCode;
   final String? bankIcon;
-  final BoxFit? fitt;
+  final BoxFit? fit;
   BankDetailsOfTabController(
-      {required this.bankAccountKey,
+      {required this.bankCode,
       required this.bankIcon,
       required this.bankName,
-      required this.fitt});
+      required this.fit});
 
   @override
   _BankDetailsOfTabControllerState createState() =>
@@ -52,8 +51,8 @@ class _BankDetailsOfTabControllerState
                 height: 83.h,
                 child: TabBarView(
                   children: [
-                    BankAccountsSummary(),
-                    BankAccountsHistoryPage(),
+                    BankAccountsSummary(bankCode: widget.bankCode!,),
+                    BankAccountsHistoryPage(bankIconPath: widget.bankIcon!, fit: widget.fit!,),
                   ],
                 ),
               )

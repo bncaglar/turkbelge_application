@@ -9,11 +9,18 @@
       "client_info": {
         "mobilesdk_app_id": "1:1024489605375:android:31143b30dd34595a8ce4ca",
         "android_client_info": {
-          "package_name": "com.turkbelge_application",
-
+          "package_name": "com.turkbelge_application"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1024489605375-kuarkdtg727vg2fjdd48f3c6ipom37e2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.turkbelge_application",
+            "certificate_hash": "813ac3e30fbc221d38d40fb0371172e31a6a55a6"
+          }
+        },
         {
           "client_id": "1024489605375-uc6ovfn6vnhbvb8uqh4pfv9bqti66pfe.apps.googleusercontent.com",
           "client_type": 3

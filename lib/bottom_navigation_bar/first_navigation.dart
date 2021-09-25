@@ -1,18 +1,20 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
-import 'package:turkbelge_application/screens/homepage_screens/account_balance_screen.dart';
-import 'package:turkbelge_application/screens/homepage_screens/all_transactions/all_transactions_page.dart';
-import 'package:turkbelge_application/screens/homepage_screens/home_page_components/tab_controller.dart';
-import 'package:turkbelge_application/screens/homepage_screens/my_profile/my_profile_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/AccountBalance/account_balance_screen.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/AccountBalance/account_balance_tabController.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/tab_controller.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/all_transactions/AllTransactionTabController.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/my_profile_page.dart';
 import 'package:turkbelge_application/screens/noInternetConnectionPage.dart';
-import 'package:turkbelge_application/services/authentication_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class FirstNavigation extends StatefulWidget {
   static const routeName = '/FirstNavigation';
+  final String customerNumber;
+
+  FirstNavigation({required this.customerNumber});
 
   @override
   _FirstNavigationState createState() => _FirstNavigationState();
@@ -32,6 +34,7 @@ class _FirstNavigationState extends State<FirstNavigation> {
             return NoInternetConnectionPage();
           } else {
             return PageView(
+              physics: NeverScrollableScrollPhysics(),
               controller: _pagecontroller,
               onPageChanged: (index) {
                 setState(() {
@@ -39,9 +42,11 @@ class _FirstNavigationState extends State<FirstNavigation> {
                 });
               },
               children: [
-                TabControllerPage(),
-                AllTransactionsPage(),
-                AccountBalancePage(),
+                HomePageTabControllerPage(
+                  customerNumber: widget.customerNumber,
+                ),
+                AllTransactionTabController(),
+                AccountBalanceTabController(),
                 ProfilePage()
               ],
             );
@@ -121,8 +126,7 @@ class _FirstNavigationState extends State<FirstNavigation> {
           ),
         ],
         onTap: (index) {
-          _pagecontroller.animateToPage(index,
-              duration: Duration(milliseconds: 500), curve: Curves.ease);
+          _pagecontroller.jumpToPage(index);
         },
       ),
     );
@@ -138,4 +142,10 @@ class _FirstNavigationState extends State<FirstNavigation> {
       return false;
     }
   }
+}
+
+class FirstNavigationArguments {
+  String? customerNumber;
+
+  FirstNavigationArguments({required this.customerNumber});
 }

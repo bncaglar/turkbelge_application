@@ -37,9 +37,9 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
         backgroundColor: AppColors.primaryWightColor,
         body: BankDetailsOfTabController(
           bankIcon: widget.bankIcon!,
-          bankAccountKey: widget.bankAccountKey!,
+          bankCode: widget.bankAccountKey!,
           bankName: widget.bankName!,
-          fitt: widget.fitt!,
+          fit: widget.fitt!,
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:turkbelge_application/constants/strings.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_page.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 

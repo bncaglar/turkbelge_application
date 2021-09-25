@@ -1,11 +1,11 @@
 import 'dart:math';
 
-String generatePassword({
+String generateSessionId({
   bool letter = true,
   bool isNumber = true,
   bool isSpecial = true,
 }) {
-  final length = 8;
+  final length = 30;
   final letterLowerCase = "abcdefghijklmnopqrstuvwxyz";
   final letterUpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   final number = '0123456789';

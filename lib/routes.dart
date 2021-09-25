@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
-import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_page.dart';
-import 'package:turkbelge_application/screens/homepage_screens/bank_details/bank_details_tab_controller.dart';
-import 'package:turkbelge_application/screens/homepage_screens/homepage_screen.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_tab_controller.dart';
 import 'package:turkbelge_application/screens/noInternetConnectionPage.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/first_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/initial_step_of_registration.dart';
@@ -31,13 +30,6 @@ class Routes {
           break;
         }
 
-      case HomePage.routeName:
-        {
-          child = HomePage(
-            totalBalance: '',
-          );
-          break;
-        }
       case InitialStepOfRegistration.routeName:
         {
           child = InitialStepOfRegistration();
@@ -72,7 +64,8 @@ class Routes {
         }
       case FirstNavigation.routeName:
         {
-          child = FirstNavigation();
+          child = _buildFirstNavigationRoutes(
+              settings.arguments as FirstNavigationArguments);
           break;
         }
       case ForgetCustomerNumberPhoneAuth.routeName:
@@ -136,6 +129,13 @@ class Routes {
         userEmail: userEmail, userName: userName, userPassword: userPassword);
   }
 
+  // static Widget _buidlHomePageRoute(
+  //     HomePageArguments arguments
+  //     ){
+  //   String? getCurrency = arguments.getCurrency;
+  //   String? customerNumber = arguments.customerNumber;
+  //   return HomePage(getCurrency: getCurrency, customerNumber: customerNumber);
+  // }
   static Widget _buildEnterCodePageRoute(
       SecondStepOfRegistrationArguments arguments) {
     String? userName = arguments.userName;
@@ -153,6 +153,12 @@ class Routes {
         userPhoneNumber: userPhoneNumber,
         userTCKN: userTCKN,
         userVKN: userVKN);
+  }
+
+  static Widget _buildFirstNavigationRoutes(
+      FirstNavigationArguments arguments) {
+    String? customerNumber = arguments.customerNumber;
+    return FirstNavigation(customerNumber: customerNumber!);
   }
 
   static Widget _buildForgetCustomerNumberPhoneAuthRoutes(
@@ -195,10 +201,10 @@ class Routes {
     String? bankIcon = arguments.bankIcon;
     BoxFit? fitt = arguments.fitt;
     return BankDetailsOfTabController(
-      bankAccountKey: bankAccountKey,
+      bankCode: bankAccountKey,
       bankIcon: bankIcon,
       bankName: bankName,
-      fitt: fitt,
+      fit: fitt,
     );
   }
 }
