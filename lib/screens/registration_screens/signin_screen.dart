@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
@@ -37,13 +36,10 @@ class _SignInPageState extends State<SignInPage> {
     action: SnackBarAction(
       label: 'Tekrar dene',
       textColor: Colors.white,
-      onPressed: () {
-        // Some code to undo the change.
-      },
+      onPressed: () {},
     ),
     backgroundColor: Colors.red,
   );
-  bool sozlesmeDurumu = false;
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController customerNumberController = TextEditingController();
@@ -77,42 +73,113 @@ class _SignInPageState extends State<SignInPage> {
         showLoading = true;
       });
       try {
-        await AuthenticationService(_firebaseAuth).signIn(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim());
-        User? user = _firebaseAuth.currentUser;
-        if (user != null) {
-          String validateCustomerNumber = await FireStoreService()
-              .verifyEmailAddressWithCustomerNumber(
-                  customerNumberController.text, user.uid);
-          if (validateCustomerNumber == emailController.text) {
+        String verifyEmailForAuth = await FireStoreService()
+            .verifyEmailAddressWithCustomerNumber(
+                customerNumberController.text.trim());
+        if (verifyEmailForAuth == emailController.text.trim()) {
+          await AuthenticationService(_firebaseAuth).signIn(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim());
+          User? user = _firebaseAuth.currentUser;
+          if (user != null) {
+            ///we dont register the subusers into the firebase auth system so if the user is null its either the user credentials
+            ///are wrong or the user is subuser.
+
             await FireStoreService()
                 .saveUserLogInActivity(customerNumberController.text);
+
+            ///we save the logIn Activity to the firestore.
+            // String platformVersion = await GetMac.macAddress;
+            //
+            // print("platform version: ${platformVersion}");
+            // await FireStoreService().addMacAddress(
+            //     customerNumberController.text, platformVersion);
+            setState(() {
+              showLoading = false;
+            });
             Navigator.pushReplacementNamed(context, FirstNavigation.routeName,
                 arguments: FirstNavigationArguments(
-                    customerNumber: customerNumberController.text));
-            setState(() {
-              showLoading = false;
-            });
+                    customerNumber: customerNumberController.text.trim()));
+
+            ///navigate user to the FirstNavigationPage
+
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            await FireStoreService()
+                .saveUserFaultyInput(customerNumberController.text.trim());
             setState(() {
               showLoading = false;
             });
+            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+
+            ///password is wrong for admin
           }
         } else {
-          await FireStoreService()
-              .saveUserFaultyInput(customerNumberController.text);
-          ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-          setState(() {
-            showLoading = false;
-          });
+          try {
+            bool? checkCn = await FireStoreService()
+
+                ///check subuser's customer number here!
+                .checkIfCnExist(customerNumberController.text.trim());
+            if (checkCn == true) {
+              String getUserEmail = await FireStoreService()
+
+                  ///get subuser's email here!
+                  .checkUserEmail(customerNumberController.text.trim());
+              String getUserPassword = await FireStoreService()
+
+                  ///get subUser's password here!
+                  .checkUserPassword(passwordController.text.trim());
+              if (getUserEmail == emailController.text.trim()) {
+                if (getUserPassword == passwordController.text.trim()) {
+                  ///check if the email and password valid for subUser!
+                  await FireStoreService().saveUserLogInActivity(
+                      customerNumberController.text.trim());
+                  setState(() {
+                    showLoading = false;
+                  });
+                  Navigator.pushReplacementNamed(
+                      context, FirstNavigation.routeName,
+                      arguments: FirstNavigationArguments(
+                          customerNumber:
+                              customerNumberController.text.trim()));
+
+                  ///we ll log the sub user in
+
+                } else {
+                  await FireStoreService().saveUserFaultyInput(
+                      customerNumberController.text.trim());
+
+                  ///todo sign in failed
+                  ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+                  setState(() {
+                    showLoading = false;
+                  });
+                }
+              } else {
+                ///todo sign in failed
+                setState(() {
+                  showLoading = false;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+              }
+            } else {
+              ///todo sign in failed
+              setState(() {
+                showLoading = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            }
+          } on FirebaseAuthException {
+            setState(() {
+              showLoading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+          }
         }
       } on FirebaseAuthException {
-        ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
         setState(() {
           showLoading = false;
         });
+        ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
       }
     }
   }
@@ -160,23 +227,6 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Padding buildForgetInfoRow() {
-    return Padding(
-      padding: EdgeInsets.only(top: 1.h, left: 5.w, right: 5.w),
-      child: Container(
-        width: double.infinity,
-        height: 5.h,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            buildForgetCustomerNumberField(),
-            buildForgetPasswordField(),
-          ],
-        ),
-      ),
-    );
-  }
-
   InkWell buildForgetCustomerNumberField() {
     return InkWell(
       onTap: () {
@@ -218,7 +268,9 @@ class _SignInPageState extends State<SignInPage> {
           buildCustomerNumberField(),
           buildEmailField(),
           buildPasswordField(),
-          rememberMeBox(),
+          SizedBox(
+            height: 4.h,
+          ),
           buildLogInButton(),
           buildForgetInfoRow(),
         ],
@@ -298,36 +350,53 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Container rememberMeBox() {
-    ///todo remember me box will be used to keep user logged in, in accordance with the preference of the user
-    return Container(
-      height: 8.h,
-      width: double.infinity,
-      child: CheckboxListTile(
-        activeColor: AppColors.newColor4Background,
-        title: Text(
-          "Hesabımı açık tut",
-          style: TextStyle(
-            fontSize: LocalHelper.getFontSize(13),
-            color: AppColors.backgroundPrimaryColor,
-            fontWeight: FontWeight.w400,
-          ),
+  Padding buildForgetInfoRow() {
+    return Padding(
+      padding: EdgeInsets.only(top: 1.h, left: 5.w, right: 5.w),
+      child: Container(
+        width: double.infinity,
+        height: 5.h,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            buildForgetCustomerNumberField(),
+            buildForgetPasswordField(),
+          ],
         ),
-        value: sozlesmeDurumu,
-        controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (bool? data) async {
-          final prefs = await SharedPreferences.getInstance();
-          bool myBool = prefs.getBool('state') ?? false;
-          setState(() {
-            sozlesmeDurumu = data!;
-            myBool = sozlesmeDurumu;
-            prefs.setBool('state', myBool);
-            print(myBool);
-          });
-        },
       ),
     );
   }
+
+  // Container rememberMeBox() {
+  //   ///todo remember me box will be used to keep user logged in, in accordance with the preference of the user
+  //   return Container(
+  //     height: 8.h,
+  //     width: double.infinity,
+  //     child: CheckboxListTile(
+  //       activeColor: AppColors.newColor4Background,
+  //       title: Text(
+  //         "Hesabımı açık tut",
+  //         style: TextStyle(
+  //           fontSize: LocalHelper.getFontSize(13),
+  //           color: AppColors.backgroundPrimaryColor,
+  //           fontWeight: FontWeight.w400,
+  //         ),
+  //       ),
+  //       value: sozlesmeDurumu,
+  //       controlAffinity: ListTileControlAffinity.leading,
+  //       onChanged: (bool? data) async {
+  //         final prefs = await SharedPreferences.getInstance();
+  //         bool myBool = prefs.getBool('state') ?? false;
+  //         setState(() {
+  //           sozlesmeDurumu = data!;
+  //           myBool = sozlesmeDurumu;
+  //           prefs.setBool('state', myBool);
+  //           print(myBool);
+  //         });
+  //       },
+  //     ),
+  //   );
+  // }
 
   Future<bool?> checkInternetConnection() async {
     try {

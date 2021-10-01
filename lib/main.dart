@@ -1,18 +1,13 @@
-import 'dart:io';
 
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:provider/provider.dart';
-import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/l10n/ln10.dart';
 import 'package:turkbelge_application/routes.dart';
-import 'package:turkbelge_application/screens/noInternetConnectionPage.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
@@ -41,7 +36,7 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             onGenerateRoute: Routes.generateRoute,
-            title: 'Türk Belge',
+            title: 'İlekaekstre',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.blue,

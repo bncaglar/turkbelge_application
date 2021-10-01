@@ -51,7 +51,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       inputFormatters: [
-        LengthLimitingTextInputFormatter(widget.inputFormatters ?? 25),
+        LengthLimitingTextInputFormatter(widget.inputFormatters ?? 55),
       ],
       controller: widget.controller,
       keyboardType: widget.keyboardType ?? TextInputType.text,

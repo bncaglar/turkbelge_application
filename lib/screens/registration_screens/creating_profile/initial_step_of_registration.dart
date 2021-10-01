@@ -11,7 +11,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:turkbelge_application/widgets/form/password_again.dart';
 import 'package:turkbelge_application/widgets/form/password_form.dart';
 import 'package:turkbelge_application/widgets/navigation_button.dart';
-
 import '../signin_screen.dart';
 
 class InitialStepOfRegistration extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
-import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/faulty_input_activity_page.dart';
-import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/log_Activity_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/log_activitiy/faulty_input_activity_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/log_activitiy/log_Activity_page.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:turkbelge_application/widgets/custom_app_bar.dart';
 

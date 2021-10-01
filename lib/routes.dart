@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_page.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_tab_controller.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/add_new_bank.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/add_user/add_user_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/log_activitiy/log_tab_controller.dart';
 import 'package:turkbelge_application/screens/noInternetConnectionPage.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/first_step_of_registration.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/initial_step_of_registration.dart';
@@ -35,14 +39,34 @@ class Routes {
           child = InitialStepOfRegistration();
           break;
         }
+      case AddNewBankPage.routeName:
+        {
+          child = AddNewBankPage();
+          break;
+        }
       case ForgetPasswordPage.routeName:
         {
           child = ForgetPasswordPage();
           break;
         }
+      case SettingsPage.routeName:
+        {
+          child = SettingsPage();
+          break;
+        }
       case ForgetCustomerNumberPage.routeName:
         {
           child = ForgetCustomerNumberPage();
+          break;
+        }
+      case LogActivityTabController.routeName:
+        {
+          child = LogActivityTabController();
+          break;
+        }
+      case AddUserPage.routeName:
+        {
+          child = AddUserPage();
           break;
         }
       case FirstStepOfRegistration.routeName:
@@ -140,19 +164,10 @@ class Routes {
       SecondStepOfRegistrationArguments arguments) {
     String? userName = arguments.userName;
     String? userEmail = arguments.userEmail;
-    String? userPassword = arguments.userPassword;
-    String? userCustomerNumber = arguments.userCustomerNumber;
-    String? userTCKN = arguments.userTCKN;
-    String? userVKN = arguments.userVKN;
-    String? userPhoneNumber = arguments.userPhoneNumber;
     return SecondStepOfRegistration(
-        userPassword: userPassword,
-        userEmail: userEmail,
-        userName: userName,
-        userCustomerNumber: userCustomerNumber,
-        userPhoneNumber: userPhoneNumber,
-        userTCKN: userTCKN,
-        userVKN: userVKN);
+      userEmail: userEmail,
+      userName: userName,
+    );
   }
 
   static Widget _buildFirstNavigationRoutes(

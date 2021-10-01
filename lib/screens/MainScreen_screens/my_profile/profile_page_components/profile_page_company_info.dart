@@ -33,7 +33,7 @@ class _ProfilePageCompanyInfoState extends State<ProfilePageCompanyInfo> {
         children: [
           buildEachTableLeft("Müşteri No: ",15, 0),
           buildEachTableLeft("E-Posta: ",0, 0),
-          buildEachTableLeft("Şirket: ",0, 15)
+          buildEachTableLeft("Paket: ",0, 15)
         ],
       ),
     );
@@ -63,7 +63,7 @@ class _ProfilePageCompanyInfoState extends State<ProfilePageCompanyInfo> {
         children: [
           buildEachTableRight("653214",15, 0),
           buildEachTableRight("ekstreadmin@ilekaekstre.com.tr",0, 0),
-          buildEachTableRight("İleka Akademi A.Ş. ",0, 15),
+          buildEachTableRight("Gümüş Paket",0, 15),
         ],
       ),
     );

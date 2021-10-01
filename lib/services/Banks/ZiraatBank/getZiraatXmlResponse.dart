@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/routes.dart';
 import 'package:turkbelge_application/services/Banks/XmlParse.dart';
@@ -51,56 +52,22 @@ class GetZiraatXmlResponse {
     }
   }
 
-  void testsikis() async{
-    var envelope = '''
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
-   <soapenv:Body>
-      <tem:GetTransaction>
-         <!--Optional:-->
-         <tem:transactionRequest>
-            <!--Optional:-->
-            <tem:SessionID>B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E</tem:SessionID>
-            <!--Optional:-->
-            <tem:StartDate>2021-06-20 15:00:00</tem:StartDate>
-            <!--Optional:-->
-            <tem:EndDate>2021-09-15 15:00:00</tem:EndDate>
-            <!--Optional:-->
-            <tem:BankCode>ZB00</tem:BankCode>
-         </tem:transactionRequest>
-      </tem:GetTransaction>
-   </soapenv:Body>
-</soapenv:Envelope>
-''';
-    final String apiEndpoint =
-        "https://imza.turkbelge.com.tr/AccountTransaction.asmx?op=GetTransaction";
-    final Uri url = Uri.parse(apiEndpoint);
-    http.Response response = await http.post(url,
-        headers: {
-          "Content-Type": "text/xml; charset=utf-8",
-        },
-        body: envelope);
-
-  }
-
   Future<String?> GetZiraatWSDLResponse() async {
     ///Bitiş tarihi DateTime.now alıyoruz
     DateTime endDate = DateTime.now();
-    // String endDateString = endDate.toString().substring(0, 10).replaceRange(2, 2, ".");
-
+    String endDateString =
+        endDate.toString().substring(0, 10).replaceRange(2, 2, ".");
+    String bankCode = "ZB00";
+    String sessionID = "B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E";
     var envelope = '''
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
    <soapenv:Body>
       <tem:GetTransaction>
-         <!--Optional:-->
          <tem:transactionRequest>
-            <!--Optional:-->
-            <tem:SessionID>B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E</tem:SessionID>
-            <!--Optional:-->
+            <tem:SessionID>${sessionID}</tem:SessionID>
             <tem:StartDate>2021-06-20 15:00:00</tem:StartDate>
-            <!--Optional:-->
             <tem:EndDate>2021-09-15 15:00:00</tem:EndDate>
-            <!--Optional:-->
-            <tem:BankCode>ZB00</tem:BankCode>
+            <tem:BankCode>${bankCode}</tem:BankCode>
          </tem:transactionRequest>
       </tem:GetTransaction>
    </soapenv:Body>
@@ -114,14 +81,13 @@ class GetZiraatXmlResponse {
           "Content-Type": "text/xml; charset=utf-8",
         },
         body: envelope);
-
+    final yarak = Logger();
     var rawXmlResponse = response.body;
-    return rawXmlResponse;
-    // final Xml2Json xml2Json = Xml2Json();
-    // xml2Json.parse(rawXmlResponse);
-    // var jsonString = xml2Json.toParker();
-    // var data = jsonDecode(jsonString);
-    // final log = getLogger();
-    // log.i(data);
+    final Xml2Json xml2Json = Xml2Json();
+    xml2Json.parse(rawXmlResponse);
+    var jsonString = xml2Json.toParker();
+    var data = jsonDecode(jsonString);
+  //yarak.i(data["soap:Envelope"]["soap:Body"]["BankTransactionResponse"]["GetTransactionResult"]["TResponseXML"]);
+    return data["soap:Envelope"]["soap:Body"]["BankTransactionResponse"]["GetTransactionResult"]["TResponseXML"]["ArrayOfAccounts"]["Account"]["AvailableBalance"];
   }
 }

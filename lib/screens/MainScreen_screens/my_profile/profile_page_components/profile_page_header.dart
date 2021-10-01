@@ -1,6 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
+import 'package:turkbelge_application/logger/simple_log_printer.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page.dart';
+import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
+import 'package:turkbelge_application/services/Banks/ZiraatBank/getZiraatXmlResponse.dart';
+import 'package:turkbelge_application/services/authentication_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class ProfilePageHeader extends StatefulWidget {
@@ -9,6 +16,28 @@ class ProfilePageHeader extends StatefulWidget {
 }
 
 class _ProfilePageHeaderState extends State<ProfilePageHeader> {
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final log = Logger();
+
+  onClickLogOut() async {
+    log.i("OnClickLogOut Clicked!");
+    await AuthenticationService(_firebaseAuth).logOut();
+    if (_firebaseAuth.currentUser == null) {
+      Navigator.pushReplacementNamed(context, SignInPage.routeName);
+
+      ///todo log out successful
+    } else {
+      ///todo log out unsuccessful
+    }
+  }
+
+  onClickSettings() async{
+    log.i("onClickSettings Clicked!");
+   String? getWsdl = await GetZiraatXmlResponse().GetZiraatWSDLResponse();
+   log.wtf(getWsdl);
+   // Navigator.pushNamed(context, SettingsPage.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildHeader();
@@ -49,25 +78,31 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
     );
   }
 
-  Container buildPlaceHolder(){
+  Container buildPlaceHolder() {
     return Container(
       width: 13.w,
     );
   }
-  Container buildSettings(){
+
+  Container buildSettings() {
     return Container(
       width: 13.w,
       child: IconButton(
-        icon: Icon(Icons.settings,color: Colors.white, size: LocalHelper.getFontSize(20),),
-        onPressed: (){
-          print("Settings Pressed...");
+        icon: Icon(
+          Icons.settings,
+          color: Colors.white,
+          size: LocalHelper.getFontSize(20),
+        ),
+        onPressed: () {
+          onClickSettings();
         },
       ),
     );
   }
+
   CircleAvatar buildCircleAvatar() {
     return CircleAvatar(
-    radius: 25,
+      radius: 25,
       backgroundColor: AppColors.primaryWightColor,
     );
   }

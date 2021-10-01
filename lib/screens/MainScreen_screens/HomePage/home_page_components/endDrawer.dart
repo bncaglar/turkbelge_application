@@ -3,6 +3,7 @@ import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/constants/strings.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/add_new_bank.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class EndDrawerMainScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class _EndDrawerMainScreenState extends State<EndDrawerMainScreen> {
   final log = getLogger();
   onClickAdd() {
     log.i("onClickAdd started");
+    Navigator.pushNamed(context, AddNewBankPage.routeName);
   }
 
   onClickBankLogo() {

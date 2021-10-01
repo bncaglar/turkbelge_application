@@ -5,7 +5,7 @@ import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/pie_chart.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
-import 'package:turkbelge_application/widgets/endDrawer.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/endDrawer.dart';
 import '../homepage_screen.dart';
 import 'homepage_background_color.dart';
 import 'line_chart.dart';

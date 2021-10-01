@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
@@ -18,6 +19,7 @@ class FireStoreService {
   String _customerNumberHelper = "CustomerNumberHelper";
   String _subUsers = "SubUsers";
   String _banks = "Banks";
+  String _registeredMacs = "RegisteredMacs";
 
   ///todo The following function [registerUserToTheDB] will be used in different platform to register the user
   Future<void> registerUserToTheDB(
@@ -79,13 +81,16 @@ class FireStoreService {
   }
 
   Future<void> secondStepCreateUserInDB(
-    String _uid,
     String _name,
     String _email,
     String customerNumber,
     String _tckimlikNo,
     String _vergiKimlikNo,
     String _phoneNumber,
+    String _endDate,
+    String _kayitTarihi,
+    String _paketAdi,
+    String _startDate,
   ) async {
     try {
       return await _db!.collection(_userCollection).doc(customerNumber).set({
@@ -101,8 +106,64 @@ class FireStoreService {
     }
   }
 
+  Future<String> getEndDate(String _customerNumber) async {
+    try {
+      var data1 = (await _db!
+              .collection(_preAppliedUserCollection)
+              .doc(_customerNumber)
+              .get())
+          .data()!['endDate']
+          .toString();
+      return data1;
+    } on FirebaseException {
+      return ";";
+    }
+  }
+
+  Future<String> getPaketAdi(String _customerNumber) async {
+    try {
+      var data1 = (await _db!
+              .collection(_preAppliedUserCollection)
+              .doc(_customerNumber)
+              .get())
+          .data()!['paketAdi']
+          .toString();
+      return data1;
+    } on FirebaseException {
+      return ";";
+    }
+  }
+
+  Future<String> getStartDate(String _customerNumber) async {
+    try {
+      var data1 = (await _db!
+              .collection(_preAppliedUserCollection)
+              .doc(_customerNumber)
+              .get())
+          .data()!['startDate']
+          .toString();
+      return data1;
+    } on FirebaseException {
+      return ";";
+    }
+  }
+
+  Future<String> getRegistrationDate(String _customerNumber) async {
+    try {
+      var data1 = (await _db!
+              .collection(_preAppliedUserCollection)
+              .doc(_customerNumber)
+              .get())
+          .data()!['kayitTarihi']
+          .toString();
+      return data1;
+    } on FirebaseException {
+      return ";";
+    }
+  }
+
   Future<String> verifyEmailAddressWithCustomerNumber(
-      String _customerNumber, String _uid) async {
+      String _customerNumber) async {
     try {
       var data1 =
           (await _db!.collection(_userCollection).doc(_customerNumber).get())
@@ -115,19 +176,67 @@ class FireStoreService {
     }
   }
 
+  Future<String> checkUserEmail(String _customerNumber) async {
+    try {
+      var data = (await _db!.collection(_subUsers).doc(_customerNumber).get())
+          .data()!['email']
+          .toString();
+      return data;
+    } on FirebaseAuthException {
+      var error = "Error Occured";
+      return error;
+    }
+  }
+
+  Future<String> checkUserPassword(String _customerNumber) async {
+    try {
+      var data = (await _db!.collection(_subUsers).doc(_customerNumber).get())
+          .data()!['password']
+          .toString();
+      return data;
+    } on FirebaseAuthException {
+      var error = "Error Occured";
+      return error;
+    }
+  }
+
   Future<List> getCollectionDocList(String _collectionName) async {
     QuerySnapshot querySnapshot = await _db!.collection(_collectionName).get();
     var list = querySnapshot.docs;
     return list;
   }
 
-  Future<List> getNumberOfBank(String _customerNumber) async{
+  Future<List> getNumberOfBank(String _customerNumber) async {
     List? bankNameList;
-    QuerySnapshot querySnapshot = await _db!.collection(_userCollection).doc(_customerNumber).collection(_banks).get();
+    QuerySnapshot querySnapshot = await _db!
+        .collection(_userCollection)
+        .doc(_customerNumber)
+        .collection(_banks)
+        .get();
     print(querySnapshot);
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
     return allData;
   }
+
+  Future<bool?> checkIfCnExist(String _customerNumber) async {
+    try {
+      bool? checkCn;
+      await _db!
+          .collection(_subUsers)
+          .doc(_customerNumber)
+          .get()
+          .then((value) => value.exists ? checkCn = true : checkCn = false);
+      if (checkCn == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } on FirebaseAuthException {
+      var error = false;
+      return error;
+    }
+  }
+
   Future<bool?> checkCnForLogInActivity(String _customerNumber) async {
     try {
       bool? checkCn;
@@ -196,6 +305,42 @@ class FireStoreService {
             "hataliGiris": FieldValue.arrayUnion([
               {"IP": wifiIP, "time": Timestamp.now()}
             ]),
+          });
+        }
+      }
+    } on FirebaseException {}
+  }
+
+  Future<void> addMacAddress(String _customerNumber, String _macAddress) async {
+    try {
+      bool? isCnValid =
+          await FireStoreService().checkCnForLogInActivity(_customerNumber);
+      bool? checkIfExist;
+      if (isCnValid == true) {
+        await _db!
+            .collection(_userCollection)
+            .doc(_customerNumber)
+            .collection(_registeredMacs)
+            .doc(_macAddress)
+            .get()
+            .then((value) =>
+                value.exists ? checkIfExist = true : checkIfExist = false);
+        var _ref = _db!
+            .collection(_userCollection)
+            .doc(_customerNumber)
+            .collection(_registeredMacs)
+            .doc(_macAddress);
+        if (checkIfExist == true) {
+          return _ref.update({
+            "macAddresses": FieldValue.arrayUnion([
+              {"mac": _macAddress}
+            ])
+          });
+        } else {
+          return _ref.set({
+            "macAddresses": FieldValue.arrayUnion([
+              {"mac": _macAddress}
+            ])
           });
         }
       }
@@ -316,6 +461,19 @@ class FireStoreService {
     } catch (e) {
       var error = "Error";
       return error;
+    }
+  }
+
+  Future<bool> checkIfUserAdmin(_firebaseAuth) async {
+    try {
+      User? user = _firebaseAuth!.currentUser;
+      if (user != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } on FirebaseException {
+      return false;
     }
   }
 }

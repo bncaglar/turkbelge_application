@@ -86,6 +86,15 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
       if (authCredential.user != null) {
         //todo if user is exist
         //todo navigate to the next step
+        String endDate =
+            await FireStoreService().getEndDate(customerNumberController.text);
+        String paketAdi =
+            await FireStoreService().getPaketAdi(customerNumberController.text);
+        String startDate = await FireStoreService()
+            .getStartDate(customerNumberController.text);
+        String registrationDate = await FireStoreService()
+            .getRegistrationDate(customerNumberController.text);
+
         await FireStoreService().firstStepCreateUserInDB(
             user.uid,
             widget.userEmail!,
@@ -93,26 +102,24 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
             userVknNumber!,
             phone!,
             customerNumberController.text);
+
         await FireStoreService().secondStepCreateUserInDB(
-            user.uid,
             widget.userName!,
             widget.userEmail!,
             customerNumberController.text,
             userTcknNumber!,
             userVknNumber!,
-            phone!);
-
+            phone!,
+            endDate,
+            registrationDate,
+            paketAdi,
+            startDate);
         Navigator.pushReplacementNamed(
           context,
           SecondStepOfRegistration.routeName,
           arguments: SecondStepOfRegistrationArguments(
-              userVKN: userVknNumber,
-              userTCKN: userTcknNumber,
-              userPhoneNumber: phone,
-              userCustomerNumber: customerNumberController.text,
               userName: widget.userName,
-              userEmail: widget.userEmail,
-              userPassword: widget.userPassword),
+              userEmail: widget.userEmail,),
         );
       }
     } on FirebaseAuthException {

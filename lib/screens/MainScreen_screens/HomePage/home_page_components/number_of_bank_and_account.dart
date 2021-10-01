@@ -86,14 +86,9 @@ class _NumberOfBankAndAccountState extends State<NumberOfBankAndAccount> {
   }
 
   Future<int?> getNumberOfAccount() async {
-    final Xml2Json xml2Json = Xml2Json();
-    xml2Json.parse(DummyDataResponse.response);
-    var jsonString = xml2Json.toParker();
-    var data = jsonDecode(jsonString);
-    int numberOfAccount =
-        data["BankTransactionResponse"]["ArrayOfAccounts"].length;
-    print("numberOfAccount: " + numberOfAccount.toString());
-    return numberOfAccount;
+
+
+    return 2;
   }
 
   Future<int?> getNumberOfBank(String _customerNumber) async {

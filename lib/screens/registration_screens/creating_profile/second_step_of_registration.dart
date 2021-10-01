@@ -12,20 +12,10 @@ class SecondStepOfRegistration extends StatefulWidget {
   static const routeName = '/SecondStepOfRegistration';
   final String? userName;
   final String? userEmail;
-  final String? userPassword;
-  final String? userCustomerNumber;
-  final String? userTCKN;
-  final String? userVKN;
-  final String? userPhoneNumber;
 
   SecondStepOfRegistration({
-    required this.userPassword,
     required this.userEmail,
     required this.userName,
-    required this.userCustomerNumber,
-    required this.userPhoneNumber,
-    required this.userTCKN,
-    required this.userVKN,
   });
 
   @override
@@ -173,19 +163,10 @@ class _SecondStepOfRegistrationState extends State<SecondStepOfRegistration> {
 class SecondStepOfRegistrationArguments {
   final String? userName;
   final String? userEmail;
-  final String? userPassword;
-  final String? userCustomerNumber;
-  final String? userTCKN;
-  final String? userVKN;
-  final String? userPhoneNumber;
 
   SecondStepOfRegistrationArguments({
-    required this.userVKN,
-    required this.userTCKN,
-    required this.userPhoneNumber,
-    required this.userCustomerNumber,
     required this.userName,
     required this.userEmail,
-    required this.userPassword,
+
   });
 }
