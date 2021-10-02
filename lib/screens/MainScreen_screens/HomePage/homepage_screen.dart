@@ -11,8 +11,13 @@ class HomePage extends StatefulWidget {
   static const routeName = '/HomePage';
   final String getCurrency;
   final String customerNumber;
+  final bool isUserAdmin;
+  final String? subUserEmail;
 
-  HomePage({required this.getCurrency, required this.customerNumber});
+  HomePage({
+    required this.subUserEmail,
+    required this.isUserAdmin,
+    required this.getCurrency, required this.customerNumber});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -45,6 +50,9 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TotalBalanceContainerOnHomePage(
+          getCurrency: widget.getCurrency,
+          subUserEmail: widget.subUserEmail,
+          isUserAdmin: widget.isUserAdmin,
           customerNumber: widget.customerNumber,
         ),
         BankListWithBalance(),

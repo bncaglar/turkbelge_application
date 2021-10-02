@@ -173,7 +173,13 @@ class Routes {
   static Widget _buildFirstNavigationRoutes(
       FirstNavigationArguments arguments) {
     String? customerNumber = arguments.customerNumber;
-    return FirstNavigation(customerNumber: customerNumber!);
+    bool isUserAdmin = arguments.isUserAdmin;
+    String? subUserEmail = arguments.subUserEmail;
+    return FirstNavigation(
+      customerNumber: customerNumber!,
+      isUserAdmin: isUserAdmin,
+      subUserEmail: subUserEmail,
+    );
   }
 
   static Widget _buildForgetCustomerNumberPhoneAuthRoutes(

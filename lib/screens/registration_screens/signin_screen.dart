@@ -77,11 +77,13 @@ class _SignInPageState extends State<SignInPage> {
             .verifyEmailAddressWithCustomerNumber(
                 customerNumberController.text.trim());
         if (verifyEmailForAuth == emailController.text.trim()) {
+
           await AuthenticationService(_firebaseAuth).signIn(
               email: emailController.text.trim(),
               password: passwordController.text.trim());
           User? user = _firebaseAuth.currentUser;
           if (user != null) {
+            print("*******");
             ///we dont register the subusers into the firebase auth system so if the user is null its either the user credentials
             ///are wrong or the user is subuser.
 
@@ -99,6 +101,8 @@ class _SignInPageState extends State<SignInPage> {
             });
             Navigator.pushReplacementNamed(context, FirstNavigation.routeName,
                 arguments: FirstNavigationArguments(
+                  subUserEmail: "null",
+                    isUserAdmin: true,
                     customerNumber: customerNumberController.text.trim()));
 
             ///navigate user to the FirstNavigationPage
@@ -117,20 +121,21 @@ class _SignInPageState extends State<SignInPage> {
           try {
             bool? checkCn = await FireStoreService()
 
-                ///check subuser's customer number here!
-                .checkIfCnExist(customerNumberController.text.trim());
+                ///check subuser's customer number here
+                .checkIfSubUsersEmailExist(customerNumberController.text.trim(),
+                    emailController.text.trim());
             if (checkCn == true) {
-              String getUserEmail = await FireStoreService()
-
-                  ///get subuser's email here!
-                  .checkUserEmail(customerNumberController.text.trim());
-              String getUserPassword = await FireStoreService()
-
-                  ///get subUser's password here!
-                  .checkUserPassword(passwordController.text.trim());
+              ///get subuser's email here
+              String getUserEmail = await FireStoreService().getSubUsersEmail(
+                  customerNumberController.text.trim(),
+                  emailController.text.trim());
               if (getUserEmail == emailController.text.trim()) {
+                ///get subUser's password here
+                String getUserPassword = await FireStoreService()
+                    .checkUserPassword(passwordController.text.trim(),
+                        emailController.text.trim());
                 if (getUserPassword == passwordController.text.trim()) {
-                  ///check if the email and password valid for subUser!
+                  ///check if the email and password valid for subUser
                   await FireStoreService().saveUserLogInActivity(
                       customerNumberController.text.trim());
                   setState(() {
@@ -139,6 +144,8 @@ class _SignInPageState extends State<SignInPage> {
                   Navigator.pushReplacementNamed(
                       context, FirstNavigation.routeName,
                       arguments: FirstNavigationArguments(
+                        subUserEmail: emailController.text.trim(),
+                          isUserAdmin: false,
                           customerNumber:
                               customerNumberController.text.trim()));
 

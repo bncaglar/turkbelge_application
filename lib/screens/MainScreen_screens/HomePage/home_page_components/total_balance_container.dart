@@ -1,20 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
-import 'package:turkbelge_application/services/Banks/XmlParse.dart';
-import 'package:turkbelge_application/services/Banks/dummyData.dart';
+import 'package:turkbelge_application/services/Banks/ZiraatBank/getZiraatXmlResponse.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
-import 'package:xml/xml.dart';
-import 'package:xml2json/xml2json.dart';
+import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 
 import 'number_of_bank_and_account.dart';
 
 class TotalBalanceContainerOnHomePage extends StatefulWidget {
-  String? customerNumber;
-  TotalBalanceContainerOnHomePage({required this.customerNumber});
+  final String? customerNumber;
+  final bool isUserAdmin;
+  final String? subUserEmail;
+  final String? getCurrency;
+
+  TotalBalanceContainerOnHomePage(
+      {required this.subUserEmail,
+      required this.getCurrency,
+      required this.isUserAdmin,
+      required this.customerNumber});
+
   @override
   _TotalBalanceContainerOnHomePageState createState() =>
       _TotalBalanceContainerOnHomePageState();
@@ -43,7 +49,11 @@ class _TotalBalanceContainerOnHomePageState
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              NumberOfBankAndAccount(customerNumber: widget.customerNumber),
+              NumberOfBankAndAccount(
+                subUserEmail: widget.subUserEmail,
+                customerNumber: widget.customerNumber,
+                isUserAdmin: widget.isUserAdmin,
+              ),
               buildAccountTotalBalance(),
             ],
           ),
@@ -57,24 +67,23 @@ class _TotalBalanceContainerOnHomePageState
       width: 50.w,
       child: Center(
         child: FutureBuilder<double?>(
-          future: getAvailableBalance(),
+          future: widget.isUserAdmin
+              ? getAvailableBalanceForAdmin(widget.customerNumber!)
+              : getAvailableBalanceForSubUser(),
           builder: (BuildContext context, AsyncSnapshot<double?> snapshot) {
             double? toplamBakiye = snapshot.data;
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Text('Yükleniyor..');
+                return Text('...');
               default:
-                if (snapshot.hasError)
-                  return Text('Hata: ${snapshot.error}');
-                else
-                  return Text(
-                    toplamBakiye.toString() + " TRY",
-                    style: TextStyle(
-                      fontSize: LocalHelper.getFontSize(15),
-                      color: Colors.green,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  );
+                return Text(
+                  "${toplamBakiye.toString()} ${widget.getCurrency}",
+                  style: TextStyle(
+                    fontSize: LocalHelper.getFontSize(15),
+                    color: Colors.green,
+                    fontWeight: FontWeight.w400,
+                  ),
+                );
             }
           },
         ),
@@ -82,31 +91,42 @@ class _TotalBalanceContainerOnHomePageState
     );
   }
 
-  Future<double?> getAvailableBalance() async {
-    final log = Logger();
+  Future<double?> getAvailableBalanceForAdmin(String _customerNumber) async {
     try {
-      double toplamBakiye = 0;
-      final Xml2Json xml2Json = Xml2Json();
-      xml2Json.parse(DummyDataResponse.response);
-      var jsonString = xml2Json.toParker();
-      var data = jsonDecode(jsonString);
-      log.i(data["BankTransactionResponse"]["ArrayOfAccounts"]["Account"].length);
-      int numberOfAccount =
-          data["BankTransactionResponse"]["ArrayOfAccounts"]["Account"].length;
-      print(numberOfAccount.toString()+" ss");
-      if(numberOfAccount >=1){
-        for (int i = 0; i < numberOfAccount; i++) {
-          toplamBakiye = toplamBakiye +
-              double.parse(data["BankTransactionResponse"]["ArrayOfAccounts"]["Account"][i]["AvailableBalance"]);
+      var numberOfBankList =
+          await FireStoreService().getNumberOfBankForAdminList(_customerNumber);
+      var nameOfBanksAndCredentials;
+      String? availableBalance = "";
+      double balance = 0;
+      double totalBalance = 0;
+      for (int i = 0; i < numberOfBankList.length; i++) {
+        for (int x = 0; x < numberOfBankList[i]["NumberOfAccount"]; x++) {
+          nameOfBanksAndCredentials = await FireStoreService()
+              .getNumberOfBankForAdminListWithAccount(
+                  _customerNumber, numberOfBankList[i]["bankName"]);
+          availableBalance = await GetZiraatXmlResponse().getAvailableBalance(
+              nameOfBanksAndCredentials[x]["bankCode"],
+              nameOfBanksAndCredentials[x]["sessionID"]);
+          print(availableBalance);
+          balance = double.parse(availableBalance!);
+          totalBalance = totalBalance + balance;
         }
-      }else{
-        toplamBakiye = data["BankTransactionResponse"]["ArrayOfAccounts"]["Account"][0]["AvailableBalance"];
       }
-      log.i(toplamBakiye);
-      return toplamBakiye;
+      return totalBalance;
     } catch (e) {
+      print(e.toString());
       return 0;
     }
   }
 
+  Future<double?> getAvailableBalanceForSubUser() async {
+    try {
+      String? availableBalance = await GetZiraatXmlResponse()
+          .getAvailableBalance("ZB00", "B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E");
+      double balance = double.parse(availableBalance!);
+      return balance;
+    } catch (e) {
+      return 0;
+    }
+  }
 }

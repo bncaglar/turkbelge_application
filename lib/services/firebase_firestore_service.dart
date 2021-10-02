@@ -20,6 +20,7 @@ class FireStoreService {
   String _subUsers = "SubUsers";
   String _banks = "Banks";
   String _registeredMacs = "RegisteredMacs";
+  String _accounts = "Accounts";
 
   ///todo The following function [registerUserToTheDB] will be used in different platform to register the user
   Future<void> registerUserToTheDB(
@@ -176,9 +177,19 @@ class FireStoreService {
     }
   }
 
-  Future<String> checkUserEmail(String _customerNumber) async {
+  Future<String> getAdminBankCode() async {
+    ///todo
+    return ";";
+  }
+
+  Future<String> getSubUsersEmail(String _customerNumber, String _email) async {
     try {
-      var data = (await _db!.collection(_subUsers).doc(_customerNumber).get())
+      var data = (await _db!
+              .collection(_userCollection)
+              .doc(_customerNumber)
+              .collection(_subUsers)
+              .doc(_email)
+              .get())
           .data()!['email']
           .toString();
       return data;
@@ -188,10 +199,34 @@ class FireStoreService {
     }
   }
 
-  Future<String> checkUserPassword(String _customerNumber) async {
+  Future<String> getSubUsersEmailx(
+      String _customerNumber, String _email) async {
     try {
-      var data = (await _db!.collection(_subUsers).doc(_customerNumber).get())
-          .data()!['password']
+      var data = (await _db!
+              .collection(_userCollection)
+              .doc(_customerNumber)
+              .collection(_subUsers)
+              .doc(_email)
+              .get())
+          .data()!['name']
+          .toString();
+      return data;
+    } on FirebaseAuthException {
+      var error = "Error Occured";
+      return error;
+    }
+  }
+
+  Future<String> checkUserPassword(
+      String _customerNumber, String _email) async {
+    try {
+      var data = (await _db!
+              .collection(_userCollection)
+              .doc(_customerNumber)
+              .collection(_subUsers)
+              .doc(_email)
+              .get())
+          .data()!['passwordx']
           .toString();
       return data;
     } on FirebaseAuthException {
@@ -206,24 +241,96 @@ class FireStoreService {
     return list;
   }
 
-  Future<List> getNumberOfBank(String _customerNumber) async {
-    List? bankNameList;
+  Future<int> getNumberOfAccountForAdmin(String _customerNumber) async {
+    int totalNumberOfAccount = 0;
+
     QuerySnapshot querySnapshot = await _db!
         .collection(_userCollection)
         .doc(_customerNumber)
         .collection(_banks)
         .get();
-    print(querySnapshot);
+    Map allData = querySnapshot.docs.map((doc) => doc.data()).toList().asMap();
+    for (int i = 0; i < allData.length; i++) {
+      totalNumberOfAccount =
+          totalNumberOfAccount + allData[i]!["NumberOfAccount"] as int;
+    }
+    return totalNumberOfAccount;
+  }
+
+  Future<int> getNumberOfAccountForSubUser(
+      String _customerNumber, String _email) async {
+    int totalNumberOfAccount = 0;
+
+    QuerySnapshot querySnapshot = await _db!
+        .collection(_userCollection)
+        .doc(_customerNumber)
+        .collection(_subUsers)
+        .doc(_email)
+        .collection(_banks)
+        .get();
+    Map allData = querySnapshot.docs.map((doc) => doc.data()).toList().asMap();
+    for (int i = 0; i < allData.length; i++) {
+      totalNumberOfAccount =
+          totalNumberOfAccount + allData[i]!["NumberOfAccount"] as int;
+    }
+    return totalNumberOfAccount;
+  }
+
+  Future<int> getNumberOfBankForAdmin(String _customerNumber) async {
+    QuerySnapshot querySnapshot = await _db!
+        .collection(_userCollection)
+        .doc(_customerNumber)
+        .collection(_banks)
+        .get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return allData.length;
+  }
+
+  Future<int> getNumberOfBankForSubUser(
+      String _customerNumber, String _email) async {
+    QuerySnapshot querySnapshot = await _db!
+        .collection(_userCollection)
+        .doc(_customerNumber)
+        .collection(_subUsers)
+        .doc(_email)
+        .collection(_banks)
+        .get();
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return allData.length;
+  }
+
+  Future<List> getNumberOfBankForAdminList(String _customerNumber) async {
+    QuerySnapshot querySnapshot = await _db!
+        .collection(_userCollection)
+        .doc(_customerNumber)
+        .collection(_banks)
+        .get();
+    var allData = querySnapshot.docs.map((doc) => doc.data()).toList();
     return allData;
   }
 
-  Future<bool?> checkIfCnExist(String _customerNumber) async {
+  Future<List> getNumberOfBankForAdminListWithAccount(
+      String _customerNumber, String _bankName) async {
+    QuerySnapshot querySnapshot = await _db!
+        .collection(_userCollection)
+        .doc(_customerNumber)
+        .collection(_banks)
+        .doc(_bankName)
+        .collection(_accounts)
+        .get();
+    var allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return allData;
+  }
+
+  Future<bool?> checkIfSubUsersEmailExist(
+      String _customerNumber, String _email) async {
     try {
       bool? checkCn;
       await _db!
-          .collection(_subUsers)
+          .collection(_userCollection)
           .doc(_customerNumber)
+          .collection(_subUsers)
+          .doc(_email)
           .get()
           .then((value) => value.exists ? checkCn = true : checkCn = false);
       if (checkCn == true) {

@@ -8,6 +8,7 @@ import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/sett
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:turkbelge_application/services/Banks/ZiraatBank/getZiraatXmlResponse.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
+import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class ProfilePageHeader extends StatefulWidget {
@@ -33,9 +34,9 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
 
   onClickSettings() async{
     log.i("onClickSettings Clicked!");
-   String? getWsdl = await GetZiraatXmlResponse().GetZiraatWSDLResponse();
-   log.wtf(getWsdl);
-   // Navigator.pushNamed(context, SettingsPage.routeName);
+    List numberOfBankList =
+    await FireStoreService().getNumberOfBankForAdminList("313165");
+    print(numberOfBankList);
   }
 
   @override

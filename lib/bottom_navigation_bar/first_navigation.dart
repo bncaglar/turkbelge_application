@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
-import 'package:turkbelge_application/screens/MainScreen_screens/AccountBalance/account_balance_screen.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/AccountBalance/account_balance_tabController.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/tab_controller.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/all_transactions/AllTransactionTabController.dart';
@@ -13,8 +12,12 @@ import 'package:turkbelge_application/utilities/colors.dart';
 class FirstNavigation extends StatefulWidget {
   static const routeName = '/FirstNavigation';
   final String customerNumber;
-
-  FirstNavigation({required this.customerNumber});
+  final bool isUserAdmin;
+  final String subUserEmail;
+  FirstNavigation({
+    required this.subUserEmail,
+    required this.isUserAdmin,
+    required this.customerNumber});
 
   @override
   _FirstNavigationState createState() => _FirstNavigationState();
@@ -43,6 +46,8 @@ class _FirstNavigationState extends State<FirstNavigation> {
               },
               children: [
                 HomePageTabControllerPage(
+                  subUserEmail: widget.subUserEmail,
+                  isUserAdmin: widget.isUserAdmin,
                   customerNumber: widget.customerNumber,
                 ),
                 AllTransactionTabController(),
@@ -146,6 +151,10 @@ class _FirstNavigationState extends State<FirstNavigation> {
 
 class FirstNavigationArguments {
   String? customerNumber;
-
-  FirstNavigationArguments({required this.customerNumber});
+  bool isUserAdmin;
+  String subUserEmail;
+  FirstNavigationArguments({
+    required this.subUserEmail,
+    required this.isUserAdmin,
+    required this.customerNumber});
 }

@@ -13,7 +13,13 @@ import 'line_chart.dart';
 class HomePageTabControllerPage extends StatefulWidget {
   static const routeName = '/TabController';
   final String customerNumber;
-  HomePageTabControllerPage({required this.customerNumber});
+  final bool isUserAdmin;
+  final String? subUserEmail;
+
+  HomePageTabControllerPage({
+    required this.subUserEmail,
+    required this.isUserAdmin,
+    required this.customerNumber});
 
   @override
   _HomePageTabControllerPageState createState() => _HomePageTabControllerPageState();
@@ -91,14 +97,22 @@ class _HomePageTabControllerPageState extends State<HomePageTabControllerPage> {
                         physics: NeverScrollableScrollPhysics(),
                         children: [
                           HomePage(
+                            subUserEmail: widget.subUserEmail,
+                            isUserAdmin: widget.isUserAdmin,
                             customerNumber: widget.customerNumber,
                             getCurrency: "TRY",
                           ),
                           HomePage(
+                            subUserEmail: widget.subUserEmail,
+
+                            isUserAdmin: widget.isUserAdmin,
                             customerNumber: widget.customerNumber,
                             getCurrency: "USD",
                           ),
                           HomePage(
+                            subUserEmail: widget.subUserEmail,
+
+                            isUserAdmin: widget.isUserAdmin,
                             customerNumber: widget.customerNumber,
                             getCurrency: "EUR",
                           ),

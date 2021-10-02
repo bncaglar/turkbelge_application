@@ -7,12 +7,17 @@ import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
 
 class BankListWithBalance extends StatefulWidget {
+  // final bool isUserAdmin;
+  //
+  // BankListWithBalance({required this.isUserAdmin});
+
   @override
   _BankListWithBalanceState createState() => _BankListWithBalanceState();
 }
 
 class _BankListWithBalanceState extends State<BankListWithBalance> {
   final log = getLogger();
+
   @override
   Widget build(BuildContext context) {
     return buildBankListWithBalance();
