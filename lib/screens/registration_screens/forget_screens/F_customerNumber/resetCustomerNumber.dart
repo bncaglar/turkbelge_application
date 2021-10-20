@@ -7,22 +7,19 @@ import 'package:turkbelge_application/screens/registration_screens/forget_screen
 import 'package:turkbelge_application/services/authentication_service.dart';
 import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
-import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/widgets/backgroundALetter.dart';
+import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/widgets/formWidgets/email_form.dart';
 import 'package:turkbelge_application/widgets/formWidgets/password_form.dart';
 import 'package:turkbelge_application/widgets/formWidgets/tckn_or_vkn_form_new.dart';
 import 'package:turkbelge_application/widgets/navigator_button.dart';
 
-class ForgetCustomerNumberPage extends StatefulWidget {
-  static const routeName = '/ForgetCustomerNumberPage';
-
+class ResetCustomerNumber extends StatefulWidget {
   @override
-  _ForgetCustomerNumberPageState createState() =>
-      _ForgetCustomerNumberPageState();
+  _ResetCustomerNumberState createState() => _ResetCustomerNumberState();
 }
 
-class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
+class _ResetCustomerNumberState extends State<ResetCustomerNumber> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController tcknOrVknController = TextEditingController();
@@ -33,18 +30,27 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
   bool showLoading = false;
 
   AlertDialog alert = AlertDialog(
+    titlePadding: EdgeInsets.only(top: 1.90.h, right: 3.38.w, left: 3.38.w),
     clipBehavior: Clip.hardEdge,
     title: Column(
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            onPressed: (){
-              Get.back();
-            },
-            icon: Icon(
-              Icons.clear,
-              color: AppColors.clearIconColor,
+        InkWell(
+          onTap: () {
+            ///navigate back
+            Get.back();
+          },
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 3.38.w),
+              child: Container(
+                height: 1.63.h,
+                width: 2.89.w,
+                child: Icon(
+                  Icons.clear,
+                  color: AppColors.clearIconColor,
+                ),
+              ),
             ),
           ),
         ),
@@ -75,6 +81,7 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
           child: InkWell(
             onTap: () {
               Get.back();
+
             },
             child: Container(
               height: 7.06.h,
@@ -107,7 +114,6 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
     ],
   );
 
-
   displayDialog() {
     showDialog(
       context: context,
@@ -134,9 +140,7 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
         print(tcknOrVknController.text);
         if (tcknOrVknController.text.length == 11) {
           ///check if the input is tckn or vkn
-          print("uid : ${user!.uid}");
-          String verifyTckn = await FireStoreService().verifyTCKN(user.uid);
-          print("verify tckn : $verifyTckn");
+          String verifyTckn = await FireStoreService().verifyTCKN(user!.uid);
           if (verifyTckn == tcknOrVknController.text) {
             ///check if the tckn is valid
             ///todo navigate user to the next step
@@ -193,26 +197,24 @@ class _ForgetCustomerNumberPageState extends State<ForgetCustomerNumberPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Stack(
-          children: [
-            BackgroundALetter(),
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  buildSignInHeader(),
-                  buildSignInToAccountText(),
-                  buildTCKNorVKNForm(),
-                  buildEmailForm(),
-                  buildPasswordForm(),
-                  buildNavigatorBtn(),
-                  buildDesc(),
-                ],
-              ),
-            )
-          ],
-        ),
+    return Scaffold(
+      body: Stack(
+        children: [
+          BackgroundALetter(),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                buildSignInHeader(),
+                buildSignInToAccountText(),
+                buildTCKNorVKNForm(),
+                buildEmailForm(),
+                buildPasswordForm(),
+                buildNavigatorBtn(),
+                buildDesc(),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

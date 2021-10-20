@@ -15,16 +15,17 @@ class GetZiraatXmlResponse {
  try{
    DateTime endDate = DateTime.now();
    String endDateString = endDate.toString().substring(0, 10);
-   DateTime startDate = endDate.subtract(const Duration(days: 90));
+   DateTime startDate = endDate.subtract(const Duration(days: 15));
    String startDateString = startDate.toString().substring(0, 10);
    var envelope = '''
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
    <soapenv:Body>
       <tem:GetTransaction>
          <tem:transactionRequest>
-            <tem:SessionID>${sessionID}</tem:SessionID>
             <tem:StartDate>${startDateString}</tem:StartDate>
             <tem:EndDate>${endDateString}</tem:EndDate>
+            
+            <tem:SessionID>${sessionID}</tem:SessionID>
             <tem:BankCode>${bankCode}</tem:BankCode>
          </tem:transactionRequest>
       </tem:GetTransaction>
@@ -32,7 +33,7 @@ class GetZiraatXmlResponse {
 </soapenv:Envelope>
 ''';
    final String apiEndpoint =
-       "https://imza.turkbelge.com.tr/AccountTransaction.asmx?op=GetTransaction";
+       "https://apiportal.ilekaekstre.com/AccountTransaction.asmx?op=GetTransaction";
    final Uri url = Uri.parse(apiEndpoint);
    http.Response response = await http.post(url,
        headers: {

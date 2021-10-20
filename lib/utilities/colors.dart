@@ -26,4 +26,16 @@ class AppColors {
   static final homepageBankListBackgroundColor = HexColor("#f5f3f2");
   static final appBarBackgroundColor = HexColor("#24fff5");
   static final kremRengi = HexColor("#fffdd0");
+  static final textFormUnderLineColor = HexColor("#C3C3C3");
+  static final icon_color = HexColor("#4B4B4B");
+  static final SignInColorGradientStart = HexColor("#DB2820");
+  static final SignInColorGradientEnd = HexColor("##AC0700");
+  static final phoneColor = HexColor("#C2120B");
+  static final straightLineColor = HexColor("#CACACA");
+  static final clearIconColor = HexColor("#BFBFBF");
+  static final infoContentDialogColor = HexColor("#7B7B7B");
+  static final countDownColor = HexColor("#606060");
+  static final countDownBackgroundColor = HexColor("#E2E2E2");
+  static final headerColor = HexColor("#686868");
+  static final headerBelowColor = HexColor("#707070");
 }

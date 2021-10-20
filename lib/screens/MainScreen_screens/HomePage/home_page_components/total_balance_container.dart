@@ -107,7 +107,7 @@ class _TotalBalanceContainerOnHomePageState
           availableBalance = await GetZiraatXmlResponse().getAvailableBalance(
               nameOfBanksAndCredentials[x]["bankCode"],
               nameOfBanksAndCredentials[x]["sessionID"]);
-          print(availableBalance);
+          print(nameOfBanksAndCredentials[x]["sessionID"]);
           balance = double.parse(availableBalance!);
           totalBalance = totalBalance + balance;
         }

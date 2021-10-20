@@ -2,23 +2,24 @@ import 'dart:io';
 
 import 'package:countdown_progress_indicator/countdown_progress_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
+import 'package:turkbelge_application/screens/registration_screens/create_profile_screens/components/alreadyHaveAccountRow.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/second_step_of_registration.dart';
-import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/already_have_account_text.dart';
-import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
 import 'package:turkbelge_application/services/checkIfTCKNvalid.dart';
 import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
-import 'package:turkbelge_application/widgets/form/customer_number_form.dart';
-import 'package:turkbelge_application/widgets/form/enter_code_form.dart';
-import 'package:turkbelge_application/widgets/form/tckn_or_vkn_form.dart';
-import 'package:turkbelge_application/widgets/navigation_button.dart';
+import 'package:turkbelge_application/widgets/Straight_line.dart';
+import 'package:turkbelge_application/widgets/backgroundALetter.dart';
+import 'package:turkbelge_application/widgets/formWidgets/customer_number_form.dart';
+import 'package:turkbelge_application/widgets/formWidgets/enter_code_form.dart';
+import 'package:turkbelge_application/widgets/formWidgets/tckn_or_vkn_form_new.dart';
+import 'package:turkbelge_application/widgets/navigator_button.dart';
 
 import '../../noInternetConnectionPage.dart';
 import '../signin_screen.dart';
@@ -53,17 +54,90 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool showLoading = false;
-  final failedToSignIn = SnackBar(
-    content: Text('Bir hata oluştu!'),
-    action: SnackBarAction(
-      label: 'Tekrar dene',
-      textColor: Colors.white,
-      onPressed: () {
-        // Some code to undo the change.
-      },
+  AlertDialog alert = AlertDialog(
+    clipBehavior: Clip.hardEdge,
+    title: Column(
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            onPressed: (){
+              Get.back();
+            },
+            icon: Icon(
+              Icons.clear,
+              color: AppColors.clearIconColor,
+            ),
+          ),
+        ),
+        Container(
+          height: 10.46.h,
+          width: 18.59.w,
+          child: Image.asset(
+            "assets/ellipse.png",
+            fit: BoxFit.contain,
+          ),
+        ),
+      ],
     ),
-    backgroundColor: Colors.red,
+    content: Text(
+      "Girdiğiniz bilgiler hatalıdır. Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.",
+      textAlign: TextAlign.center,
+    ),
+    contentTextStyle: TextStyle(
+      fontFamily: 'Poppins',
+      fontSize: LocalHelper.getFontSize(12),
+      color: AppColors.infoContentDialogColor,
+      fontWeight: FontWeight.w500,
+    ),
+    actions: [
+      Padding(
+        padding: EdgeInsets.only(bottom: 4.21.h),
+        child: Center(
+          child: InkWell(
+            onTap: () {
+              Get.back();
+            },
+            child: Container(
+              height: 7.06.h,
+              width: 27.05.w,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    AppColors.SignInColorGradientStart,
+                    AppColors.SignInColorGradientEnd
+                  ],
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  "Tamam",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: LocalHelper.getFontSize(14),
+                    color: AppColors.primaryWightColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      )
+    ],
   );
+
+
+  displayDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
@@ -118,8 +192,9 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
           context,
           SecondStepOfRegistration.routeName,
           arguments: SecondStepOfRegistrationArguments(
-              userName: widget.userName,
-              userEmail: widget.userEmail,),
+            userName: widget.userName,
+            userEmail: widget.userEmail,
+          ),
         );
       }
     } on FirebaseAuthException {
@@ -127,7 +202,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
         showLoading = false;
       });
       print("xxxxxx");
-      ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+      displayDialog();
     }
   }
 
@@ -161,7 +236,6 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
         String validateCustomerNumberWithTCKN = await FireStoreService()
             .verifyCustomerNumberInPreAppliedUserCollectionWithTCKN(
                 customerNumberController.text);
-        print(validateCustomerNumberWithTCKN);
         if (validateCustomerNumberWithTCKN == "Error") {
           setState(() {
             checkUserIsPreApplied = false;
@@ -224,7 +298,7 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
             setState(() {
               showLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            displayDialog();
           },
           codeSent: (verificationId, resendingToken) async {
             setState(() {
@@ -233,10 +307,12 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
               this.verificationId = verificationId;
             });
           },
-          codeAutoRetrievalTimeout: (verificationId) async {},
+          codeAutoRetrievalTimeout: (verificationId) async {
+            displayDialog();
+          },
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+        displayDialog();
       }
     }
   }
@@ -253,8 +329,6 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
   String? userVknNumber = "";
   String? userTcknNumber = "";
 
-  final _phoneNumberKey = GlobalKey<FormState>();
-
   onClickLogIn() {
     log.i("onClickLogIn started");
     Navigator.pushNamed(context, SignInPage.routeName);
@@ -270,12 +344,23 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
         } else {
           return SafeArea(
             child: Scaffold(
+              backgroundColor: AppColors.primaryWightColor,
               body: showLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
+                  ? Stack(
+                      children: [
+                        BackgroundALetter(),
+                        Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ],
                     )
-                  : SingleChildScrollView(
-                      child: wholeBody(),
+                  : Stack(
+                      children: [
+                        BackgroundALetter(),
+                        SingleChildScrollView(
+                          child: buildBody(),
+                        ),
+                      ],
                     ),
             ),
           );
@@ -284,82 +369,86 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
     );
   }
 
-  Container wholeBody() {
-    return Container(
-      height: 95.h,
-      width: double.infinity,
+  Column buildBody() {
+    return Column(
+      children: [
+        buildSignInHeader(),
+        buildSignInToAccountText(),
+        currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
+            ? buildFirstStepBody()
+            : buildBody2(),
+        StraightLine(),
+        AlreadyHaveAccountRowCP(
+          topPadding: 1.29.h,
+          onClickLogIn: onClickLogIn,
+          secondText: 'Giriş Yap',
+          firstText: 'Zaten hesabın var mı?',
+          bottomPadding: 0,
+          fontSize: 12,
+        ),
+      ],
+    );
+  }
+
+  Padding buildSignInHeader() {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 9.10.h,
+      ),
+      child: Center(
+        child: Text(
+          'Hesap Oluştur',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: LocalHelper.getFontSize(22),
+            color: AppColors.headerColor,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.left,
+        ),
+      ),
+    );
+  }
+
+  Padding buildSignInToAccountText() {
+    return Padding(
+      padding: EdgeInsets.only(top: 0.679.h, bottom: 7.20.h),
+      child: Center(
+        child: Text(
+          'Yeni bir hesap oluştur',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: LocalHelper.getFontSize(14),
+            color: AppColors.headerBelowColor,
+            fontWeight: FontWeight.w500,
+          ),
+          textAlign: TextAlign.left,
+        ),
+      ),
+    );
+  }
+
+  SingleChildScrollView buildFirstStepBody() {
+    return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          RegistrationPageHeader(
-            addBackButton: true,
-            subText: AppLocalizations.of(context).createANewAccount,
-            headerText: AppLocalizations.of(context).createAccount,
-          ),
-          currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
-              ? buildFirstStepBody()
-              : buildBody2(),
-          AlreadyHaveAnAccountText(
-            onClickHighlightedText: () {
-              onClickLogIn();
-            },
-            highlightedText: AppLocalizations.of(context).logIn,
-            normalText: AppLocalizations.of(context).alreadyHaveAnAccount,
-          ),
+          buildFirstStepBodyNew(),
+          SizedBox(
+            height: 15.20.h,
+          )
         ],
       ),
     );
   }
 
-  Container buildFirstStepBody() {
-    return Container(
-      height: 55.h,
-      width: double.infinity,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            buildPhoneNumberField(),
-            enterYourCredentialsText(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Padding buildPhoneNumberField() {
-    return Padding(
-      padding: EdgeInsets.only(left: 5.w, right: 5.w),
-      child: Form(
-          key: _phoneNumberKey,
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                firstStepBody(),
-              ],
-            ),
-          )),
-    );
-  }
-
-  Padding enterYourCredentialsText() {
-    return Padding(
-      padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w),
-      child: Container(
-        width: double.infinity,
-        height: 6.h,
-        child: Center(
-          child: Text(
-            AppLocalizations.of(context).firstStepText,
-            style: TextStyle(
-              fontSize: LocalHelper.getFontSize(12),
-              color: AppColors.backgroundPrimaryColor,
-              fontWeight: FontWeight.w300,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
+  Form buildFirstStepBodyNew() {
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          firstStepBody(),
+        ],
       ),
     );
   }
@@ -370,50 +459,70 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
       children: <Widget>[
         buildCustomerNumberField(),
         buildTcknOrVkn(),
-        InternationalPhoneNumberInput(
-          locale: "tr",
-          hintText: "Telefon numarası",
-          errorMessage: "Geçersiz telefon numarası",
-          onInputChanged: (PhoneNumber number) {
-            setState(() {
-              phone = number.phoneNumber;
-            });
-          },
-          onInputValidated: (bool value) {
-            print(value);
-          },
-          selectorConfig: SelectorConfig(
-            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-          ),
-          ignoreBlank: false,
-          autoValidateMode: AutovalidateMode.disabled,
-          selectorTextStyle: TextStyle(color: Colors.black),
-          initialValue: number,
-          textFieldController: controller,
-          formatInput: false,
-          keyboardType:
-              TextInputType.numberWithOptions(signed: true, decimal: true),
-          inputBorder: OutlineInputBorder(),
-        ),
-        buildContinueNtb()
+        buildPhoneNumberForm(),
+        NavigatorButton(
+            showLoading: showLoading,
+            onTap: onClickContinueFirstStep,
+            textLabel: "Hesap Oluştur"),
+        buildDesc(),
       ],
+    );
+  }
+
+  Padding buildPhoneNumberForm(){
+    return Padding(
+      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 3.80.h),
+      child: InternationalPhoneNumberInput(
+        locale: "tr",
+        hintText: "Telefon numarası",
+        errorMessage: "Geçersiz telefon numarası",
+        onInputChanged: (PhoneNumber number) {
+          setState(() {
+            phone = number.phoneNumber;
+          });
+        },
+        onInputValidated: (bool value) {
+          print(value);
+        },
+        selectorConfig: SelectorConfig(
+          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+        ),
+        ignoreBlank: false,
+        autoValidateMode: AutovalidateMode.disabled,
+        selectorTextStyle: TextStyle(color: Colors.black),
+        initialValue: number,
+        textFieldController: controller,
+        formatInput: false,
+        keyboardType:
+        TextInputType.numberWithOptions(signed: true, decimal: true),
+        inputBorder: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Padding buildDesc() {
+    return Padding(
+      padding: EdgeInsets.only(left: 6.w, right: 6.w, top: 2.44.h),
+      child: Text(
+        "Türkiye Cumhuriyeti kimlik numaranı ya da vergi kimlik numaranı girerek hesabını oluşturmaya devam edebilirsin.",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: LocalHelper.getFontSize(11),
+          color: AppColors.infoContentDialogColor,
+          fontWeight: FontWeight.w600,
+        ),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
   Padding buildCustomerNumberField() {
     return Padding(
-      padding: EdgeInsets.only(bottom: 2.h),
-      child: Container(
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
-            borderRadius: BorderRadius.all(Radius.circular(5))),
-        child: Form(
-          key: _customerNumberKey,
-          child: CustomerNumberForm(
-            controller: customerNumberController,
-            labelText: AppLocalizations.of(context).customerNumber,
-          ),
+      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 2.h),
+      child: Form(
+        key: _customerNumberKey,
+        child: CustomCustomerNumberFormNew(
+          controller: customerNumberController,
         ),
       ),
     );
@@ -421,56 +530,11 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
 
   Padding buildTcknOrVkn() {
     return Padding(
-      padding: EdgeInsets.only(bottom: 4.w),
-      child: Container(
-        decoration: BoxDecoration(
-            border:
-                Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
-            borderRadius: BorderRadius.all(Radius.circular(5))),
-        child: Form(
-          key: _tcknOrVknKey,
-          child: TcknOrVknForm(
-            inputChangedValue: userTcknNumber,
-            controller: tcknOrVknController,
-            labelText: AppLocalizations.of(context).tcknOrVkn,
-            onEditingComplete: () {},
-          ),
-        ),
+      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 4.w),
+      child: Form(
+        key: _tcknOrVknKey,
+        child: TCKNVKNFormNew(controller: tcknOrVknController),
       ),
-    );
-  }
-
-  NavigationButton buildContinueNtb() {
-    return NavigationButton(
-      addBoxShape: false,
-      backgroundColor: AppColors.newColor4Background,
-      navigationButtonText: AppLocalizations.of(context).continueText,
-      textColor: AppColors.backgroundPrimaryColor,
-      onClickNavigatorButton: onClickContinueFirstStep,
-      margin: EdgeInsets.only(
-        top: 3.754.h,
-      ),
-    );
-  }
-
-  Column buildWholeBody2() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        RegistrationPageHeader(
-          addBackButton: true,
-          subText: AppLocalizations.of(context).createANewAccount,
-          headerText: AppLocalizations.of(context).createAccount,
-        ),
-        buildBody2(),
-        AlreadyHaveAnAccountText(
-          onClickHighlightedText: () {
-            onClickLogIn();
-          },
-          highlightedText: AppLocalizations.of(context).logIn,
-          normalText: AppLocalizations.of(context).alreadyHaveAnAccount,
-        ),
-      ],
     );
   }
 
@@ -480,7 +544,16 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
       children: <Widget>[
         countDown(),
         buildEnterCodeField(),
-        builddd(),
+        NavigatorButton(
+            showLoading: showLoading,
+            onTap: () {
+              PhoneAuthCredential phoneAuthCredential =
+                  PhoneAuthProvider.credential(
+                      verificationId: verificationId!,
+                      smsCode: codeSentController.text);
+              signInWithPhoneAuthCredential(phoneAuthCredential);
+            },
+            textLabel: "Devam"),
         enterCodeText(),
       ],
     );
@@ -488,16 +561,22 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
 
   Container countDown() {
     return Container(
-      height: 130,
-      width: 130,
+      height: 19.76.h,
+      width: 19.76.h,
       child: CountDownProgressIndicator(
-        strokeWidth: 5,
+        strokeWidth: 10,
         controller: countDownController,
-        valueColor: AppColors.newColor4Background,
-        backgroundColor: AppColors.primaryGreyColor.withOpacity(0.7),
+        valueColor: AppColors.countDownBackgroundColor,
+        backgroundColor: AppColors.SignInColorGradientStart,
         initialPosition: 1,
         duration: 120,
         text: 'Saniye',
+        timeTextStyle: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: LocalHelper.getFontSize(12),
+          color: AppColors.infoContentDialogColor,
+          fontWeight: FontWeight.w600,
+        ),
         onComplete: () {
           Navigator.pushReplacementNamed(context, SignInPage.routeName);
         },
@@ -505,37 +584,14 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
     );
   }
 
-  NavigationButton builddd() {
-    return NavigationButton(
-      addBoxShape: false,
-      backgroundColor: AppColors.newColor4Background,
-      navigationButtonText: AppLocalizations.of(context).continueText,
-      textColor: AppColors.backgroundPrimaryColor,
-      onClickNavigatorButton: () {
-        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
-            verificationId: verificationId!, smsCode: codeSentController.text);
-        signInWithPhoneAuthCredential(phoneAuthCredential);
-      },
-      margin: EdgeInsets.only(top: 3.754.h, left: 5.w, right: 5.w),
-    );
-  }
-
   Padding buildEnterCodeField() {
     return Padding(
-      padding: EdgeInsets.only(top: 3.h, left: 5.w, right: 5.w),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
-          borderRadius: BorderRadius.all(
-            Radius.circular(5),
-          ),
-        ),
-        child: Form(
-          key: _codeKey,
-          child: EnterCodeForm(
-            controller: codeSentController,
-            labelText: AppLocalizations.of(context).enterCode,
-          ),
+      padding: EdgeInsets.only(
+          top: 4.75.h, left: 7.72.w, right: 7.72.w, bottom: 3.80.h),
+      child: Form(
+        key: _codeKey,
+        child: EnterCodeFormNew(
+          controller: codeSentController,
         ),
       ),
     );
@@ -543,21 +599,17 @@ class _FirstStepOfRegistrationState extends State<FirstStepOfRegistration> {
 
   Padding enterCodeText() {
     return Padding(
-      padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w),
-      child: Container(
-        width: double.infinity,
-        height: 5.h,
-        child: Center(
-          child: Text(
-            AppLocalizations.of(context).secondStepText,
-            style: TextStyle(
-              fontSize: LocalHelper.getFontSize(12),
-              color: AppColors.backgroundPrimaryColor,
-              fontWeight: FontWeight.w300,
-            ),
-            textAlign: TextAlign.center,
-          ),
+      padding:
+          EdgeInsets.only(top: 2.44.h, left: 6.w, right: 6.w, bottom: 15.08.h),
+      child: Text(
+        "Telefon numarana gelen kodu girerek hesabını oluşturabilirsin.",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: LocalHelper.getFontSize(11),
+          color: AppColors.infoContentDialogColor,
+          fontWeight: FontWeight.w600,
         ),
+        textAlign: TextAlign.center,
       ),
     );
   }

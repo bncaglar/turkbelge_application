@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
-import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page.dart';
+
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
-import 'package:turkbelge_application/services/Banks/ZiraatBank/getZiraatXmlResponse.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
-import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class ProfilePageHeader extends StatefulWidget {
@@ -23,8 +20,9 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
   onClickLogOut() async {
     log.i("OnClickLogOut Clicked!");
     await AuthenticationService(_firebaseAuth).logOut();
+    Navigator.pushReplacementNamed(context, SignInPage.routeName);
+
     if (_firebaseAuth.currentUser == null) {
-      Navigator.pushReplacementNamed(context, SignInPage.routeName);
 
       ///todo log out successful
     } else {
@@ -34,9 +32,7 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
 
   onClickSettings() async{
     log.i("onClickSettings Clicked!");
-    List numberOfBankList =
-    await FireStoreService().getNumberOfBankForAdminList("313165");
-    print(numberOfBankList);
+
   }
 
   @override

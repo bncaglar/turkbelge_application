@@ -4,10 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:provider/provider.dart';
 import 'package:turkbelge_application/l10n/ln10.dart';
 import 'package:turkbelge_application/routes.dart';
+import 'package:turkbelge_application/screens/registration_screens/SignInScreen_renewed.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:turkbelge_application/services/authentication_service.dart';
@@ -34,14 +36,14 @@ class MyApp extends StatelessWidget {
               initialData: null,
             ),
           ],
-          child: MaterialApp(
+          child: GetMaterialApp(
             onGenerateRoute: Routes.generateRoute,
             title: 'İlekaekstre',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: SignInPage(),
+            home: SignInPageRenewed(),
             supportedLocales: L10n.all,
             localizationsDelegates: [
               AppLocalizations.delegate,

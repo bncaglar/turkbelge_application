@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
-import 'package:turkbelge_application/screens/registration_screens/create_profile_screens/components/alreadyHaveAccountRow.dart';
 import 'package:turkbelge_application/screens/registration_screens/creating_profile/first_step_of_registration.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:turkbelge_application/widgets/Straight_line.dart';
@@ -11,17 +10,16 @@ import 'package:turkbelge_application/widgets/formWidgets/email_form.dart';
 import 'package:turkbelge_application/widgets/formWidgets/name_form.dart';
 import 'package:turkbelge_application/widgets/formWidgets/password_form.dart';
 import 'package:turkbelge_application/widgets/navigator_button.dart';
+
 import '../signin_screen.dart';
+import 'components/alreadyHaveAccountRow.dart';
 
-class InitialStepOfRegistration extends StatefulWidget {
-  static const routeName = '/InitialStepOfRegistration';
-
+class InitialStepCP extends StatefulWidget {
   @override
-  _InitialStepOfRegistrationState createState() =>
-      _InitialStepOfRegistrationState();
+  _InitialStepCPState createState() => _InitialStepCPState();
 }
 
-class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
+class _InitialStepCPState extends State<InitialStepCP> {
   final log = getLogger();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -58,42 +56,6 @@ class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
     Navigator.pushNamed(context, SignInPage.routeName);
   }
 
-  double keyValidatorResponsive() {
-    if (_nameKey.currentState != null &&
-        _emailKey.currentState != null &&
-        _passwordKey.currentState != null &&
-        _newPasswordKey.currentState != null) {
-      if (_nameKey.currentState!.validate() &&
-          _emailKey.currentState!.validate() &&
-          _passwordKey.currentState!.validate() &&
-          _newPasswordKey.currentState!.validate()) {
-        return 16.60.h;
-      } else if (!_nameKey.currentState!.validate() &&
-          !_emailKey.currentState!.validate() &&
-          !_passwordKey.currentState!.validate() &&
-          !_newPasswordKey.currentState!.validate()) {
-        return 4.60.h;
-      } else if (!_nameKey.currentState!.validate() &&
-          !_passwordKey.currentState!.validate() &&
-          !_emailKey.currentState!.validate()) {
-        return 7.60.h;
-      } else if (!_emailKey.currentState!.validate() &&
-          !_passwordKey.currentState!.validate()) {
-        return 10.60.h;
-      } else if (!_nameKey.currentState!.validate() &&
-          !_passwordKey.currentState!.validate()) {
-        return 12.05.h;
-      } else if (!_nameKey.currentState!.validate() ||
-          !_emailKey.currentState!.validate() ||
-          !_passwordKey.currentState!.validate()) {
-        return 15.02.h;
-      }
-    } else {
-      return 18.02.h;
-    }
-    return 18.02.h;
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -105,34 +67,27 @@ class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  Column(
-                    children: [
-                      buildSignInHeader(),
-                      buildSignInToAccountText(),
-                      buildNameField(),
-                      buildEmailField(),
-                      buildPasswordField(),
-                      buildConfirmPasswordField(),
-                      NavigatorButton(
-                          showLoading: showLoading,
-                          onTap: onClickContinue,
-                          textLabel: "Devam"),
-                    ],
+                  buildSignInHeader(),
+                  buildSignInToAccountText(),
+                  buildNameField(),
+                  buildEmailField(),
+                  buildPasswordField(),
+                  buildConfirmPasswordField(),
+                  NavigatorButton(
+                      showLoading: showLoading,
+                      onTap: onClickContinue,
+                      textLabel: "Devam"),
+                  SizedBox(
+                    height: 1.58.h,
                   ),
-                  SizedBox(height: 14.h,),
-                  Column(
-                    children: [
-                      StraightLine(),
-                      AlreadyHaveAccountRowCP(
-                        topPadding: 1.29.h,
-                        onClickLogIn: onClickLogIn,
-                        secondText: 'Giriş Yap',
-                        firstText: 'Zaten hesabın var mı?',
-                        bottomPadding: 0,
-                        fontSize: 12,
-                      ),
-                    ],
-                  )
+                  StraightLine(),
+                  AlreadyHaveAccountRowCP(
+                    topPadding: 1.29.h,
+                    onClickLogIn: onClickLogIn,
+                    secondText: 'Giriş Yap',
+                    firstText: 'Zaten hesabın var mı?',
+                    bottomPadding: 0, fontSize: 12,
+                  ),
                 ],
               ),
             ),
@@ -153,7 +108,7 @@ class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
           style: TextStyle(
             fontFamily: 'Poppins',
             fontSize: LocalHelper.getFontSize(22),
-            color: AppColors.headerColor,
+            color: const Color(0xff686868),
             fontWeight: FontWeight.w600,
           ),
           textAlign: TextAlign.left,
@@ -164,14 +119,14 @@ class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
 
   Padding buildSignInToAccountText() {
     return Padding(
-      padding: EdgeInsets.only(top: 0.679.h, bottom: 5.20.h),
+      padding: EdgeInsets.only(top: 0.679.h, bottom: 7.20.h),
       child: Center(
         child: Text(
           'Yeni bir hesap oluştur',
           style: TextStyle(
             fontFamily: 'Poppins',
             fontSize: LocalHelper.getFontSize(14),
-            color: AppColors.headerBelowColor,
+            color: const Color(0xff707070),
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.left,
@@ -182,7 +137,7 @@ class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
 
   Padding buildNameField() {
     return Padding(
-      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 4.h),
+      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 5.15.h),
       child: Form(
         key: _nameKey,
         child: CustomNameFormNew(
@@ -194,7 +149,7 @@ class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
 
   Padding buildEmailField() {
     return Padding(
-      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 4.h),
+      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 5.29.h),
       child: Form(
         key: _emailKey,
         child: CustomEmailFormNew(
@@ -206,7 +161,7 @@ class _InitialStepOfRegistrationState extends State<InitialStepOfRegistration> {
 
   Padding buildPasswordField() {
     return Padding(
-      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 4.h),
+      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 5.36.h),
       child: Form(
         key: _passwordKey,
         child: CustomPasswordFormNew(

@@ -1,18 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:countdown_progress_indicator/countdown_progress_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_customer_number/forget_customer_number_verified_screen.dart';
-import 'package:turkbelge_application/screens/registration_screens/registration_screen_components/registration_page_header.dart';
 import 'package:turkbelge_application/services/firebase_firestore_service.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sizer/sizer.dart';
-import 'package:turkbelge_application/widgets/form/enter_code_form.dart';
+import 'package:turkbelge_application/widgets/formWidgets/enter_code_form.dart';
 import 'package:turkbelge_application/widgets/navigation_button.dart';
+import 'package:turkbelge_application/widgets/navigator_button.dart';
 
 import '../../signin_screen.dart';
 
@@ -52,17 +53,164 @@ class _ForgetCustomerNumberPhoneAuthState
   PhoneNumber number = PhoneNumber(isoCode: 'TR');
   bool showLoading = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
-  final failedToSignIn = SnackBar(
-    content: Text('Bir hata oluştu!'),
-    action: SnackBarAction(
-      label: 'Tekrar dene',
-      textColor: Colors.white,
-      onPressed: () {
-        // Some code to undo the change.
-      },
+  AlertDialog alert = AlertDialog(
+    clipBehavior: Clip.hardEdge,
+    title: Column(
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            onPressed: (){
+              Get.back();
+            },
+            icon: Icon(
+              Icons.clear,
+              color: AppColors.clearIconColor,
+            ),
+          ),
+        ),
+        Container(
+          height: 10.46.h,
+          width: 18.59.w,
+          child: Image.asset(
+            "assets/ellipse.png",
+            fit: BoxFit.contain,
+          ),
+        ),
+      ],
     ),
-    backgroundColor: Colors.red,
+    content: Text(
+      "Girdiğiniz bilgiler hatalıdır. Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.",
+      textAlign: TextAlign.center,
+    ),
+    contentTextStyle: TextStyle(
+      fontFamily: 'Poppins',
+      fontSize: LocalHelper.getFontSize(12),
+      color: AppColors.infoContentDialogColor,
+      fontWeight: FontWeight.w500,
+    ),
+    actions: [
+      Padding(
+        padding: EdgeInsets.only(bottom: 4.21.h),
+        child: Center(
+          child: InkWell(
+            onTap: () {
+              Get.back();
+            },
+            child: Container(
+              height: 7.06.h,
+              width: 27.05.w,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    AppColors.SignInColorGradientStart,
+                    AppColors.SignInColorGradientEnd
+                  ],
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  "Tamam",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: LocalHelper.getFontSize(14),
+                    color: AppColors.primaryWightColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      )
+    ],
   );
+
+
+  displayDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  void signInWithPhoneAuthCredential(
+      PhoneAuthCredential phoneAuthCredential) async {
+    setState(() {
+      showLoading = true;
+    });
+
+    try {
+      final authCredential =
+      await _auth.signInWithCredential(phoneAuthCredential);
+
+      setState(() {
+        showLoading = false;
+      });
+      if (authCredential.user != null) {
+        ///check if user is logged in via phone auth
+        if (widget.tcknOrVknNumber!.length == 11) {
+          ///tcknOrVknNumber is TCKN
+          String validateTckn =
+          await FireStoreService().verifyTCKN(authCredential.user!.uid);
+
+          ///check if TCKN is on the desired system
+          if (validateTckn == widget.tcknOrVknNumber) {
+            ///TODO NAVIGATE TO THE NEXT STEP
+            ///todo send customer number as an email
+            String? getCustomerNumber = await FireStoreService()
+                .getCustomerNumber(authCredential.user!.uid);
+            print(getCustomerNumber);
+            await FireStoreService().sendRemindCustomerNumberEmail(
+                getCustomerNumber, widget.userEmail!);
+            Navigator.pushReplacementNamed(
+              context,
+              ForgetCustomerNumberVerifiedPage.routeName,
+              arguments: ForgetCustomerNumberVerifiedPageArguments(
+                  userEmail: widget.userEmail),
+            );
+          } else {
+            ///tckn is not correct
+            displayDialog();          }
+        } else {
+          ///tcknOrVknNumber is VKN
+          String validateVkn =
+          await FireStoreService().verifyVKN(authCredential.user!.uid);
+          if (validateVkn == widget.tcknOrVknNumber) {
+            ///check if VKN is correct
+            ///TODO NAVIGATE TO THE NEXT STEP
+            ///todo send customer number as an email
+            String? getCustomerNumber = await FireStoreService()
+                .getCustomerNumber(authCredential.user!.uid);
+            print(getCustomerNumber);
+            await FireStoreService().sendRemindCustomerNumberEmail(
+                getCustomerNumber, widget.userEmail!);
+            Navigator.pushReplacementNamed(
+              context,
+              ForgetCustomerNumberVerifiedPage.routeName,
+              arguments: ForgetCustomerNumberVerifiedPageArguments(
+                  userEmail: widget.userEmail),
+            );
+          } else {
+            ///VKN IS NOT CORRECT
+            displayDialog();
+          }
+        }
+      } else {
+        ///user is not logged in(in such cases entered sms code is not correct or connection is interrupted)
+        displayDialog();
+      }
+    } on FirebaseAuthException {
+      setState(() {
+        showLoading = false;
+      });
+      displayDialog();
+    }
+  }
 
   onClickContinue() async {
     log.i("onClickContinue started");
@@ -83,7 +231,7 @@ class _ForgetCustomerNumberPhoneAuthState
             setState(() {
               showLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
+            displayDialog();
           },
           codeSent: (verificationId, resendingToken) async {
             setState(() {
@@ -97,6 +245,7 @@ class _ForgetCustomerNumberPhoneAuthState
         );
       } on FirebaseException {
         ///THROW ERROR
+        displayDialog();
       }
     }
   }
@@ -122,11 +271,6 @@ class _ForgetCustomerNumberPhoneAuthState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            RegistrationPageHeader(
-              addBackButton: true,
-              subText: AppLocalizations.of(context).resetYourCustomerNumber,
-              headerText: AppLocalizations.of(context).forgotMyCustomerNumber,
-            ),
             currentState == ForgetCustomerNumberState.SHOW_PHONE_INPUT_FIELD
                 ? showPhoneInputField()
                 : showVerificationCodeField()
@@ -139,16 +283,18 @@ class _ForgetCustomerNumberPhoneAuthState
   Column showPhoneInputField() {
     return Column(
       children: [
-        buildPhoneNumberField(),
-        buildResetButton(),
-        enterYourCredentialsText(),
+        buildSignInHeader(),
+        buildSignInToAccountText(),
+        buildPhoneNumberForm(),
+        buildNavigatorBtn(),
+        buildDesc(),
       ],
     );
   }
 
-  Padding buildPhoneNumberField() {
+  Padding buildPhoneNumberForm(){
     return Padding(
-      padding: EdgeInsets.only(top: 5.h, left: 5.w, right: 5.w),
+      padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w, bottom: 3.80.h),
       child: InternationalPhoneNumberInput(
         locale: "tr",
         hintText: "Telefon numarası",
@@ -171,43 +317,39 @@ class _ForgetCustomerNumberPhoneAuthState
         textFieldController: controller,
         formatInput: false,
         keyboardType:
-            TextInputType.numberWithOptions(signed: true, decimal: true),
+        TextInputType.numberWithOptions(signed: true, decimal: true),
         inputBorder: OutlineInputBorder(),
       ),
     );
   }
 
-  NavigationButton buildResetButton() {
-    return NavigationButton(
-      addBoxShape: false,
-      navigationButtonText: "Devam",
-      textColor: AppColors.backgroundPrimaryColor,
-      onClickNavigatorButton: onClickContinue,
-      margin: EdgeInsets.only(
-        left: 4.69.w,
-        right: 4.69.w,
-        top: 4.754.h,
+  Padding buildNavigatorBtn(){
+    return Padding(
+      padding: EdgeInsets.only(
+        right: 7.72.w, left: 7.72.w, bottom: 3.80.h
+      ),
+      child: NavigatorButton(
+        textLabel: "Devam",
+        onTap: onClickContinue,
+        showLoading: showLoading,
       ),
     );
   }
 
-  Padding enterYourCredentialsText() {
+  Padding buildDesc(){
     return Padding(
-      padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w),
-      child: Container(
-        width: double.infinity,
-        height: 6.h,
-        child: Center(
-          child: Text(
-            "Telefon numaranı girdikten sonra gelen kodu girerek müşteri numaranı öğrenebilirsin.",
-            style: TextStyle(
-              fontSize: LocalHelper.getFontSize(12),
-              color: AppColors.backgroundPrimaryColor,
-              fontWeight: FontWeight.w300,
-            ),
-            textAlign: TextAlign.center,
-          ),
+      padding: EdgeInsets.only(
+        right: 6.w, left: 6.w,
+      ),
+      child: Text(
+        "Müşteri ve telefon numaranı girdikten sonra gelen kodu girerek şifreni sıfırlayabilirsin. .",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: LocalHelper.getFontSize(11),
+          color: AppColors.infoContentDialogColor,
+          fontWeight: FontWeight.w600,
         ),
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -216,9 +358,20 @@ class _ForgetCustomerNumberPhoneAuthState
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
+        buildSignInHeader(),
+        buildSignInToAccountText(),
         countDown(),
         buildEnterCodeField(),
-        builddd(),
+        NavigatorButton(
+            showLoading: showLoading,
+            onTap: () {
+              PhoneAuthCredential phoneAuthCredential =
+              PhoneAuthProvider.credential(
+                  verificationId: verificationId!,
+                  smsCode: codeSentController.text);
+              signInWithPhoneAuthCredential(phoneAuthCredential);
+            },
+            textLabel: "Devam"),
         enterCodeText(),
       ],
     );
@@ -226,16 +379,22 @@ class _ForgetCustomerNumberPhoneAuthState
 
   Container countDown() {
     return Container(
-      height: 130,
-      width: 130,
+      height: 19.76.h,
+      width: 19.76.h,
       child: CountDownProgressIndicator(
-        strokeWidth: 5,
+        strokeWidth: 10,
         controller: countDownController,
-        valueColor: AppColors.newColor4Background,
-        backgroundColor: AppColors.primaryGreyColor.withOpacity(0.7),
+        valueColor: AppColors.countDownBackgroundColor,
+        backgroundColor: AppColors.SignInColorGradientStart,
         initialPosition: 1,
         duration: 120,
         text: 'Saniye',
+        timeTextStyle: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: LocalHelper.getFontSize(12),
+          color: AppColors.infoContentDialogColor,
+          fontWeight: FontWeight.w600,
+        ),
         onComplete: () {
           Navigator.pushReplacementNamed(context, SignInPage.routeName);
         },
@@ -245,131 +404,67 @@ class _ForgetCustomerNumberPhoneAuthState
 
   Padding buildEnterCodeField() {
     return Padding(
-      padding: EdgeInsets.only(top: 3.h, left: 5.w, right: 5.w),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.backgroundPrimaryColor, width: 1),
-          borderRadius: BorderRadius.all(
-            Radius.circular(5),
-          ),
-        ),
-        child: Form(
-          key: _codeKey,
-          child: EnterCodeForm(
-            controller: codeSentController,
-            labelText: AppLocalizations.of(context).enterCode,
-          ),
+      padding: EdgeInsets.only(
+          top: 4.75.h, left: 7.72.w, right: 7.72.w, bottom: 3.80.h),
+      child: Form(
+        key: _codeKey,
+        child: EnterCodeFormNew(
+          controller: codeSentController,
         ),
       ),
     );
   }
 
-  NavigationButton builddd() {
-    return NavigationButton(
-      addBoxShape: false,
-      backgroundColor: AppColors.newColor4Background,
-      navigationButtonText: AppLocalizations.of(context).continueText,
-      textColor: AppColors.backgroundPrimaryColor,
-      onClickNavigatorButton: () {
-        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
-            verificationId: verificationId!, smsCode: codeSentController.text);
-        signInWithPhoneAuthCredential(phoneAuthCredential);
-      },
-      margin: EdgeInsets.only(top: 3.754.h, left: 5.w, right: 5.w),
+  Padding enterCodeText() {
+    return Padding(
+      padding:
+      EdgeInsets.only(top: 2.44.h, left: 6.w, right: 6.w, bottom: 15.08.h),
+      child: Text(
+        "Telefon numarana gelen kodu girerek müşteri numaranı öğrenebilirsin.",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: LocalHelper.getFontSize(11),
+          color: AppColors.infoContentDialogColor,
+          fontWeight: FontWeight.w600,
+        ),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
-  void signInWithPhoneAuthCredential(
-      PhoneAuthCredential phoneAuthCredential) async {
-    setState(() {
-      showLoading = true;
-    });
-
-    try {
-      final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
-
-      setState(() {
-        showLoading = false;
-      });
-      if (authCredential.user != null) {
-        ///check if user is logged in via phone auth
-        if (widget.tcknOrVknNumber!.length == 11) {
-          ///tcknOrVknNumber is TCKN
-          String validateTckn =
-              await FireStoreService().verifyTCKN(authCredential.user!.uid);
-
-          ///check if TCKN is on the desired system
-          if (validateTckn == widget.tcknOrVknNumber) {
-            ///TODO NAVIGATE TO THE NEXT STEP
-            ///todo send customer number as an email
-            String? getCustomerNumber = await FireStoreService()
-                .getCustomerNumber(authCredential.user!.uid);
-            print(getCustomerNumber);
-            await FireStoreService().sendRemindCustomerNumberEmail(
-                getCustomerNumber, widget.userEmail!);
-            Navigator.pushReplacementNamed(
-              context,
-              ForgetCustomerNumberVerifiedPage.routeName,
-              arguments: ForgetCustomerNumberVerifiedPageArguments(
-                  userEmail: widget.userEmail),
-            );
-          } else {
-            ///tckn is not correct
-            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-          }
-        } else {
-          ///tcknOrVknNumber is VKN
-          String validateVkn =
-              await FireStoreService().verifyVKN(authCredential.user!.uid);
-          if (validateVkn == widget.tcknOrVknNumber) {
-            ///check if VKN is correct
-            ///TODO NAVIGATE TO THE NEXT STEP
-            ///todo send customer number as an email
-            String? getCustomerNumber = await FireStoreService()
-                .getCustomerNumber(authCredential.user!.uid);
-            print(getCustomerNumber);
-            await FireStoreService().sendRemindCustomerNumberEmail(
-                getCustomerNumber, widget.userEmail!);
-            Navigator.pushReplacementNamed(
-              context,
-              ForgetCustomerNumberVerifiedPage.routeName,
-              arguments: ForgetCustomerNumberVerifiedPageArguments(
-                  userEmail: widget.userEmail),
-            );
-          } else {
-            ///VKN IS NOT CORRECT
-            ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-          }
-        }
-      } else {
-        ///user is not logged in(in such cases entered sms code is not correct or connection is interrupted)
-        ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-      }
-    } on FirebaseAuthException {
-      setState(() {
-        showLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(failedToSignIn);
-    }
+  Padding buildSignInHeader() {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 9.10.h,
+      ),
+      child: Center(
+        child: Text(
+          'Müşteri Numaramı Unuttum',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: LocalHelper.getFontSize(22),
+            color: AppColors.headerColor,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.left,
+        ),
+      ),
+    );
   }
 
-  Padding enterCodeText() {
+  Padding buildSignInToAccountText() {
     return Padding(
-      padding: EdgeInsets.only(top: 2.h, left: 5.w, right: 5.w),
-      child: Container(
-        width: double.infinity,
-        height: 5.h,
-        child: Center(
-          child: Text(
-            "Telefon numarana gelen kodu girerek müşteri numaranı öğrenebilirsin",
-            style: TextStyle(
-              fontSize: LocalHelper.getFontSize(12),
-              color: AppColors.backgroundPrimaryColor,
-              fontWeight: FontWeight.w300,
-            ),
-            textAlign: TextAlign.center,
+      padding: EdgeInsets.only(top: 0.679.h, bottom: 4.21.h),
+      child: Center(
+        child: Text(
+          'Müşteri numaranı anında elde et',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: LocalHelper.getFontSize(14),
+            color: AppColors.headerBelowColor,
+            fontWeight: FontWeight.w500,
           ),
+          textAlign: TextAlign.left,
         ),
       ),
     );

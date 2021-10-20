@@ -196,20 +196,11 @@ class _SignInPageState extends State<SignInPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.primaryWightColor,
-        body: FutureBuilder<bool?>(
-          future: checkInternetConnection(),
-          builder: (BuildContext context, AsyncSnapshot<bool?> snapshot) {
-            if (snapshot.data == false) {
-              return NoInternetConnectionPage();
-            } else {
-              return showLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : buildBodyColumn();
-            }
-          },
-        ),
+        body: Stack(
+          children: <Widget>[
+
+          ],
+        )
       ),
     );
   }
