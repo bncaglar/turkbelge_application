@@ -29,7 +29,7 @@ class _CustomNameFormNewState extends State<CustomNameFormNew> {
       controller: widget.controller,
       keyboardType: TextInputType.name,
       prefixIcon: BuildLogo(
-          logoPath: "assets/user.png",
+          logoPath: "svg/user.svg",
           height: 2.98.h,
           width: 3.98.w,
           rightPadding: 4.95.w),

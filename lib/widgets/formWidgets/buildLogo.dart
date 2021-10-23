@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
 class BuildLogo extends StatefulWidget {
@@ -30,14 +31,20 @@ class _BuildLogoState extends State<BuildLogo> {
     return Padding(
       padding: EdgeInsets.only(right: rightPadding),
       child: Container(
-          height: height,
-          width: width,
-          child: ImageIcon(
-            AssetImage(
-              logoPath,
-            ),
-            color: AppColors.icon_color,
-          )),
+        height: height,
+        width: width,
+        child: buildIconButton(logoPath, AppColors.icon_color)
+
+      ),
+    );
+  }
+  Container buildIconButton(String iconPath, Color color){
+    return Container(
+      child: SvgPicture.asset(
+        iconPath,
+        color: color,
+      ),
     );
   }
 }
+

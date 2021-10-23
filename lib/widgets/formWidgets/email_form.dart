@@ -33,7 +33,7 @@ class _CustomEmailFormNewState extends State<CustomEmailFormNew> {
       controller: widget.controller,
       keyboardType: TextInputType.emailAddress,
       prefixIcon: BuildLogo(
-         logoPath: "assets/envelope.png", height: 2.72.h, width: 5.28.w,  rightPadding: 4.37.w,
+         logoPath: "svg/envelope.svg", height: 2.72.h, width: 5.28.w,  rightPadding: 4.37.w,
       ),
       hintText: "E-posta",
       isObscureText: false,

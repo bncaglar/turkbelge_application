@@ -55,7 +55,6 @@ dependencies:
   wifi_info_flutter: ^2.0.2
 
   #preview the application on various devices
-  device_preview: ^0.7.4
 
   #check internet connection
   connectivity: ^3.0.6
@@ -69,14 +68,16 @@ dependencies:
   flutter_native_splash: ^1.2.4
   awesome_dialog: ^2.1.1
   get: ^4.3.8
-
+  flutter_svg: ^0.23.0+1
+  number_slide_animation: ^0.2.1
+  syncfusion_flutter_charts: ^19.3.46
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: pdfs/logomuz.png
+  image: assets/logo_header.png
   android: true
   ios: true
 
@@ -86,4 +87,5 @@ flutter:
 
   assets:
     - assets/
+    - svg/
 

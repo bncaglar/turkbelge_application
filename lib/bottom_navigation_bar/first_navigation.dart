@@ -1,11 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/AccountBalance/account_balance_tabController.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/tab_controller.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/homepage.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/all_transactions/AllTransactionTabController.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/all_transactions/all_transaction_renewed.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/my_profile_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/profile_page/profile_page_renewed.dart';
 import 'package:turkbelge_application/screens/noInternetConnectionPage.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 
@@ -45,94 +50,102 @@ class _FirstNavigationState extends State<FirstNavigation> {
                 });
               },
               children: [
-                HomePageTabControllerPage(
-                  subUserEmail: widget.subUserEmail,
-                  isUserAdmin: widget.isUserAdmin,
-                  customerNumber: widget.customerNumber,
-                ),
-                AllTransactionTabController(),
+                HomePage(),
+                AllTransactionRenewed(),
                 AccountBalanceTabController(),
-                ProfilePage()
+                ProfilePageRenewed()
               ],
             );
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedScreen,
-        elevation: 0,
-        type: BottomNavigationBarType.fixed,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: selectedScreen == 0
-                  ? AppColors.newColor4Background
-                  : AppColors.bottomNavigationBarColor,
-            ),
-            title: Text(
-              "Anasayfa",
-              style: TextStyle(
+      bottomNavigationBar: Container(
+        height: 8.55.h,
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.navigationBorderColor)
+        ),
+        child: BottomNavigationBar(
+          currentIndex: selectedScreen,
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                "svg/time-forward.svg",
                 color: selectedScreen == 0
-                    ? AppColors.newColor4Background
-                    : AppColors.bottomNavigationBarColor,
-                fontSize: LocalHelper.getFontSize(12),
-                fontWeight: FontWeight.w400,
+                    ? AppColors.SignInColorGradientStart
+                    : AppColors.infoContentDialogColor,
+              ),
+              title: Text(
+                "Anasayfa",
+                style: TextStyle(
+                  color: selectedScreen == 0
+                      ? AppColors.SignInColorGradientStart
+                      : AppColors.infoContentDialogColor,
+                  fontSize: LocalHelper.getFontSize(11),
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_outlined,
-                color: selectedScreen == 1
-                    ? AppColors.newColor4Background
-                    : AppColors.bottomNavigationBarColor),
-            title: Text(
-              "Tüm Hareketler",
-              style: TextStyle(
-                color: selectedScreen == 1
-                    ? AppColors.newColor4Background
-                    : AppColors.bottomNavigationBarColor,
-                fontSize: LocalHelper.getFontSize(12),
-                fontWeight: FontWeight.w400,
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                  "svg/time-forward.svg",
+                  color: selectedScreen == 1
+                      ? AppColors.SignInColorGradientStart
+                      : AppColors.infoContentDialogColor,
+              ),
+              title: Text(
+                "Hareketler",
+                style: TextStyle(
+                  color: selectedScreen == 1
+                      ? AppColors.SignInColorGradientStart
+                      : AppColors.infoContentDialogColor,
+                  fontSize: LocalHelper.getFontSize(11),
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance,
-                color: selectedScreen == 2
-                    ? AppColors.newColor4Background
-                    : AppColors.bottomNavigationBarColor),
-            title: Text(
-              "Hesap Bakiye",
-              style: TextStyle(
-                color: selectedScreen == 2
-                    ? AppColors.newColor4Background
-                    : AppColors.bottomNavigationBarColor,
-                fontSize: LocalHelper.getFontSize(12),
-                fontWeight: FontWeight.w400,
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                  "svg/bank.svg",
+                  color: selectedScreen == 2
+                      ? AppColors.SignInColorGradientStart
+                      : AppColors.infoContentDialogColor,
+              ),
+              title: Text(
+                "Hesaplar",
+                style: TextStyle(
+                  color: selectedScreen == 2
+                      ? AppColors.SignInColorGradientStart
+                      : AppColors.infoContentDialogColor,
+                  fontSize: LocalHelper.getFontSize(11),
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined,
-                color: selectedScreen == 3
-                    ? AppColors.newColor4Background
-                    : AppColors.bottomNavigationBarColor),
-            title: Text(
-              "Hesabım",
-              style: TextStyle(
-                color: selectedScreen == 3
-                    ? AppColors.newColor4Background
-                    : AppColors.bottomNavigationBarColor,
-                fontSize: LocalHelper.getFontSize(12),
-                fontWeight: FontWeight.w400,
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                  "svg/user.svg",
+                  color: selectedScreen == 3
+                      ? AppColors.SignInColorGradientStart
+                      : AppColors.infoContentDialogColor,
+              ),
+              title: Text(
+                "Hesabım",
+                style: TextStyle(
+                  color: selectedScreen == 3
+                      ? AppColors.SignInColorGradientStart
+                      : AppColors.infoContentDialogColor,
+                  fontSize: LocalHelper.getFontSize(11),
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
-          ),
-        ],
-        onTap: (index) {
-          _pagecontroller.jumpToPage(index);
-        },
+          ],
+          onTap: (index) {
+            _pagecontroller.jumpToPage(index);
+          },
+        ),
       ),
     );
   }

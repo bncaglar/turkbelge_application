@@ -45,7 +45,7 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
-            onPressed: (){
+            onPressed: () {
               Get.back();
             },
             icon: Icon(
@@ -121,7 +121,6 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
       },
     );
   }
-
 
   onPressedPhoneIcon() {
     launch("tel://+905551836409");
@@ -318,7 +317,7 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
                 buildPasswordField(),
                 NavigatorButton(
                   textLabel: "Giriş Yap",
-                  onTap: displayDialog,
+                  onTap: onClickContinue,
                   showLoading: showLoading,
                 ),
                 buildForgetRows(),

@@ -50,7 +50,7 @@ class _CustomPasswordFormNewState extends State<CustomPasswordFormNew> {
       controller: widget.controller,
       keyboardType: TextInputType.text,
       prefixIcon:
-      BuildLogo(logoPath: "assets/key.png", height: 3.26.h, width: 5.79.w, rightPadding: 4.34.w),
+      BuildLogo(logoPath: "svg/key.svg", height: 3.26.h, width: 5.79.w, rightPadding: 4.34.w),
       hintText: "Şifre",
       isObscureText: true,
       validator: passwordValidator,

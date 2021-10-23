@@ -29,7 +29,7 @@ class _CustomCustomerNumberFormNewState extends State<CustomCustomerNumberFormNe
       controller: widget.controller,
       keyboardType: TextInputType.number,
       prefixIcon:
-      BuildLogo(logoPath: "assets/user.png", height: 2.98.h, width: 3.98.w, rightPadding: 4.95.w),
+      BuildLogo(logoPath: "svg/user.svg", height: 2.98.h, width: 3.98.w, rightPadding: 4.95.w),
       hintText: "Müşteri Numarası",
       isObscureText: false,
       validator: customerNumberValidator,

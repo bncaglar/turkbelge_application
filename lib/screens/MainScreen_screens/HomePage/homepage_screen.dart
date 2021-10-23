@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/logger/simple_log_printer.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
-
 import 'home_page_components/bankListWithBalance.dart';
 import 'home_page_components/homepage_background_color.dart';
 import 'home_page_components/total_balance_container.dart';

@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,13 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-import 'package:provider/provider.dart';
 import 'package:turkbelge_application/l10n/ln10.dart';
+import 'package:turkbelge_application/logic/chart_sm/chart_sm_cubit.dart';
+import 'package:turkbelge_application/logic/currency_sm/currency_sm_cubit.dart';
+import 'package:turkbelge_application/logic/filter_sm/filter_sm_cubit.dart';
 import 'package:turkbelge_application/routes.dart';
 import 'package:turkbelge_application/screens/registration_screens/SignInScreen_renewed.dart';
-import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:turkbelge_application/services/authentication_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,16 +24,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, screenType) {
-        return MultiProvider(
+        return MultiBlocProvider(
           providers: [
-            Provider<AuthenticationService>(
-              create: (_) => AuthenticationService(FirebaseAuth.instance),
-            ),
-            StreamProvider(
-              create: (context) =>
-                  context.read<AuthenticationService>().authStateChanges,
-              initialData: null,
-            ),
+            BlocProvider<ChartSmCubit>(
+                create: (BuildContext context) => ChartSmCubit()),
+            BlocProvider<CurrencySmCubit>(
+                create: (BuildContext context) => CurrencySmCubit()),
+            BlocProvider<FilterSmCubit>(
+                create: (BuildContext context) => FilterSmCubit()),
           ],
           child: GetMaterialApp(
             onGenerateRoute: Routes.generateRoute,
@@ -43,7 +40,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: SignInPageRenewed(),
+            home: _handleAuth(),
             supportedLocales: L10n.all,
             localizationsDelegates: [
               AppLocalizations.delegate,
@@ -84,14 +81,30 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 //
-//   Widget _handleAuth() {
-//     return StreamBuilder<User?>(
-//       stream: FirebaseAuth.instance.authStateChanges(),
-//       builder: (BuildContext context, snapshot) {
-//         return (!snapshot.hasData) ? SignInPage() : FirstNavigation();
-//       },
-//     ); // StreamBuilder
-//   }
+Widget _handleAuth() {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user = _auth.currentUser;
+  return StreamBuilder<User?>(
+    stream: FirebaseAuth.instance.authStateChanges(),
+    builder: (BuildContext context, snapshot) {
+      if (snapshot.hasData) {
+        if (user != null) {
+          signOut();
+          return SignInPageRenewed();
+        } else {
+          return SignInPageRenewed();
+        }
+      } else {
+        return SignInPageRenewed();
+      }
+    },
+  ); // StreamBuilder
+}
+
+void signOut() async {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  await _auth.signOut();
+}
 //
 //   Future<bool?> getBoolValuesSF() async {
 //     SharedPreferences loginCheck = await SharedPreferences.getInstance();
