@@ -6,9 +6,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/l10n/ln10.dart';
+import 'package:turkbelge_application/logic/AccountAndTransaction/account_and_transaction_cubit.dart';
+import 'package:turkbelge_application/logic/account_sm/account_cubit.dart';
 import 'package:turkbelge_application/logic/chart_sm/chart_sm_cubit.dart';
 import 'package:turkbelge_application/logic/currency_sm/currency_sm_cubit.dart';
+import 'package:turkbelge_application/logic/dropdown_sm/dropdown_cubit.dart';
 import 'package:turkbelge_application/logic/filter_sm/filter_sm_cubit.dart';
+import 'package:turkbelge_application/logic/groupCompany_sm/group_company_sm_cubit.dart';
 import 'package:turkbelge_application/routes.dart';
 import 'package:turkbelge_application/screens/registration_screens/SignInScreen_renewed.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,7 +20,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp()); // Wrap your app
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -27,11 +31,26 @@ class MyApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider<ChartSmCubit>(
-                create: (BuildContext context) => ChartSmCubit()),
+              create: (BuildContext context) => ChartSmCubit(),
+            ),
             BlocProvider<CurrencySmCubit>(
-                create: (BuildContext context) => CurrencySmCubit()),
+              create: (BuildContext context) => CurrencySmCubit(),
+            ),
             BlocProvider<FilterSmCubit>(
-                create: (BuildContext context) => FilterSmCubit()),
+              create: (BuildContext context) => FilterSmCubit(),
+            ),
+            BlocProvider<AccountCubit>(
+              create: (BuildContext context) => AccountCubit(),
+            ),
+            BlocProvider<AccountAndTransactionCubit>(
+              create: (BuildContext context) => AccountAndTransactionCubit(),
+            ),
+            BlocProvider<GroupCompanySmCubit>(
+              create: (BuildContext context) => GroupCompanySmCubit(),
+            ),
+            BlocProvider<DropdownCubit>(
+              create: (BuildContext context) => DropdownCubit(),
+            ),
           ],
           child: GetMaterialApp(
             onGenerateRoute: Routes.generateRoute,
@@ -81,6 +100,7 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 //
+
 Widget _handleAuth() {
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? user = _auth.currentUser;

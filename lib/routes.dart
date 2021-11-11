@@ -1,8 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:turkbelge_application/bottom_navigation_bar/first_navigation.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_new/bank_details_page.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_page.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/bank_details/bank_details_tab_controller.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/add_new_bank.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/profile_page/add_user/add_user_page.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/profile_page/logIn_activity/logInActivity.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/add_user/add_user_page.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/my_profile/settings_page/settings_page_components/log_activitiy/log_tab_controller.dart';
@@ -16,6 +21,7 @@ import 'package:turkbelge_application/screens/registration_screens/forget_screen
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_password/enter_new_password_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/forget_screens/forget_password/forget_password_screen.dart';
 import 'package:turkbelge_application/screens/registration_screens/signin_screen.dart';
+import 'package:turkbelge_application/widgets/pdfBase64Viewer.dart';
 
 import 'logger/simple_log_printer.dart';
 
@@ -121,6 +127,23 @@ class Routes {
           child = NoInternetConnectionPage();
           break;
         }
+      case AddUserScreen.routeName:
+        {
+          child = AddUserScreen();
+          break;
+        }
+      case BankDetailsNew.routeName:
+        {
+          child = _buildBankDetailsNewRoutes(
+            settings.arguments as BankDetailsNewArguments);
+          break;
+        }
+      case LogInActivity.routeName:
+        {
+          child = LogInActivity();
+          break;
+        }
+
       default:
         child = Scaffold(
           body: Center(
@@ -228,4 +251,11 @@ class Routes {
       fit: fitt,
     );
   }
+
+  static Widget _buildBankDetailsNewRoutes(
+      BankDetailsNewArguments arguments){
+    String? bankCode = arguments.bankCode;
+    return BankDetailsNew(bankCode: bankCode,);
+  }
+
 }

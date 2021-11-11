@@ -123,7 +123,7 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
   }
 
   onPressedPhoneIcon() {
-    launch("tel://+905551836409");
+    launch("tel://+908503330353");
   }
 
   onClickForgetCustomerNumber() {
@@ -140,37 +140,6 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
     Navigator.pushNamed(context, InitialStepOfRegistration.routeName);
   }
 
-  double keyValidatorResponsive() {
-    if (_customerNumberKey.currentState != null &&
-        _emailKey.currentState != null &&
-        _passwordKey.currentState != null) {
-      if (_customerNumberKey.currentState!.validate() &&
-          _emailKey.currentState!.validate() &&
-          _passwordKey.currentState!.validate()) {
-        return 18.02.h;
-      } else if (!_customerNumberKey.currentState!.validate() &&
-          !_emailKey.currentState!.validate() &&
-          !_passwordKey.currentState!.validate()) {
-        return 9.02.h;
-      } else if (!_customerNumberKey.currentState!.validate() &&
-          !_emailKey.currentState!.validate()) {
-        return 12.05.h;
-      } else if (!_emailKey.currentState!.validate() &&
-          !_passwordKey.currentState!.validate()) {
-        return 12.05.h;
-      } else if (!_customerNumberKey.currentState!.validate() &&
-          !_passwordKey.currentState!.validate()) {
-        return 12.05.h;
-      } else if (!_customerNumberKey.currentState!.validate() ||
-          !_emailKey.currentState!.validate() ||
-          !_passwordKey.currentState!.validate()) {
-        return 15.02.h;
-      }
-    } else {
-      return 18.02.h;
-    }
-    return 18.02.h;
-  }
 
   onClickContinue() async {
     log.i("onClickContinue started");
@@ -310,8 +279,8 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
           SingleChildScrollView(
             child: Column(
               children: [
+                buildLogoHeader(),
                 buildSignInHeader(),
-                buildSignInToAccountText(),
                 buildCustomerNumberField(),
                 buildEmailField(),
                 buildPasswordField(),
@@ -373,10 +342,22 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
     );
   }
 
+  Padding buildLogoHeader(){
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 9.h,
+        bottom: 1.5.h,
+      ),
+      child: Container(
+          height: 7.h,
+          width: 60.w,
+          child: Image.asset("assets/ileka_header_ex.png")),
+    );
+  }
   Padding buildSignInHeader() {
     return Padding(
       padding: EdgeInsets.only(
-        top: 9.10.h,
+        bottom: 5.h
       ),
       child: Center(
         child: Text(
@@ -450,13 +431,12 @@ class _SignInPageRenewedState extends State<SignInPageRenewed> {
   }
 
   Padding buildForgetRows() {
-    double x = keyValidatorResponsive();
     return Padding(
       padding: EdgeInsets.only(
         top: 2.44.h,
         right: 7.72.w,
         left: 7.72.w,
-        bottom: x,
+        bottom: 8.02.h,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

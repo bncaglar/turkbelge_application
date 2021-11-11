@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
 import 'package:turkbelge_application/logic/chart_sm/chart_sm_cubit.dart';
 import 'package:turkbelge_application/logic/currency_sm/currency_sm_cubit.dart';
+import 'package:turkbelge_application/logic/dropdown_sm/dropdown_cubit.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/ChartSMBlocs/PieChartState/pie_chart.dart';
 import 'package:turkbelge_application/utilities/colors.dart';
 import 'package:sizer/sizer.dart';
@@ -16,7 +17,10 @@ class HomePageHalfUpPie extends StatefulWidget {
 
 class _HomePageHalfUpPieState extends State<HomePageHalfUpPie> {
   final log = Logger();
-
+  List<String> items = [
+    "İleka Akademi A.Ş.".toUpperCase(),
+    'İleka Telekominikasyon A.Ş.'.toUpperCase(),
+  ];
   Color selectedCurrencyColor = AppColors.SignInColorGradientStart;
   Color unselectedCurrencyColor = AppColors.infoContentDialogColor;
 
@@ -86,25 +90,41 @@ class _HomePageHalfUpPieState extends State<HomePageHalfUpPie> {
           Container(
             width: 1.w,
           ),
-          buildCompanyName(),
+          buildGroupCompany(),
           buildIcon()
         ],
       ),
     );
   }
 
-  Align buildCompanyName() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Text(
-        "İleka Akademi A.Ş.",
-        style: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: LocalHelper.getFontSize(13),
-          color: AppColors.infoContentDialogColor,
-        ),
-        textAlign: TextAlign.left,
-      ),
+  BlocBuilder buildGroupCompany(){
+    return BlocBuilder<DropdownCubit, DropdownState>(
+        builder: (context, state){
+          if(state is DropdownInitial){
+            return Text(
+              items[0].toString().trim().toUpperCase(),
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: LocalHelper.getFontSize(13),
+                color: AppColors.infoContentDialogColor,
+              ),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            );
+          }else if(state is DropdownSecondCompany){
+            return Text(
+              items[1].toString().trim().toUpperCase(),
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: LocalHelper.getFontSize(13),
+                color: AppColors.infoContentDialogColor,
+              ),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            );
+          }
+          return Container();
+        }
     );
   }
 
@@ -149,16 +169,7 @@ class _HomePageHalfUpPieState extends State<HomePageHalfUpPie> {
             height: 27.80.h,
               width: 45.66.w,
               child: PieChart(),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(80),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.10),
-                spreadRadius: 7,
-                blurRadius: 5,
-              ),
-            ],
-          ),),
+          ),
           buildCurrencyController(),
         ],
       ),

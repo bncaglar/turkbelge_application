@@ -15,7 +15,7 @@ class GetZiraatXmlResponse {
  try{
    DateTime endDate = DateTime.now();
    String endDateString = endDate.toString().substring(0, 10);
-   DateTime startDate = endDate.subtract(const Duration(days: 15));
+   DateTime startDate = endDate.subtract(const Duration(days: 89));
    String startDateString = startDate.toString().substring(0, 10);
    var envelope = '''
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
@@ -24,7 +24,6 @@ class GetZiraatXmlResponse {
          <tem:transactionRequest>
             <tem:StartDate>${startDateString}</tem:StartDate>
             <tem:EndDate>${endDateString}</tem:EndDate>
-            
             <tem:SessionID>${sessionID}</tem:SessionID>
             <tem:BankCode>${bankCode}</tem:BankCode>
          </tem:transactionRequest>

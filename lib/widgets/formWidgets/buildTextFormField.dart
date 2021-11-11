@@ -101,7 +101,7 @@ class _CustomTextFormFieldNewState extends State<CustomTextFormFieldNew> {
         hintStyle: TextStyle(
           fontFamily: 'Poppins',
           fontSize: LocalHelper.getFontSize(12),
-          color: const Color(0xff686868),
+          color: AppColors.textFormUnderLineColor,
           fontWeight: FontWeight.w600,
         ),
       ),

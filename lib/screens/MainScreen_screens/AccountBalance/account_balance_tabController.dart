@@ -19,22 +19,25 @@ class _AccountBalanceTabControllerState
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.newColor4Background,
+        backgroundColor: AppColors.primaryWightColor,
         body: DefaultTabController(
           length: 4,
           initialIndex: 0,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              SizedBox(height: 2.98.h,),
               buildTumHareketlerHeader(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TabBar(
-                    labelColor: AppColors.primaryWightColor,
+                    labelColor: AppColors.icon_color,
                     isScrollable: true,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicatorColor: AppColors.primaryWightColor,
+                    labelStyle: TextStyle(
+                      fontSize: LocalHelper.getFontSize(14)
+                    ),
+                    indicatorColor: AppColors.SignInColorGradientStart,
                     tabs: [
                       Tab(text: "Tümü"),
                       Tab(text: "TRY"),
@@ -79,28 +82,20 @@ class _AccountBalanceTabControllerState
     );
   }
 
-  Container buildTumHareketlerHeader() {
-    return Container(
-      width: double.infinity,
-      height: 5.h,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Text(
-              "HESAP BAKİYESİ",
-              style: TextStyle(
-                fontSize: LocalHelper.getFontSize(15),
-                color: AppColors.homepageTextColor,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ],
+  Center buildTumHareketlerHeader() {
+    return Center(
+      child: Text(
+        "HESAP BAKİYESİ",
+        style: TextStyle(
+          fontSize: LocalHelper.getFontSize(15),
+          color: AppColors.headerColor,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Poppins'
+        ),
       ),
     );
   }
+
 // Container searchNotificationsField() {
 //   return Container(
 //     padding: EdgeInsets.only(right: 3.w),

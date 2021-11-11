@@ -64,13 +64,19 @@ class AppColors {
   static final allTransactionGelirColor = HexColor("#32DD48");
   static final profileUserTextColor = HexColor("#FFCECC");
   static final profileTableBorderColor = HexColor("#FF8580");
+  static final accountBalanceColor = HexColor("#090580");
+  static final unVerifiedCheckBoxColor = HexColor("#F6F6F6");
+  static final boxColor = HexColor("#C70900");
+
   static List pieColors = [
+    profileUserTextColor,
     chartColorBlue,
     chartColorYellow,
     chartColorGreen,
     chartColorReddish,
-    Color(0xFFFC5B39),
-    Color(0xFF8B8782),
+    dismissRedColor,
+    truePercentageColor,
+    SignInColorGradientEnd
   ];
   static List<BoxShadow> neumorpShadow = [
     BoxShadow(

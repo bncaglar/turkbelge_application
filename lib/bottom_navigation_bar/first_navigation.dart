@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/src/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:turkbelge_application/helper/local_helper.dart';
+import 'package:turkbelge_application/logic/AccountAndTransaction/account_and_transaction_cubit.dart';
+import 'package:turkbelge_application/logic/account_sm/account_cubit.dart';
+import 'package:turkbelge_application/screens/MainScreen_screens/AccountBalance/account_balance_renewed.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/AccountBalance/account_balance_tabController.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/home_page_components/tab_controller.dart';
 import 'package:turkbelge_application/screens/MainScreen_screens/HomePage/homepage.dart';
@@ -51,8 +55,20 @@ class _FirstNavigationState extends State<FirstNavigation> {
               },
               children: [
                 HomePage(),
-                AllTransactionRenewed(),
-                AccountBalanceTabController(),
+                AllTransactionRenewed(
+                  addFilter: false,
+                  birimTip: "",
+                  islemTip: "",
+                  maxAmount: 0,
+                  addDateTimeFilter: false,
+                  minAmount: 0,
+                  numberOfFilter: 0,
+                  bankCode: "ALL",
+                  addHeader: true,
+                  startDate: DateTime.now(),
+                  endDate: DateTime.now(),
+                ),
+                AccountBalanceScreenRenewed(),
                 ProfilePageRenewed()
               ],
             );
@@ -71,7 +87,7 @@ class _FirstNavigationState extends State<FirstNavigation> {
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
-                "svg/time-forward.svg",
+                "svg/home.svg",
                 color: selectedScreen == 0
                     ? AppColors.SignInColorGradientStart
                     : AppColors.infoContentDialogColor,
@@ -143,6 +159,9 @@ class _FirstNavigationState extends State<FirstNavigation> {
             ),
           ],
           onTap: (index) {
+            if(index == 2){
+              context.read<AccountAndTransactionCubit>().changState(AccountAndTransactionInitial());
+            }
             _pagecontroller.jumpToPage(index);
           },
         ),
