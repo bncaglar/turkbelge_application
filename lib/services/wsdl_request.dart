@@ -36,7 +36,6 @@ class WsdlRequest{
              "Content-Type": "text/xml; charset=utf-8",
            },
            body: envelope);
-       sleep(Duration(milliseconds:500));
        var rawXmlResponse = response.body;
        final Xml2Json xml2Json = Xml2Json();
        xml2Json.parse(rawXmlResponse);
@@ -44,8 +43,10 @@ class WsdlRequest{
         data = jsonDecode(jsonString);
        return data["soap:Envelope"]["soap:Body"]["BankAccountResponse"]
        ["GetAccountInfoResult"]["AResponseXML"]["ArrayOfAccounts"];
+
      }catch (e){
-       var e ;
+      print(e.toString());
+       sleep(Duration(milliseconds:100));
      }
     }while(data["soap:Envelope"]["soap:Body"]["BankAccountResponse"]
     ["GetAccountInfoResult"]["Result"]["ResultCode"] != "AP00");
@@ -92,8 +93,8 @@ class WsdlRequest{
       return data["soap:Envelope"]["soap:Body"]["BankTransactionResponse"]
       ["GetTransactionResult"]["TResponseXML"]["ArrayOfAccounts"]["Account"];
     }catch (e){
-      var e ;
-      return e;
+      print(e.toString());
+      sleep(Duration(milliseconds:100));
     }
   }
 
@@ -147,6 +148,7 @@ class WsdlRequest{
        ["GetSortedTransactionResult"]["STResponseXML"]["ArrayOfTransaction"];
      }catch (e){
        print(e.toString());
+       sleep(Duration(milliseconds:100));
      }
     }while(data["soap:Envelope"]["soap:Body"]["BankSortedTransactionResponse"]
     ["GetSortedTransactionResult"]["Result"]["ResultCode"] == "AP00");
@@ -190,6 +192,7 @@ class WsdlRequest{
         return data["soap:Envelope"]["soap:Body"]["TransactionStatisticsResponse"]["GetStatisticsTransactionResult"]["TSResponseXML"]["ArrayOfTransactionStatistics"];
       }catch(e){
         print(e.toString());
+        sleep(Duration(milliseconds:100));
       }
     }while(data["soap:Envelope"]["soap:Body"]["TransactionStatisticsResponse"]["GetStatisticsTransactionResult"]["Result"]["ResultCode"] != "AP00");
 
@@ -231,7 +234,8 @@ class WsdlRequest{
       var data = jsonDecode(jsonString);
       return data["soap:Envelope"]["soap:Body"]["ReceiptResponse"]["GetReceiptResponseResult"];
     }catch(e){
-
+      print(e.toString());
+      sleep(Duration(milliseconds:100));
     }
   }
 

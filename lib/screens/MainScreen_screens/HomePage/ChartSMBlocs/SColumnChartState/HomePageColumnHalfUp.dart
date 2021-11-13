@@ -24,6 +24,7 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
     "İleka Akademi A.Ş.".toUpperCase(),
     'İleka Telekominikasyon A.Ş.'.toUpperCase(),
   ];
+
   onClickTL() {
     context.read<CurrencySmCubit>().changeCurrencyState(CurrencySmInitial());
   }
@@ -73,9 +74,7 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
             buildHeaderRow(),
             buildStraightLine(),
             Padding(
-              padding: EdgeInsets.only(
-                left: 7.72.w, right: 7.72.w
-              ),
+              padding: EdgeInsets.only(left: 7.72.w, right: 7.72.w),
               child: Row(
                 children: [
                   buildGroupCompany(),
@@ -84,7 +83,9 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
                 ],
               ),
             ),
-            SizedBox(height: 0.86.h,),
+            SizedBox(
+              height: 0.86.h,
+            ),
             buildRevenueText(),
             Spacer(),
             buildChartRow(),
@@ -94,8 +95,8 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
     );
   }
 
-
-  Container buildColumnChart(getData, String filterValue, bool isTransition,String currency){
+  Container buildColumnChart(
+      getData, String filterValue, bool isTransition, String currency) {
     return Container(
       height: 24.18.h,
       width: 75.w,
@@ -106,19 +107,26 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
           ColumnSeries<Sum, String>(
             spacing: 1.7,
             color: AppColors.chartColorGreen,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
-            dataSource: getData == "null" ? isTransition ? <Sum>[
-            ]: buildSumGelirList(getData,filterValue,currency) :  buildSumGelirList(getData,filterValue,currency),
-              xValueMapper: (Sum sales, _) => sales.year,
-              yValueMapper: (Sum sales, _) => sales.sales,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+            dataSource: getData == "null"
+                ? isTransition
+                    ? <Sum>[]
+                    : buildSumGelirList(getData, filterValue, currency)
+                : buildSumGelirList(getData, filterValue, currency),
+            xValueMapper: (Sum sales, _) => sales.year,
+            yValueMapper: (Sum sales, _) => sales.sales,
           ),
           ColumnSeries<Sum, String>(
             spacing: 1.7,
             color: AppColors.chartColorReddish,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
-            dataSource: getData == "null" ? isTransition ? <Sum>[
-
-            ] : buildSumGiderList(getData,filterValue,currency) : buildSumGiderList(getData,filterValue,currency),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+            dataSource: getData == "null"
+                ? isTransition
+                    ? <Sum>[]
+                    : buildSumGiderList(getData, filterValue, currency)
+                : buildSumGiderList(getData, filterValue, currency),
             xValueMapper: (Sum sales, _) => sales.year,
             yValueMapper: (Sum sales, _) => sales.revenue,
           ),
@@ -127,333 +135,393 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
     );
   }
 
-  String returnDayToString(String value){
-    switch(value){
-      case "1":{
-        return "Pazar";
-      }
-      case "2":{
-        return "Pztesi";
-      }
-      case "3":{
-        return "Salı";
-      }
-      case "4":{
-        return "Çarş";
-      }
-      case "5":{
-        return "Perş";
-      }
-      case "6":{
-        return "Cuma";
-      }
-      case "7":{
-        return "Ctesi";
-      }
-    }
-    return "";
-  }
-
-  String returnMonthToString(String value){
-    switch(value){
-      case "1":{
-        return "Ocak";
-      }
-      case "2":{
-        return "Şubat";
-      }
-      case "3":{
-        return "Mart";
-      }
-      case "4":{
-        return "Nisan";
-      }
-      case "5":{
-        return "Mayis";
-      }
-      case "6":{
-        return "Haziran";
-      }
-      case "7":{
-        return "Temmuz";
-      }
-      case "8":{
-        return "Ağustos";
-      }
-      case "9":{
-        return "Eylül";
-      }
-      case "10":{
-        return "Ekim";
-      }
-      case "11":{
-        return "Kasım";
-      }
-      case "12":{
-        return "Aralık";
-      }
-    }
-    return "";
-  }
-
-  List<Sum> buildSumGiderList(getData, String filterValue,String currency){
-   try{
-     int numberOfValue = getData["TransactionStatistics"].length;
-     final log = Logger();
-     List<Sum>? sumList = [];
-     switch(filterValue){
-       case "ONE":{
-         for(int i = 0; i<numberOfValue; i++){
-           if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-             if(getData["TransactionStatistics"][i]["BorcAlacak"] == "B"){
-               String identifierName = getData["TransactionStatistics"][i]["Identifier"].toString();
-               double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-               sumList.add(
-                   Sum(identifierName, 0, totalAmount)
-               );
-             }
-           }
-         }
-         return sumList;
-       }
-       case "WEEK":{
-         for(int i = 0; i<numberOfValue; i++){
-           if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-             if(getData["TransactionStatistics"][i]["BorcAlacak"] == "B"){
-               String identifierName = getData["TransactionStatistics"][i]["Identifier"].toString();
-               double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-               sumList.add(
-                   Sum(returnDayToString(identifierName), 0, totalAmount)
-               );
-             }
-           }
-         }
-         return sumList;
-       }
-       case "MONTH":{
-         for(int i = 0; i<numberOfValue; i++){
-           if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-             if(getData["TransactionStatistics"][i]["BorcAlacak"] == "B"){
-               String identifierName = getData["TransactionStatistics"][i]["Identifier"].toString();
-               double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-               sumList.add(
-                   Sum(identifierName, 0, totalAmount)
-               );
-             }
-           }
-         }
-         return sumList;
-       }
-       case "YEAR":{
-         for(int i = 0; i<numberOfValue; i++){
-           if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-             if(getData["TransactionStatistics"][i]["BorcAlacak"] == "B"){
-               String identifierName = returnMonthToString(getData["TransactionStatistics"][i]["Identifier"].toString());
-               double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-               sumList.add(
-                   Sum(identifierName, 0, totalAmount)
-               );
-             }
-           }
-         }
-         return sumList;
-       }
-     }
-     return sumList;
-   }catch(e){
-     List<Sum>? sumList = [];
-    return sumList;
-   }
-  }
-
-  List<Sum> buildSumGelirList(getData, String filterValue, String currency){
-   try{
-     List<Sum>? sumList = [];
-     if(getData != null){
-       int numberOfValue = getData["TransactionStatistics"].length;
-       switch(filterValue){
-         case "ONE":{
-           for(int i = 0; i<numberOfValue; i++){
-             if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-               if(getData["TransactionStatistics"][i]["BorcAlacak"] == "A"){
-                 String identifierName = getData["TransactionStatistics"][i]["Identifier"].toString();
-                 double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-                 sumList.add(
-                     Sum(identifierName, totalAmount, 0)
-                 );
-               }
-             }
-           }
-           return sumList;
-         }
-         case "WEEK":{
-           for(int i = 0; i<numberOfValue; i++){
-             if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-               if(getData["TransactionStatistics"][i]["BorcAlacak"] == "A"){
-                 String identifierName = getData["TransactionStatistics"][i]["Identifier"].toString();
-                 double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-                 sumList.add(
-                     Sum(returnDayToString(identifierName), totalAmount, 0)
-                 );
-               }
-             }
-           }
-           return sumList;
-         }
-         case "MONTH":{
-           for(int i = 0; i<numberOfValue; i++){
-             if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-               if(getData["TransactionStatistics"][i]["BorcAlacak"] == "A"){
-                 String identifierName = getData["TransactionStatistics"][i]["Identifier"].toString();
-                 double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-                 sumList.add(
-                     Sum(identifierName, totalAmount, 0)
-                 );
-               }
-             }
-           }
-           return sumList;
-         }
-         case "YEAR":{
-           for(int i = 0; i<numberOfValue; i++){
-             if(getData["TransactionStatistics"][i]["CurrencyType"] == currency){
-               if(getData["TransactionStatistics"][i]["BorcAlacak"] == "A"){
-                 String identifierName = returnMonthToString(getData["TransactionStatistics"][i]["Identifier"].toString());
-                 double totalAmount =  double.parse(getData["TransactionStatistics"][i]["Amount"]);
-                 sumList.add(
-                     Sum(identifierName, totalAmount, 0)
-                 );
-               }
-             }
-           }
-           return sumList;
-         }
-         default:{
-
-         }
-       }
-
-       return sumList;
-     }else{
-       return sumList;
-     }
-   }catch(e){
-     List<Sum>? sumList = [];
-     return sumList;
-   }
-  }
-
-  BlocBuilder buildGroupCompany(){
-    return BlocBuilder<DropdownCubit, DropdownState>(
-        builder: (context, state){
-          if(state is DropdownInitial){
-            return buildCurrencyBloc("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E");
-          }else if(state is DropdownSecondCompany){
-            return buildCurrencyBloc("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46C");
-          }
-          return Container();
+  String returnDayToString(String value) {
+    switch (value) {
+      case "1":
+        {
+          return "Pazar";
         }
-    );
+      case "2":
+        {
+          return "Pztesi";
+        }
+      case "3":
+        {
+          return "Salı";
+        }
+      case "4":
+        {
+          return "Çarş";
+        }
+      case "5":
+        {
+          return "Perş";
+        }
+      case "6":
+        {
+          return "Cuma";
+        }
+      case "7":
+        {
+          return "Ctesi";
+        }
+    }
+    return "";
+  }
+
+  String returnMonthToString(String value) {
+    switch (value) {
+      case "1":
+        {
+          return "Ocak";
+        }
+      case "2":
+        {
+          return "Şubat";
+        }
+      case "3":
+        {
+          return "Mart";
+        }
+      case "4":
+        {
+          return "Nisan";
+        }
+      case "5":
+        {
+          return "Mayis";
+        }
+      case "6":
+        {
+          return "Haziran";
+        }
+      case "7":
+        {
+          return "Temmuz";
+        }
+      case "8":
+        {
+          return "Ağustos";
+        }
+      case "9":
+        {
+          return "Eylül";
+        }
+      case "10":
+        {
+          return "Ekim";
+        }
+      case "11":
+        {
+          return "Kasım";
+        }
+      case "12":
+        {
+          return "Aralık";
+        }
+    }
+    return "";
+  }
+
+  List<Sum> buildSumGiderList(getData, String filterValue, String currency) {
+    try {
+      int numberOfValue = getData["TransactionStatistics"].length;
+      final log = Logger();
+      List<Sum>? sumList = [];
+      switch (filterValue) {
+        case "ONE":
+          {
+            for (int i = 0; i < numberOfValue; i++) {
+              if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                  currency) {
+                if (getData["TransactionStatistics"][i]["BorcAlacak"] == "B") {
+                  String identifierName = getData["TransactionStatistics"][i]
+                          ["Identifier"]
+                      .toString();
+                  double totalAmount = double.parse(
+                      getData["TransactionStatistics"][i]["Amount"]);
+                  sumList.add(Sum(identifierName, 0, totalAmount));
+                }
+              }
+            }
+            return sumList;
+          }
+        case "WEEK":
+          {
+            for (int i = 0; i < numberOfValue; i++) {
+              if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                  currency) {
+                if (getData["TransactionStatistics"][i]["BorcAlacak"] == "B") {
+                  String identifierName = getData["TransactionStatistics"][i]
+                          ["Identifier"]
+                      .toString();
+                  double totalAmount = double.parse(
+                      getData["TransactionStatistics"][i]["Amount"]);
+                  sumList.add(
+                      Sum(returnDayToString(identifierName), 0, totalAmount));
+                }
+              }
+            }
+            return sumList;
+          }
+        case "MONTH":
+          {
+            for (int i = 0; i < numberOfValue; i++) {
+              if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                  currency) {
+                if (getData["TransactionStatistics"][i]["BorcAlacak"] == "B") {
+                  String identifierName = getData["TransactionStatistics"][i]
+                          ["Identifier"]
+                      .toString();
+                  double totalAmount = double.parse(
+                      getData["TransactionStatistics"][i]["Amount"]);
+                  sumList.add(Sum(identifierName, 0, totalAmount));
+                }
+              }
+            }
+            return sumList;
+          }
+        case "YEAR":
+          {
+            for (int i = 0; i < numberOfValue; i++) {
+              if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                  currency) {
+                if (getData["TransactionStatistics"][i]["BorcAlacak"] == "B") {
+                  String identifierName = returnMonthToString(
+                      getData["TransactionStatistics"][i]["Identifier"]
+                          .toString());
+                  double totalAmount = double.parse(
+                      getData["TransactionStatistics"][i]["Amount"]);
+                  sumList.add(Sum(identifierName, 0, totalAmount));
+                }
+              }
+            }
+            return sumList;
+          }
+      }
+      return sumList;
+    } catch (e) {
+      List<Sum>? sumList = [];
+      return sumList;
+    }
+  }
+
+  List<Sum> buildSumGelirList(getData, String filterValue, String currency) {
+    try {
+      List<Sum>? sumList = [];
+      if (getData != null) {
+        int numberOfValue = getData["TransactionStatistics"].length;
+        switch (filterValue) {
+          case "ONE":
+            {
+              for (int i = 0; i < numberOfValue; i++) {
+                if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                    currency) {
+                  if (getData["TransactionStatistics"][i]["BorcAlacak"] ==
+                      "A") {
+                    String identifierName = getData["TransactionStatistics"][i]
+                            ["Identifier"]
+                        .toString();
+                    double totalAmount = double.parse(
+                        getData["TransactionStatistics"][i]["Amount"]);
+                    sumList.add(Sum(identifierName, totalAmount, 0));
+                  }
+                }
+              }
+              return sumList;
+            }
+          case "WEEK":
+            {
+              for (int i = 0; i < numberOfValue; i++) {
+                if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                    currency) {
+                  if (getData["TransactionStatistics"][i]["BorcAlacak"] ==
+                      "A") {
+                    String identifierName = getData["TransactionStatistics"][i]
+                            ["Identifier"]
+                        .toString();
+                    double totalAmount = double.parse(
+                        getData["TransactionStatistics"][i]["Amount"]);
+                    sumList.add(
+                        Sum(returnDayToString(identifierName), totalAmount, 0));
+                  }
+                }
+              }
+              return sumList;
+            }
+          case "MONTH":
+            {
+              for (int i = 0; i < numberOfValue; i++) {
+                if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                    currency) {
+                  if (getData["TransactionStatistics"][i]["BorcAlacak"] ==
+                      "A") {
+                    String identifierName = getData["TransactionStatistics"][i]
+                            ["Identifier"]
+                        .toString();
+                    double totalAmount = double.parse(
+                        getData["TransactionStatistics"][i]["Amount"]);
+                    sumList.add(Sum(identifierName, totalAmount, 0));
+                  }
+                }
+              }
+              return sumList;
+            }
+          case "YEAR":
+            {
+              for (int i = 0; i < numberOfValue; i++) {
+                if (getData["TransactionStatistics"][i]["CurrencyType"] ==
+                    currency) {
+                  if (getData["TransactionStatistics"][i]["BorcAlacak"] ==
+                      "A") {
+                    String identifierName = returnMonthToString(
+                        getData["TransactionStatistics"][i]["Identifier"]
+                            .toString());
+                    double totalAmount = double.parse(
+                        getData["TransactionStatistics"][i]["Amount"]);
+                    sumList.add(Sum(identifierName, totalAmount, 0));
+                  }
+                }
+              }
+              return sumList;
+            }
+          default:
+            {
+          ///todo we will implement filter values here if it is not the case of an custom filters
+            }
+        }
+
+        return sumList;
+      } else {
+        return sumList;
+      }
+    } catch (e) {
+      List<Sum>? sumList = [];
+      return sumList;
+    }
+  }
+
+  BlocBuilder buildGroupCompany() {
+    return BlocBuilder<DropdownCubit, DropdownState>(builder: (context, state) {
+      if (state is DropdownInitial) {
+        return buildCurrencyBloc("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E");
+      } else if (state is DropdownSecondCompany) {
+        return buildCurrencyBloc("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46C");
+      }
+      return Container();
+    });
   }
 
   BlocBuilder buildCurrencyBloc(String sessionId) {
     return BlocBuilder<CurrencySmCubit, CurrencySmState>(
         builder: (context, state) {
-          if (state is CurrencySmInitial) {
-            print("State: $CurrencySmInitial");
-            return buildTimeZoneBloc("TRY",sessionId);
-          } else if (state is CurrencySMEUR) {
-            return buildTimeZoneBloc("EUR",sessionId);
-          } else if (state is CurrencySMUSD) {
-            return buildTimeZoneBloc("USD",sessionId);
-          }
-          return Container();
-        });
+      if (state is CurrencySmInitial) {
+        print("State: $CurrencySmInitial");
+        return buildTimeZoneBloc("TRY", sessionId);
+      } else if (state is CurrencySMEUR) {
+        return buildTimeZoneBloc("EUR", sessionId);
+      } else if (state is CurrencySMUSD) {
+        return buildTimeZoneBloc("USD", sessionId);
+      }
+      return Container();
+    });
   }
 
-  BlocBuilder buildTimeZoneBloc(String currency, String sessionId){
+  BlocBuilder buildTimeZoneBloc(String currency, String sessionId) {
     DateTime endDate = DateTime.now();
     String endDateString = endDate.toString().substring(0, 10);
-    return BlocBuilder<FilterSmCubit, FilterSmState>(
-        builder: (context, state){
-          if(state is FilterSmOneDay){
-            DateTime startDate = endDate.subtract(const Duration(days: 1));
-            String startDateString = startDate.toString().substring(0, 10);
-            print(startDateString);
-            return buildGetTransactionStatisticsFuture(startDateString, endDateString, sessionId, "DAY",currency);
-          }else if(state is FilterSmOneWeek){
-            DateTime startDate = endDate.subtract(const Duration(days: 7));
-            String startDateString = startDate.toString().substring(0, 10);
-            return buildGetTransactionStatisticsFuture(startDateString, endDateString, sessionId, "WEEK",currency);
-          }else if(state is FilterSmOneMonth){
-            DateTime startDate = endDate.subtract(const Duration(days: 30));
-            String startDateString = startDate.toString().substring(0, 10);
-            return buildGetTransactionStatisticsFuture(startDateString, endDateString, sessionId, "MONTH",currency);
-          }else if(state is FilterSmOneYear){
-            DateTime startDate = endDate.subtract(const Duration(days: 365));
-            String startDateString = startDate.toString().substring(0, 10);
-            return buildGetTransactionStatisticsFuture(startDateString, endDateString, sessionId, "YEAR",currency);
-          }
-          return Container();
-        }
-    );
+    return BlocBuilder<FilterSmCubit, FilterSmState>(builder: (context, state) {
+      if (state is FilterSmOneDay) {
+        DateTime startDate = endDate.subtract(const Duration(days: 1));
+        String startDateString = startDate.toString().substring(0, 10);
+        print(startDateString);
+        return buildGetTransactionStatisticsFuture(
+            startDateString, endDateString, sessionId, "DAY", currency);
+      } else if (state is FilterSmOneWeek) {
+        DateTime startDate = endDate.subtract(const Duration(days: 7));
+        String startDateString = startDate.toString().substring(0, 10);
+        return buildGetTransactionStatisticsFuture(
+            startDateString, endDateString, sessionId, "WEEK", currency);
+      } else if (state is FilterSmOneMonth) {
+        DateTime startDate = endDate.subtract(const Duration(days: 30));
+        String startDateString = startDate.toString().substring(0, 10);
+        return buildGetTransactionStatisticsFuture(
+            startDateString, endDateString, sessionId, "MONTH", currency);
+      } else if (state is FilterSmOneYear) {
+        DateTime startDate = endDate.subtract(const Duration(days: 365));
+        String startDateString = startDate.toString().substring(0, 10);
+        return buildGetTransactionStatisticsFuture(
+            startDateString, endDateString, sessionId, "YEAR", currency);
+      }
+      return Container();
+    });
   }
 
-  FutureBuilder buildGetTransactionStatisticsFuture(String startDate, String endDate, String sessionId, String filterValue, String currency){
+  FutureBuilder buildGetTransactionStatisticsFuture(String startDate,
+      String endDate, String sessionId, String filterValue, String currency) {
     return FutureBuilder(
       future: getTransactionStatistics(startDate, endDate, sessionId),
-      builder: (context, snapshot){
-        switch(snapshot.connectionState){
-          case ConnectionState.waiting:{
-            return buildColumnChart(snapshot.data,filterValue, true, currency);
-          }
-          case ConnectionState.active:{
-            return buildColumnChart(snapshot.data,filterValue, true, currency);
-          }
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            {
+              return Container(
+                height: 24.18.h,
+                width: 75.w,
+                child: Center(child: CircularProgressIndicator(color: AppColors.textFormUnderLineColor,)),
+              );
+            }
+          case ConnectionState.active:
+            {
+              return Container(
+                height: 24.18.h,
+                width: 75.w,
+                child: Center(child: CircularProgressIndicator(color: AppColors.textFormUnderLineColor,)),
+              );
+            }
           default:
-            if(snapshot.connectionState == ConnectionState.done){
-              if(snapshot.hasData){
-                return buildColumnChart(snapshot.data,filterValue,false, currency);
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                return buildColumnChart(
+                    snapshot.data, filterValue, false, currency);
+
                 ///todo return the widget
-              }else if(snapshot.hasError){
-                return Scaffold(
-                  body: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.textFormUnderLineColor,
-                    ),
-                  ),
+              } else if (snapshot.hasError) {
+                return Container(
+                  height: 24.18.h,
+                  width: 75.w,
+                  child: Center(child: CircularProgressIndicator(color: AppColors.textFormUnderLineColor,)),
                 );
               }
             }
             print(snapshot.data);
-            return buildColumnChart(snapshot.data,filterValue,false, currency);
-            ///todo return the widget
+            return buildColumnChart(
+                snapshot.data, filterValue, false, currency);
         }
       },
     );
   }
 
-   Future getTransactionStatistics(String startDate, String endDate, String sessionId)async{
-    while(true){
-      try{
-        var getStatistics = await WsdlRequest().getStatisticsTransaction(startDate, endDate, "ALL", sessionId);
+  Future getTransactionStatistics(
+      String startDate, String endDate, String sessionId) async {
+    while (true) {
+      try {
+        var getStatistics = await WsdlRequest()
+            .getStatisticsTransaction(startDate, endDate, "ALL", sessionId);
         Map mapValue = Map<String, dynamic>.from(getStatistics);
-        if(mapValue["TransactionStatistics"] != null){
+        if (mapValue["TransactionStatistics"] != null) {
           return mapValue;
         }
-      }catch(e){
+      } catch (e) {
         print(e.toString());
         return "null";
       }
     }
-   }
+  }
 
-
-  Padding buildRevenueText(){
+  Padding buildRevenueText() {
     return Padding(
-      padding: EdgeInsets.only(
-        left: 7.72.w
-      ),
+      padding: EdgeInsets.only(left: 7.72.w),
       child: Column(
         children: <Widget>[
           buildRevenueRow(AppColors.chartColorReddish, "Toplam Gider"),
@@ -463,27 +531,29 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
     );
   }
 
-  Row buildRevenueRow(Color color, String text){
+  Row buildRevenueRow(Color color, String text) {
     return Row(
       children: <Widget>[
         buildRoundedCircle(color),
-        SizedBox(width: 1.69.w,),
-        buildRevenueTxt(text),      ],
+        SizedBox(
+          width: 1.69.w,
+        ),
+        buildRevenueTxt(text),
+      ],
     );
   }
 
-  Text buildRevenueTxt(String text){
+  Text buildRevenueTxt(String text) {
     return Text(
-        text,
+      text,
       style: TextStyle(
           fontFamily: 'Poppins',
           fontSize: LocalHelper.getFontSize(9),
-          color: AppColors.headerBelowColor
-      ),
+          color: AppColors.headerBelowColor),
     );
   }
 
-  Container buildRoundedCircle(Color color){
+  Container buildRoundedCircle(Color color) {
     return Container(
       height: 1.35.h,
       width: 2.41.w,
@@ -510,35 +580,34 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
       ),
     );
   }
-  BlocBuilder buildGroupCompanyName(){
-    return BlocBuilder<DropdownCubit, DropdownState>(
-        builder: (context, state){
-          if(state is DropdownInitial){
-            return Text(
-              items[0].toString().trim().toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: LocalHelper.getFontSize(13),
-                color: AppColors.infoContentDialogColor,
-              ),
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            );
-          }else if(state is DropdownSecondCompany){
-            return Text(
-              items[1].toString().trim().toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: LocalHelper.getFontSize(13),
-                color: AppColors.infoContentDialogColor,
-              ),
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            );
-          }
-          return Container();
-        }
-    );
+
+  BlocBuilder buildGroupCompanyName() {
+    return BlocBuilder<DropdownCubit, DropdownState>(builder: (context, state) {
+      if (state is DropdownInitial) {
+        return Text(
+          items[0].toString().trim().toUpperCase(),
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: LocalHelper.getFontSize(13),
+            color: AppColors.infoContentDialogColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+        );
+      } else if (state is DropdownSecondCompany) {
+        return Text(
+          items[1].toString().trim().toUpperCase(),
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: LocalHelper.getFontSize(13),
+            color: AppColors.infoContentDialogColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+        );
+      }
+      return Container();
+    });
   }
 
   Align buildCompanyName() {
@@ -631,6 +700,7 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
       ),
     );
   }
+
   Container buildCurrencyController() {
     return Container(
         decoration: BoxDecoration(
@@ -641,46 +711,47 @@ class _HomePageHalfUpColumnState extends State<HomePageHalfUpColumn> {
             color: AppColors.primaryWightColor),
         width: 8.21.w,
         height: 18.45.h,
-        child: buildCurrencyColorBloc()
-    );
+        child: buildCurrencyColorBloc());
   }
+
   BlocBuilder buildCurrencyColorBloc() {
     return BlocBuilder<CurrencySmCubit, CurrencySmState>(
         builder: (context, state) {
-          if (state is CurrencySmInitial) {
-            return Column(
-              children: [
-                buildCurrency(onClickTL, "TL", selectedCurrencyColor),
-                buildStraightCurrencyControllerLine(),
-                buildCurrency(onClickUSD, "USD", unselectedCurrencyColor),
-                buildStraightCurrencyControllerLine(),
-                buildCurrency(onClickEUR, "EUR", unselectedCurrencyColor),
-              ],
-            );
-          } else if (state is CurrencySMEUR) {
-            return Column(
-              children: [
-                buildCurrency(onClickTL, "TL", unselectedCurrencyColor),
-                buildStraightCurrencyControllerLine(),
-                buildCurrency(onClickUSD, "USD", unselectedCurrencyColor),
-                buildStraightCurrencyControllerLine(),
-                buildCurrency(onClickEUR, "EUR", selectedCurrencyColor),
-              ],
-            );
-          } else if (state is CurrencySMUSD) {
-            return Column(
-              children: [
-                buildCurrency(onClickTL, "TL", unselectedCurrencyColor),
-                buildStraightCurrencyControllerLine(),
-                buildCurrency(onClickUSD, "USD", selectedCurrencyColor),
-                buildStraightCurrencyControllerLine(),
-                buildCurrency(onClickEUR, "EUR", unselectedCurrencyColor),
-              ],
-            );
-          }
-          return Container();
-        });
+      if (state is CurrencySmInitial) {
+        return Column(
+          children: [
+            buildCurrency(onClickTL, "TL", selectedCurrencyColor),
+            buildStraightCurrencyControllerLine(),
+            buildCurrency(onClickUSD, "USD", unselectedCurrencyColor),
+            buildStraightCurrencyControllerLine(),
+            buildCurrency(onClickEUR, "EUR", unselectedCurrencyColor),
+          ],
+        );
+      } else if (state is CurrencySMEUR) {
+        return Column(
+          children: [
+            buildCurrency(onClickTL, "TL", unselectedCurrencyColor),
+            buildStraightCurrencyControllerLine(),
+            buildCurrency(onClickUSD, "USD", unselectedCurrencyColor),
+            buildStraightCurrencyControllerLine(),
+            buildCurrency(onClickEUR, "EUR", selectedCurrencyColor),
+          ],
+        );
+      } else if (state is CurrencySMUSD) {
+        return Column(
+          children: [
+            buildCurrency(onClickTL, "TL", unselectedCurrencyColor),
+            buildStraightCurrencyControllerLine(),
+            buildCurrency(onClickUSD, "USD", selectedCurrencyColor),
+            buildStraightCurrencyControllerLine(),
+            buildCurrency(onClickEUR, "EUR", unselectedCurrencyColor),
+          ],
+        );
+      }
+      return Container();
+    });
   }
+
   InkWell buildCurrency(VoidCallback onTap, String textLabel, Color color) {
     return InkWell(
       onTap: onTap,

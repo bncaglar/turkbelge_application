@@ -198,6 +198,7 @@ class _HomePageHalfDownState extends State<HomePageHalfDown> {
   }
 
   ListView buildListView(getData, currency) {
+    List list = [];
     return getData["Account"].runtimeType == List
         ? ListView.builder(
             padding: EdgeInsets.only(top: 1.08.h),
@@ -207,11 +208,22 @@ class _HomePageHalfDownState extends State<HomePageHalfDown> {
                 final getCurrency = getData["Account"][index]["CurrencyType"];
                 final getBankCode = getData["Account"][index]["BankCode"];
                 final getAccountBalance = buildTotalBalance(getData,getBankCode,currency);
-
                 int numberOfAcc =
-                    numberOfAccMethod(getData, getBankCode, currency);
-                return buildEachBankRow(1, getAccountBalance, getBankCode,
-                    getCurrency, numberOfAcc);
+                numberOfAccMethod(getData, getBankCode, currency);
+                  log.i(list);
+                    for(int i = 0; i<getData["Account"].length; i++){
+                        if(!list.contains(getData["Account"][i]["BankCode"])){
+                          if(getCurrency == currency){
+                            list.add(getData["Account"][i]["BankCode"]);
+                            log.i(list);
+                            if(list.contains(getData["Account"][i]["BankCode"])){
+                              return buildEachBankRow(1, getAccountBalance, getBankCode,
+                                  getCurrency, numberOfAcc);
+                            }
+                          }
+                      }
+                    }
+                return Container();
               } else {
                 return Container();
               }
@@ -227,6 +239,7 @@ class _HomePageHalfDownState extends State<HomePageHalfDown> {
                 final balanceList = buildTotalBalance(getData,getBankCode,currency);
                 int numberOfAcc =
                     numberOfAccMethod(getData, getBankCode, currency);
+                log.i(balanceList);
                 return buildEachBankRow(1, balanceList, getBankCode,
                     getCurrency, numberOfAcc);
               } else {
@@ -236,7 +249,7 @@ class _HomePageHalfDownState extends State<HomePageHalfDown> {
           );
   }
 
-  String  buildTotalBalance (getData, bankCode, currency) {
+  String buildTotalBalance (getData, bankCode, currency) {
     try {
       List listOfAcc = [];
       double listOfBalance = 0;
@@ -248,16 +261,26 @@ class _HomePageHalfDownState extends State<HomePageHalfDown> {
                 "bankCode": getData["Account"][i]["BankCode"],
               }
             ]);
-            if (listOfAcc[i]["bankCode"] == bankCode) {
-              listOfBalance += double.parse(getData["Account"][i]["AvailableBalance"]);
+            if(listOfAcc.length > 1){
+              if (listOfAcc[i]["bankCode"] == bankCode) {
+                listOfBalance += double.parse(getData["Account"][i]["AvailableBalance"]);
+                print(listOfBalance);
+              }
+            }else{
+              if (listOfAcc[0]["bankCode"] == bankCode) {
+                listOfBalance += double.parse(getData["Account"][i]["AvailableBalance"]);
+                print(listOfBalance);
+              }
             }
           }
         }
       }else{
+        ///todo 31
       }
       print(listOfBalance);
       return listOfBalance.toString();
     } catch (e) {
+      print(e.toString());
       return "0";
     }
   }

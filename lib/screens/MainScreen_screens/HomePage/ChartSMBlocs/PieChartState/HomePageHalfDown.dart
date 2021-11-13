@@ -19,6 +19,7 @@ class HomePageHalfDownPie extends StatefulWidget {
 class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
   final oCcy = new NumberFormat("#,##0.00", "tr_TR");
   final log = Logger();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +30,7 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
 
   Future getAllAccountInfoMethod(String sessionId) async {
     while (true) {
-    try {
+      try {
         var getBalance = await WsdlRequest().getAccountInfo("ALL", sessionId);
         Map mapValue = Map<String, dynamic>.from(getBalance);
         if (mapValue["Account"] != null) {
@@ -44,54 +45,58 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
   BlocBuilder buildCurrencyBloc(getData) {
     return BlocBuilder<CurrencySmCubit, CurrencySmState>(
         builder: (context, state) {
-          if (state is CurrencySmInitial) {
-            return numberOfAcc(getData, "TRY") == 0
-                ? Scaffold(
-              body: Center(
-                child: Text("Hesap bilgisi bulunamadı!",
-                  style: TextStyle(
-                    color: AppColors.secondaryGrayColor,
-                    fontSize: LocalHelper.getFontSize(14),
+      if (state is CurrencySmInitial) {
+        return numberOfAcc(getData, "TRY") == 0
+            ? Scaffold(
+                body: Center(
+                  child: Text(
+                    "Hesap bilgisi bulunamadı!",
+                    style: TextStyle(
+                      color: AppColors.secondaryGrayColor,
+                      fontSize: LocalHelper.getFontSize(14),
+                    ),
                   ),
                 ),
-              ),
-            )
-                :  buildListView(getData, "TRY");
-          } else if (state is CurrencySMEUR) {
-            return numberOfAcc(getData, "EUR") == 0
-                ? Scaffold(
-              body: Center(
-                child: Text("Hesap bilgisi bulunamadı!",
-                  style: TextStyle(
-                    color: AppColors.secondaryGrayColor,
-                    fontSize: LocalHelper.getFontSize(14),
+              )
+            : buildListView(getData, "TRY");
+      } else if (state is CurrencySMEUR) {
+        return numberOfAcc(getData, "EUR") == 0
+            ? Scaffold(
+                body: Center(
+                  child: Text(
+                    "Hesap bilgisi bulunamadı!",
+                    style: TextStyle(
+                      color: AppColors.secondaryGrayColor,
+                      fontSize: LocalHelper.getFontSize(14),
+                    ),
                   ),
                 ),
-              ),
-            )
-                : buildListView(getData, "EUR");
-          } else if (state is CurrencySMUSD) {
-            return numberOfAcc(getData, "USD") == 0
-                ? Scaffold(
-              body: Center(
-                child: Text("Hesap bilgisi bulunamadı!",
-                  style: TextStyle(
-                    color: AppColors.secondaryGrayColor,
-                    fontSize: LocalHelper.getFontSize(14),
+              )
+            : buildListView(getData, "EUR");
+      } else if (state is CurrencySMUSD) {
+        return numberOfAcc(getData, "USD") == 0
+            ? Scaffold(
+                body: Center(
+                  child: Text(
+                    "Hesap bilgisi bulunamadı!",
+                    style: TextStyle(
+                      color: AppColors.secondaryGrayColor,
+                      fontSize: LocalHelper.getFontSize(14),
+                    ),
                   ),
                 ),
-              ),
-            )
-                :  buildListView(getData, "USD");
-          }
-          return Container();
-        });
+              )
+            : buildListView(getData, "USD");
+      }
+      return Container();
+    });
   }
+
   numberOfAcc(getData, String currency) {
     try {
       List listOfAcc = [];
       int accNo = 1;
-      if(getData["Account"].runtimeType == List){
+      if (getData["Account"].runtimeType == List) {
         for (int i = 0; i < getData["Account"].length; i++) {
           if (getData["Account"][i]["CurrencyType"] == currency) {
             listOfAcc.addAll([
@@ -109,113 +114,117 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
     }
   }
 
-  BlocBuilder buildGroupCompany(){
-    return BlocBuilder<DropdownCubit, DropdownState>(
-        builder: (context, state){
-          if(state is DropdownInitial){
-            return getAllAccountInfoMethodBuilder("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E");
-          }else if(state is DropdownSecondCompany){
-            return getAllAccountInfoMethodBuilder("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46C");
-          }
-          return Container();
-        }
-    );
+  BlocBuilder buildGroupCompany() {
+    return BlocBuilder<DropdownCubit, DropdownState>(builder: (context, state) {
+      if (state is DropdownInitial) {
+        return getAllAccountInfoMethodBuilder("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46E");
+      } else if (state is DropdownSecondCompany) {
+        return getAllAccountInfoMethodBuilder("B]Ygv=uZx?jDUV>e1jB*dKJ99%V46C");
+      }
+      return Container();
+    });
   }
 
   FutureBuilder getAllAccountInfoMethodBuilder(String sessionId) {
     return FutureBuilder(
-      future: getAllAccountInfoMethod(sessionId),
-      builder: (BuildContext context, snapshot) {
-        switch(snapshot.connectionState){
-          case ConnectionState.waiting:{
-            return HomePagePieChartStateTransition(isPie: false);
-          }
-          case ConnectionState.active:{
-            return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.textFormUnderLineColor,
-                ),
-              ),
-            );
-          }
-          default:
-            if(snapshot.connectionState == ConnectionState.done){
-              if(snapshot.hasData){
-                return buildCurrencyBloc(snapshot.data);
-              }else if(snapshot.hasError){
-                print(snapshot.error);
+        future: getAllAccountInfoMethod(sessionId),
+        builder: (BuildContext context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              {
                 return HomePagePieChartStateTransition(isPie: false);
               }
-            }
-            return buildCurrencyBloc(snapshot.data);
-        }
-      }
-    );
+            case ConnectionState.active:
+              {
+                return Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.textFormUnderLineColor,
+                    ),
+                  ),
+                );
+              }
+            default:
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  return buildCurrencyBloc(snapshot.data);
+                } else if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return HomePagePieChartStateTransition(isPie: false);
+                }
+              }
+              return buildCurrencyBloc(snapshot.data);
+          }
+        });
   }
 
   ListView buildListView(getData, String currency) {
+    List list = [];
+
     return ListView.builder(
       padding: EdgeInsets.only(top: 2.71.h),
-      itemCount: getData["Account"].runtimeType == List ? getData["Account"].length : 1,
+      itemCount: getData["Account"].runtimeType == List
+          ? getData["Account"].length
+          : 1,
       itemBuilder: (context, index) {
-       if(getData["Account"].runtimeType == List){
-         final bankCode = getData["Account"][index]["BankCode"];
-         final getCurrency = getData["Account"][index]["CurrencyType"];
-         final balanceList = buildTotalBalance(getData,bankCode,currency);
-         double balance = 0;
-         for (int i = 0; i < getData["Account"].length; i++) {
-           balance =
-               balance + double.parse(getData["Account"][i]["AvailableBalance"]);
-         }
-         int numberOfAcc = numberOfAccMethod(getData, bankCode, currency);
-         final colorList = AppColors.pieColors[index];
-         if(getCurrency == currency){
-           return buildEachBankRow(
-             bankCode,
-             numberOfAcc,
-             balanceList,
-             colorList,
-             getCurrency,
-             balance,
-           );
-         }else{
-           return Container();
-         }
-       }else{
-         final bankCode = getData["Account"]["BankCode"];
-         final getCurrency = getData["Account"]["CurrencyType"];
+        if (getData["Account"].runtimeType == List) {
+          final bankCode = getData["Account"][index]["BankCode"];
+          final getCurrency = getData["Account"][index]["CurrencyType"];
+          final balanceList = buildTotalBalance(getData, bankCode, currency);
+          double balance = 0;
+          for (int i = 0; i < getData["Account"].length; i++) {
+            if (getData["Account"][i]["CurrencyType"] == currency) {
+              balance = balance +
+                  double.parse(getData["Account"][i]["AvailableBalance"]);
+            }
+          }
+          int numberOfAcc = numberOfAccMethod(getData, bankCode, currency);
+          final colorList = AppColors.pieColors[index];
+          if (getCurrency == currency) {
+            for(int i = 0; i<getData["Account"].length; i++){
+              if(!list.contains(getData["Account"][i]["BankCode"])){
+                if(getCurrency == currency){
+                  list.add(getData["Account"][i]["BankCode"]);
+                  log.i(list);
+                  if(list.contains(getData["Account"][i]["BankCode"])){
+                    return buildEachBankRow(bankCode, numberOfAcc, balanceList,
+                        colorList, getCurrency, balance, currency);
+                  }
+                }
+              }
+            }
+            return Container();
+          } else {
+            return Container();
+          }
+        } else {
+          final bankCode = getData["Account"]["BankCode"];
+          final getCurrency = getData["Account"]["CurrencyType"];
 
-         final balanceList = buildTotalBalance(getData,bankCode,currency);
-         double balance = 0;
-         for (int i = 0; i < 1; i++) {
-           balance =
-               balance + double.parse(getData["Account"]["AvailableBalance"]);
-         }
-         int numberOfAcc = numberOfAccMethod(getData, bankCode, currency);
-         final colorList = AppColors.pieColors[index];
-         if(getCurrency == currency){
-           return buildEachBankRow(
-             bankCode,
-             numberOfAcc,
-             balanceList,
-             colorList,
-             getCurrency,
-             balance,
-           );
-         }else{
-           return Container();
-         }
-       }
+          final balanceList = buildTotalBalance(getData, bankCode, currency);
+          double balance = 0;
+          if (getCurrency == currency) {
+            balance = balance +
+                double.parse(getData["Account"][index]["AvailableBalance"]);
+          }
+          int numberOfAcc = numberOfAccMethod(getData, bankCode, currency);
+          final colorList = AppColors.pieColors[index];
+          if (getCurrency == currency) {
+            return buildEachBankRow(bankCode, numberOfAcc, balanceList,
+                colorList, getCurrency, balance, currency);
+          } else {
+            return Container();
+          }
+        }
       },
     );
   }
 
-  String  buildTotalBalance (getData, bankCode, currency) {
+  String buildTotalBalance(getData, bankCode, currency) {
     try {
       List listOfAcc = [];
       double listOfBalance = 0;
-      if(getData["Account"].runtimeType == List){
+      if (getData["Account"].runtimeType == List) {
         for (int i = 0; i < getData["Account"].length; i++) {
           if (getData["Account"][i]["CurrencyType"] == currency) {
             listOfAcc.addAll([
@@ -223,14 +232,20 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
                 "bankCode": getData["Account"][i]["BankCode"],
               }
             ]);
-            if (listOfAcc[i]["bankCode"] == bankCode) {
-              listOfBalance += double.parse(getData["Account"][i]["AvailableBalance"]);
+            if (listOfAcc.length > 1) {
+              if (listOfAcc[i]["bankCode"] == bankCode) {
+                listOfBalance +=
+                    double.parse(getData["Account"][i]["AvailableBalance"]);
+              }
+            } else {
+              if (listOfAcc[0]["bankCode"] == bankCode) {
+                listOfBalance +=
+                    double.parse(getData["Account"][i]["AvailableBalance"]);
+              }
             }
           }
         }
-      }else{
-      }
-      print(listOfBalance);
+      } else {}
       return listOfBalance.toString();
     } catch (e) {
       return "0";
@@ -239,22 +254,16 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
 
   int numberOfAccMethod(getData, bankCode, currency) {
     try {
-      List listOfAcc = [];
       int accNo = 0;
-      if(getData["Account"].runtimeType == List){
+      if (getData["Account"].runtimeType == List) {
         for (int i = 0; i < getData["Account"].length; i++) {
           if (getData["Account"][i]["CurrencyType"] == currency) {
-            listOfAcc.addAll([
-              {
-                "bankCode": getData["Account"][i]["BankCode"],
-              }
-            ]);
-            if (listOfAcc[i]["bankCode"] == bankCode) {
+            if (getData["Account"][i]["BankCode"] == bankCode) {
               accNo += 1;
             }
           }
         }
-      }else{
+      } else {
         accNo = 1;
       }
       return accNo;
@@ -263,13 +272,8 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
     }
   }
 
-  Padding buildEachBankRow(
-      String bankCode,
-      int listofAccountList,
-      String balanceList,
-      Color color,
-      getCurrency,
-      balance) {
+  Padding buildEachBankRow(String bankCode, int listofAccountList,
+      String balanceList, Color color, getCurrency, balance, currencyBloc) {
     return Padding(
       padding: EdgeInsets.only(right: 7.24.w, left: 7.24.w),
       child: Container(
@@ -286,7 +290,8 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
                   bankCode,
                   listofAccountList,
                 ),
-                buildPercentage(balanceList, balance),
+                buildPercentage(
+                    balanceList, balance, getCurrency, currencyBloc),
                 Spacer(),
                 buildAccountBalance(balanceList, getCurrency),
               ],
@@ -361,12 +366,12 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
     );
   }
 
-  Text buildPercentage(balanceList, balance) {
-    String percentageValue = calculatePercentage(balanceList, balance).toString();
+  Text buildPercentage(balanceList, balance, getCurrency, currency) {
+    String percentageValue =
+        calculatePercentage(balanceList, balance, getCurrency, currency)
+            .toString();
     return Text(
-      "${percentageValue.substring(
-          0, percentageValue.length < 5
-          ? percentageValue.length : 5)}%",
+      "${percentageValue.substring(0, percentageValue.length < 5 ? percentageValue.length : 5)}%",
       style: TextStyle(
         color: AppColors.icon_color,
         fontFamily: 'Poppins',
@@ -375,7 +380,7 @@ class _HomePageHalfDownPieState extends State<HomePageHalfDownPie> {
     );
   }
 
-  double calculatePercentage(value, total) {
+  double calculatePercentage(value, total, getCurrency, currency) {
     double valueDouble = double.parse(value);
     double percentage = (valueDouble * 100) / total;
     return percentage;
