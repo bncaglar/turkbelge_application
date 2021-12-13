@@ -1298,7 +1298,7 @@ class _AllTransactionRenewedState extends State<AllTransactionRenewed> {
         textController: searchController,
         onSuffixTap: () {
           searchController.clear();
-        },
+        }, onEditingComplete: () {  },
       ),
     );
   }
